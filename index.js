@@ -50,3 +50,20 @@ window.nextExercise = function () {
     renderExercise();
 }
 
+
+
+window.toggleAnswer = function () {
+    const answer = sections[sectionIndex].exercises[exerciseIndex].answer;
+    const answerBox = document.getElementById("answer-box");
+    if (answerBox.style.display === "none") {
+        answerBox.innerText = "Answer:\n" + answer;
+        answerBox.style.display = "block";
+    } else {
+        answerBox.style.display = "none";
+    }
+};
+
+
+
+
+renderExercise();
