@@ -15,7 +15,7 @@ function renderExercise() {
 }
 
 
-window.runCode = function () {
+function runCode () {
     const code = document.getElementById("code-editor").value;
     const outputDiv = document.getElementById("output");
 
@@ -37,7 +37,7 @@ window.runCode = function () {
 
 
 
-window.nextExercise = function () {
+function nextExercise () {
     if (exerciseIndex < sections[sectionIndex].exercises.length - 1) {
         exerciseIndex++;
     } else if (sectionIndex < sections.length - 1) {
@@ -52,7 +52,7 @@ window.nextExercise = function () {
 
 
 
-window.toggleAnswer = function () {
+function toggleAnswer () {
     const answer = sections[sectionIndex].exercises[exerciseIndex].answer;
     const answerBox = document.getElementById("answer-box");
     if (answerBox.style.display === "none") {
@@ -64,6 +64,11 @@ window.toggleAnswer = function () {
 };
 
 
+// attach event listeners after DOM loads
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("run-btn").addEventListener("click", runCode);
+    document.getElementById("next-btn").addEventListener("click", nextExercise);
+    document.getElementById("answer-btn").addEventListener("click", toggleAnswer);
 
-
-renderExercise();
+    renderExercise();
+})
