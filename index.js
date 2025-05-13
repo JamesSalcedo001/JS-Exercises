@@ -36,3 +36,17 @@ window.runCode = function () {
 };
 
 
+
+window.nextExercise = function () {
+    if (exerciseIndex < sections[sectionIndex].exercises.length - 1) {
+        exerciseIndex++;
+    } else if (sectionIndex < sections.length - 1) {
+        sectionIndex++;
+        exerciseIndex = 0;
+    } else {
+        alert("You've completed all sections!");
+        return;
+    }
+    renderExercise();
+}
+
