@@ -16,5 +16,23 @@ function renderExercise() {
 
 
 window.runCode = function () {
-    const code = document.getElementById("code-editor")
-}
+    const code = document.getElementById("code-editor").value;
+    const outputDiv = document.getElementById("output");
+
+    let output = "";
+    const originalLog = console.log;
+    console.log = function (...args) {
+        output += args.join(" ") + "\n";
+    };
+
+    try {
+        eval(code);
+        outputDiv.innerText = output || "[No Output]";
+    } catch (err) {
+        outputDiv.innerText = "Error:\n" + err.message;
+    }
+
+    console.log = originalLog;
+};
+
+
