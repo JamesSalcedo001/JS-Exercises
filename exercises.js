@@ -35,6 +35,23 @@ export const sections = [
       {
         prompt: "Log each character in the word 'code'",
         answer: `const word = "code";\nfor (let i = 0; i < word.length; i++) {\n  console.log(word[i]);\n}`
+      },
+      // Day 3
+      {
+        prompt: "Use a while loop to print numbers 1 to 5",
+        answer: `let i = 1;\nwhile (i <= 5) {\n  console.log(i);\n  i++;\n}`
+      },
+      {
+        prompt: "Create a function that returns the square of a number",
+        answer: `function square(n) {\n  return n * n;\n}\nconsole.log(square(4));`
+      },
+      {
+        prompt: "Declare an object for a person with name and age",
+        answer: `const person = {\n  name: "Sam",\n  age: 30\n};\nconsole.log(person);`
+      },
+      {
+        prompt: "Access the name property from a person object",
+        answer: `const person = { name: "Sam", age: 30 };\nconsole.log(person.name);`
       }
     ]
   },
@@ -66,6 +83,15 @@ export const sections = [
       {
         prompt: "Print 'Fizz' if divisible by 3, else print the number (1-10)",
         answer: `for (let i = 1; i <= 10; i++) {\n  if (i % 3 === 0) {\n    console.log("Fizz");\n  } else {\n    console.log(i);\n  }\n}`
+      },
+      // Day 3
+      {
+        prompt: "Log numbers from an array until you hit a number greater than 5",
+        answer: `const nums = [1, 3, 5, 7, 2];\nfor (let num of nums) {\n  if (num > 5) break;\n  console.log(num);\n}`
+      },
+      {
+        prompt: "Push numbers divisible by 3 into a new array",
+        answer: `const nums = [3, 6, 8, 10, 12];\nconst divisibleBy3 = [];\nfor (let num of nums) {\n  if (num % 3 === 0) divisibleBy3.push(num);\n}\nconsole.log(divisibleBy3);`
       }
     ]
   },
@@ -93,6 +119,15 @@ export const sections = [
       {
         prompt: "Count how many vowels are in the word 'education'",
         answer: `const word = "education";\nlet count = 0;\nconst vowels = "aeiou";\nfor (let char of word) {\n  if (vowels.includes(char)) count++;\n}\nconsole.log(count);`
+      },
+      // Day 3
+      {
+        prompt: "Count how many times the letter 'a' appears in 'banana'",
+        answer: `const word = "banana";\nlet count = 0;\nfor (let char of word) {\n  if (char === 'a') count++;\n}\nconsole.log(count);`
+      },
+      {
+        prompt: "Find the index of the largest number in [3, 7, 2, 9]",
+        answer: `const nums = [3, 7, 2, 9];\nlet maxIndex = 0;\nfor (let i = 1; i < nums.length; i++) {\n  if (nums[i] > nums[maxIndex]) maxIndex = i;\n}\nconsole.log(maxIndex);`
       }
     ]
   },
@@ -116,6 +151,15 @@ export const sections = [
       {
         prompt: "Create array of words with > 3 letters: ['hi', 'code', 'dog', 'JavaScript']",
         answer: `const words = ["hi", "code", "dog", "JavaScript"];\nconst result = words.filter(w => w.length > 3);\nconsole.log(result);`
+      },
+      // Day 3
+      {
+        prompt: "Get first letters of each word: ['apple', 'banana', 'cherry']",
+        answer: `const words = ['apple', 'banana', 'cherry'];\nconst initials = words.map(w => w[0]);\nconsole.log(initials);`
+      },
+      {
+        prompt: "Filter and uppercase words longer than 3 letters",
+        answer: `const words = ["hi", "code", "sun", "developer"];\nconst result = words.filter(w => w.length > 3).map(w => w.toUpperCase());\nconsole.log(result);`
       }
     ]
   },
@@ -139,6 +183,15 @@ export const sections = [
       {
         prompt: "Check if all elements in [2, 4, 6, 8] are even",
         answer: `const nums = [2, 4, 6, 8];\nconst allEven = nums.every(n => n % 2 === 0);\nconsole.log(allEven);`
+      },
+      // Day 3
+      {
+        prompt: "Write a function that reverses any string",
+        answer: `function reverseString(str) {\n  return str.split('').reverse().join('');\n}\nconsole.log(reverseString("hello"));`
+      },
+      {
+        prompt: "Check if a number is prime",
+        answer: `function isPrime(n) {\n  if (n < 2) return false;\n  for (let i = 2; i <= Math.sqrt(n); i++) {\n    if (n % i === 0) return false;\n  }\n  return true;\n}\nconsole.log(isPrime(7));\nconsole.log(isPrime(10));`
       }
     ]
   }
