@@ -35,7 +35,8 @@ h2 {
   box-sizing: border-box;
   margin-bottom: 1rem;
   resize: vertical;
-  background-color: #fefefe;
+  background-color: #070d19;
+  color: white;
 }
 
 .button-row {
@@ -63,7 +64,8 @@ button:hover {
 
 #output {
   white-space: pre-wrap;
-  background: #e5e7eb;
+  background: #070d19;
+  color: rgb(23, 204, 23);
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -72,8 +74,10 @@ button:hover {
 
 #answer-box {
   white-space: pre-wrap;
-  background: #fef3c7;
+  background: #ffffff;
+  color: #32373f;
   padding: 1rem;
   border-radius: 8px;
   display: none;
+  font-family: monospace;
 }
