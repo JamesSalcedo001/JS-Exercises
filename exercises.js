@@ -86,7 +86,25 @@ export const sections = [
       {
         prompt: "Log the length of the string 'JavaScript'",
         answer: `const word = "JavaScript";\nconsole.log(word.length);`
+      },
+      // Day 6
+      {
+        prompt: "Create a function that returns the cube of a number",
+        answer: `function cube(n) {\n  return n * n * n;\n}\nconsole.log(cube(3));`
+      },
+      {
+        prompt: "Declare an array of numbers and log the last element",
+        answer: `const nums = [5, 10, 15];\nconsole.log(nums[nums.length - 1]);`
+      },
+      {
+        prompt: "Use a while loop to print numbers from 5 down to 1",
+        answer: `let i = 5;\nwhile (i >= 1) {\n  console.log(i);\n  i--;\n}`
+      },
+      {
+        prompt: "Log the type of 'true', 42, and 'hello'",
+        answer: `console.log(typeof true);\nconsole.log(typeof 42);\nconsole.log(typeof "hello");`
       }
+
 
     ]
   },
@@ -145,7 +163,16 @@ export const sections = [
       {
         prompt: "Filter numbers greater than 10 from [4, 11, 15, 7]",
         answer: `const nums = [4, 11, 15, 7];\nconst result = [];\nfor (let num of nums) {\n  if (num > 10) result.push(num);\n}\nconsole.log(result);`
+      },
+      {
+        prompt: "Filter odd numbers from [2, 5, 6, 9, 12]",
+        answer: `const nums = [2, 5, 6, 9, 12];\nconst odds = nums.filter(n => n % 2 !== 0);\nconsole.log(odds);`
+      },
+      {
+        prompt: "Count the number of true values in [true, false, true, true]",
+        answer: `const values = [true, false, true, true];\nlet count = 0;\nfor (let v of values) {\n  if (v === true) count++;\n}\nconsole.log(count);`
       }
+
 
 
     ]
@@ -201,7 +228,17 @@ export const sections = [
       {
         prompt: "Return true if the string 'hello' contains the letter 'e'",
         answer: `const word = "hello";\nconsole.log(word.includes("e"));`
+      },
+      // Day 6
+      {
+        prompt: "Check if the word 'apple' contains the letter 'p'",
+        answer: `const word = "apple";\nconsole.log(word.includes("p"));`
+      },
+      {
+        prompt: "Capitalize all letters in 'robotics'",
+        answer: `const word = "robotics";\nconsole.log(word.toUpperCase());`
       }
+
 
 
     ]
@@ -252,7 +289,17 @@ export const sections = [
       {
         prompt: "From ['Tom', 'Timothy', 'Tina'], get names longer than 3 letters and lowercase them",
         answer: `const names = ['Tom', 'Timothy', 'Tina'];\nconst result = names.filter(name => name.length > 3).map(name => name.toLowerCase());\nconsole.log(result);`
+      },
+      // Day 6
+      {
+        prompt: "Double and stringify numbers in [1, 2, 3]",
+        answer: `const nums = [1, 2, 3];\nconst result = nums.map(n => (n * 2).toString());\nconsole.log(result);`
+      },
+      {
+        prompt: "Chain filter and map: Get square roots of even numbers from [4, 9, 16, 25]",
+        answer: `const nums = [4, 9, 16, 25];\nconst result = nums.filter(n => n % 2 === 0).map(n => Math.sqrt(n));\nconsole.log(result);`
       }
+
 
 
     ]
@@ -303,7 +350,17 @@ export const sections = [
       {
         prompt: "Check if two strings are anagrams (e.g., 'listen' and 'silent')",
         answer: `function areAnagrams(a, b) {\n  return a.split('').sort().join('') === b.split('').sort().join('');\n}\nconsole.log(areAnagrams("listen", "silent"));\nconsole.log(areAnagrams("hello", "world"));`
+      },
+      // Day 6
+      {
+        prompt: "Write a function to find the factorial of a number recursively",
+        answer: `function factorial(n) {\n  if (n === 0 || n === 1) return 1;\n  return n * factorial(n - 1);\n}\nconsole.log(factorial(5));`
+      },
+      {
+        prompt: "Write a function that returns the longest word in a sentence",
+        answer: `function longestWord(sentence) {\n  const words = sentence.split(" ");\n  let longest = "";\n  for (let word of words) {\n    if (word.length > longest.length) longest = word;\n  }\n  return longest;\n}\nconsole.log(longestWord("JavaScript is awesome"));`
       }
+
 
 
     ]
