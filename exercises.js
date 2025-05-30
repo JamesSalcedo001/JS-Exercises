@@ -52,7 +52,42 @@ export const sections = [
       {
         prompt: "Access the name property from a person object",
         answer: `const person = { name: "Sam", age: 30 };\nconsole.log(person.name);`
+      },
+      // Day 4
+      {
+        prompt: "Log numbers from 1 to 10, skipping even numbers",
+        answer: `for (let i = 1; i <= 10; i++) {\n  if (i % 2 === 0) continue;\n  console.log(i);\n}`
+      },
+      {
+        prompt: "Create a function that adds two numbers and returns the result",
+        answer: `function add(a, b) {\n  return a + b;\n}\nconsole.log(add(3, 7));`
+      },
+      {
+        prompt: "Declare an object for a book with title and author",
+        answer: `const book = {\n  title: "1984",\n  author: "George Orwell"\n};\nconsole.log(book);`
+      },
+      {
+        prompt: "Log both the title and author from the book object",
+        answer: `const book = { title: "1984", author: "George Orwell" };\nconsole.log(book.title);\nconsole.log(book.author);`
+      },
+      // Day 5
+      {
+        prompt: "Create a variable called 'score' and set it to 0, then increment it by 5",
+        answer: `let score = 0;\nscore += 5;\nconsole.log(score);`
+      },
+      {
+        prompt: "Use a for loop to print 'Hello' 3 times",
+        answer: `for (let i = 0; i < 3; i++) {\n  console.log("Hello");\n}`
+      },
+      {
+        prompt: "Create a function that multiplies two numbers and returns the result",
+        answer: `function multiply(a, b) {\n  return a * b;\n}\nconsole.log(multiply(3, 4));`
+      },
+      {
+        prompt: "Log the length of the string 'JavaScript'",
+        answer: `const word = "JavaScript";\nconsole.log(word.length);`
       }
+
     ]
   },
   {
@@ -92,7 +127,27 @@ export const sections = [
       {
         prompt: "Push numbers divisible by 3 into a new array",
         answer: `const nums = [3, 6, 8, 10, 12];\nconst divisibleBy3 = [];\nfor (let num of nums) {\n  if (num % 3 === 0) divisibleBy3.push(num);\n}\nconsole.log(divisibleBy3);`
+      },
+      // Day 4
+      {
+        prompt: "Find the average of numbers in [10, 20, 30]",
+        answer: `const nums = [10, 20, 30];\nconst total = nums.reduce((sum, n) => sum + n, 0);\nconsole.log(total / nums.length);`
+      },
+      {
+        prompt: "Filter numbers in [4, 7, 12, 19] that are less than 10",
+        answer: `const nums = [4, 7, 12, 19];\nconst filtered = nums.filter(n => n < 10);\nconsole.log(filtered);`
+      },
+      // Day 5
+      {
+        prompt: "Double each number in [1, 2, 3]",
+        answer: `const nums = [1, 2, 3];\nfor (let i = 0; i < nums.length; i++) {\n  nums[i] *= 2;\n}\nconsole.log(nums);`
+      },
+      {
+        prompt: "Filter numbers greater than 10 from [4, 11, 15, 7]",
+        answer: `const nums = [4, 11, 15, 7];\nconst result = [];\nfor (let num of nums) {\n  if (num > 10) result.push(num);\n}\nconsole.log(result);`
       }
+
+
     ]
   },
   {
@@ -128,7 +183,27 @@ export const sections = [
       {
         prompt: "Find the index of the largest number in [3, 7, 2, 9]",
         answer: `const nums = [3, 7, 2, 9];\nlet maxIndex = 0;\nfor (let i = 1; i < nums.length; i++) {\n  if (nums[i] > nums[maxIndex]) maxIndex = i;\n}\nconsole.log(maxIndex);`
+      },
+      // Day 4
+      {
+        prompt: "Capitalize the first letter of 'robot'",
+        answer: `const word = "robot";\nconst capitalized = word[0].toUpperCase() + word.slice(1);\nconsole.log(capitalized);`
+      },
+      {
+        prompt: "Get the initials from 'John Doe'",
+        answer: `const name = "John Doe";\nconst initials = name.split(" ").map(word => word[0]).join("");\nconsole.log(initials);`
+      },
+      // Day 5
+      {
+        prompt: "Find the average of [4, 6, 8]",
+        answer: `const nums = [4, 6, 8];\nlet sum = 0;\nfor (let num of nums) {\n  sum += num;\n}\nconst avg = sum / nums.length;\nconsole.log(avg);`
+      },
+      {
+        prompt: "Return true if the string 'hello' contains the letter 'e'",
+        answer: `const word = "hello";\nconsole.log(word.includes("e"));`
       }
+
+
     ]
   },
   {
@@ -160,7 +235,26 @@ export const sections = [
       {
         prompt: "Filter and uppercase words longer than 3 letters",
         answer: `const words = ["hi", "code", "sun", "developer"];\nconst result = words.filter(w => w.length > 3).map(w => w.toUpperCase());\nconsole.log(result);`
+      },
+      // Day 4
+      {
+        prompt: "Double the odd numbers from [1, 2, 3, 4, 5]",
+        answer: `const nums = [1, 2, 3, 4, 5];\nconst doubledOdds = nums.filter(n => n % 2 !== 0).map(n => n * 2);\nconsole.log(doubledOdds);`
+      },
+      {
+        prompt: "Chain to get squares of numbers > 5 from [2, 5, 8, 12]",
+        answer: `const nums = [2, 5, 8, 12];\nconst result = nums.filter(n => n > 5).map(n => n ** 2);\nconsole.log(result);`
+      },
+      {
+        prompt: "Convert [1, 2, 3, 4] to strings and add '!' to each",
+        answer: `const nums = [1, 2, 3, 4];\nconst result = nums.map(n => n.toString() + "!");\nconsole.log(result);`
+      },
+      {
+        prompt: "From ['Tom', 'Timothy', 'Tina'], get names longer than 3 letters and lowercase them",
+        answer: `const names = ['Tom', 'Timothy', 'Tina'];\nconst result = names.filter(name => name.length > 3).map(name => name.toLowerCase());\nconsole.log(result);`
       }
+
+
     ]
   },
   {
@@ -192,7 +286,26 @@ export const sections = [
       {
         prompt: "Check if a number is prime",
         answer: `function isPrime(n) {\n  if (n < 2) return false;\n  for (let i = 2; i <= Math.sqrt(n); i++) {\n    if (n % i === 0) return false;\n  }\n  return true;\n}\nconsole.log(isPrime(7));\nconsole.log(isPrime(10));`
+      },
+      {
+        prompt: "Write a function that returns the sum of digits of a number",
+        answer: `function sumDigits(n) {\n  return n.toString().split('').reduce((sum, d) => sum + Number(d), 0);\n}\nconsole.log(sumDigits(123));`
+      },
+      {
+        prompt: "Check if an array contains duplicates",
+        answer: `function hasDuplicates(arr) {\n  const set = new Set(arr);\n  return set.size !== arr.length;\n}\nconsole.log(hasDuplicates([1, 2, 3, 2]));`
+      },
+      // Day 5
+      {
+        prompt: "Write a function to find the second largest number in [1, 3, 4, 2]",
+        answer: `function secondLargest(arr) {\n  const sorted = [...arr].sort((a, b) => b - a);\n  return sorted[1];\n}\nconsole.log(secondLargest([1, 3, 4, 2]));`
+      },
+      {
+        prompt: "Check if two strings are anagrams (e.g., 'listen' and 'silent')",
+        answer: `function areAnagrams(a, b) {\n  return a.split('').sort().join('') === b.split('').sort().join('');\n}\nconsole.log(areAnagrams("listen", "silent"));\nconsole.log(areAnagrams("hello", "world"));`
       }
+
+
     ]
   }
 ];
