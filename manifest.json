@@ -1,0 +1,15 @@
+{
+  "name": "JS Daily Exercises",
+  "short_name": "JS Exercises",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#32373f",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "Code_Icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}
