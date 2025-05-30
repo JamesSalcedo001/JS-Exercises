@@ -5,6 +5,11 @@ html, body {
   touch-action: pan-y;
 }
 
+.monaco-editor .keyboard {
+  display: none !important;
+}
+
+
 body {
   font-family: sans-serif;
   margin: 0;
