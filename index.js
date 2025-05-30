@@ -18,8 +18,10 @@ function renderExercise() {
 function runCode () {
     const code = document.getElementById("code-editor").value;
     const outputDiv = document.getElementById("output");
+    const domOutputDiv = document.getElementById("dom-output");
 
     let output = "";
+    domOutputDiv.innerHTML = "";
     const originalLog = console.log;
     console.log = function (...args) {
         output += args.join(" ") + "\n";
