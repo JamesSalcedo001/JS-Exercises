@@ -2,6 +2,8 @@ import { sections } from "./exercises.js";
 
 let sectionIndex = 0;
 let exerciseIndex = 0;
+let monacoEditor;
+
 
 function renderExercise() {
     const { title } = sections[sectionIndex];
@@ -12,11 +14,16 @@ function renderExercise() {
     document.getElementById("code-editor").value = "";
     document.getElementById("output").innerText = "";
     document.getElementById("answer-box").style.display = "none";
+
+    if (monacoEditor) {
+        monacoEditor.setValue("");
+    }
 }
 
 
-function runCode () {
-    const code = document.getElementById("code-editor").value;
+function runCode() {
+    const code = monacoEditor.getValue();
+    // const code = document.getElementById("code-editor").value;
     const outputDiv = document.getElementById("output");
     const domOutputDiv = document.getElementById("dom-output");
 
@@ -39,7 +46,7 @@ function runCode () {
 
 
 
-function nextExercise () {
+function nextExercise() {
     if (exerciseIndex < sections[sectionIndex].exercises.length - 1) {
         exerciseIndex++;
     } else if (sectionIndex < sections.length - 1) {
@@ -54,7 +61,7 @@ function nextExercise () {
 
 
 
-function toggleAnswer () {
+function toggleAnswer() {
     const answer = sections[sectionIndex].exercises[exerciseIndex].answer;
     const answerBox = document.getElementById("answer-box");
     if (answerBox.style.display === "none") {
@@ -72,18 +79,32 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("next-btn").addEventListener("click", nextExercise);
     document.getElementById("answer-btn").addEventListener("click", toggleAnswer);
 
-    renderExercise();
-})
+    require.config({ paths: { vs: "https://unpkg.com/monaco-editor@latest/min/vs" } });
+    require(["vs/editor/editor.main"], function () {
+        monacoEditor = monaco.editor.create(document.getElementById("editor"), {
+            value: "// Write your code here...\n",
+            language: "javascript",
+            theme: "vs-dark",
+            automaticLayout: true,
+            fontSize: 14,
+            wordWrap: "on",
+            formatOnType: true,
+            autoClosingBrackets: "always",
+            tabSize: 2,
+        });
 
+        renderExercise();
+    })
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then((reg) => {
-        console.log('✅ Service Worker registered:', reg.scope);
-      })
-      .catch((err) => {
-        console.error('❌ Service Worker registration failed:', err);
-      });
-  });
-}
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then((reg) => {
+                    console.log('✅ Service Worker registered:', reg.scope);
+                })
+                .catch((err) => {
+                    console.error('❌ Service Worker registration failed:', err);
+                });
+        });
+    }
+});
