@@ -2,7 +2,38 @@ import { sections } from "./exercises.js";
 
 let sectionIndex = 0;
 let exerciseIndex = 0;
-let monacoEditor;
+let editor;
+
+
+
+
+// Load Monaco and initialize editor
+window.addEventListener("load", () => {
+  if (window.require) {
+    window.require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs' } });
+
+    window.require(['vs/editor/editor.main'], () => {
+      editor = monaco.editor.create(document.getElementById('code-editor'), {
+        value: '',
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        formatOnType: true,
+        formatOnPaste: true,
+        minimap: { enabled: false }
+      });
+
+      renderExercise();
+    });
+  }
+
+  // Register SW only in production
+  if ('serviceWorker' in navigator && location.hostname !== 'localhost') {
+    navigator.serviceWorker.register('./sw.js')
+      .then((reg) => console.log('✅ Service Worker registered:', reg.scope))
+      .catch((err) => console.error('❌ Service Worker registration failed:', err));
+  }
+});
 
 
 function renderExercise() {
@@ -11,18 +42,16 @@ function renderExercise() {
 
     document.getElementById("section-title").innerText = title;
     document.getElementById("question-text").innerText = prompt;
-    document.getElementById("code-editor").value = "";
+    // document.getElementById("code-editor").value = "";
     document.getElementById("output").innerText = "";
     document.getElementById("answer-box").style.display = "none";
 
-    if (monacoEditor) {
-        monacoEditor.setValue("");
-    }
+    if (editor) editor.setValue("");
 }
 
 
 function runCode() {
-    const code = monacoEditor.getValue();
+    const code = editor.getValue();
     // const code = document.getElementById("code-editor").value;
     const outputDiv = document.getElementById("output");
     const domOutputDiv = document.getElementById("dom-output");
@@ -78,33 +107,4 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("run-btn").addEventListener("click", runCode);
     document.getElementById("next-btn").addEventListener("click", nextExercise);
     document.getElementById("answer-btn").addEventListener("click", toggleAnswer);
-
-    require.config({ paths: { vs: "https://unpkg.com/monaco-editor@latest/min/vs" } });
-    require(["vs/editor/editor.main"], function () {
-        monacoEditor = monaco.editor.create(document.getElementById("editor"), {
-            value: "// Write your code here...\n",
-            language: "javascript",
-            theme: "vs-dark",
-            automaticLayout: true,
-            fontSize: 14,
-            wordWrap: "on",
-            formatOnType: true,
-            autoClosingBrackets: "always",
-            tabSize: 2,
-        });
-
-        renderExercise();
-    })
-
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then((reg) => {
-                    console.log('✅ Service Worker registered:', reg.scope);
-                })
-                .catch((err) => {
-                    console.error('❌ Service Worker registration failed:', err);
-                });
-        });
-    }
 });
