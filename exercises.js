@@ -103,7 +103,43 @@ export const sections = [
       {
         prompt: "Log the type of 'true', 42, and 'hello'",
         answer: `console.log(typeof true);\nconsole.log(typeof 42);\nconsole.log(typeof "hello");`
+      },
+      // Day 7
+      {
+        prompt: "Use a for loop to print each letter in the string 'robot'",
+        answer: `const word = "robot";\nfor (let i = 0; i < word.length; i++) {\n  console.log(word[i]);\n}`
+      },
+      {
+        prompt: "Declare a number variable and check if it’s greater than 100",
+        answer: `const num = 120;\nconsole.log(num > 100);`
+      },
+      {
+        prompt: "Write a function that returns whether a number is positive",
+        answer: `function isPositive(n) {\n  return n > 0;\n}\nconsole.log(isPositive(5));\nconsole.log(isPositive(-3));`
+      },
+      {
+        prompt: "Log the first and last items in an array",
+        answer: `const items = ["a", "b", "c", "d"];\nconsole.log(items[0]);\nconsole.log(items[items.length - 1]);`
+      },
+      // Day 8
+      {
+        prompt: "Declare a string and log its first and last characters",
+        answer: `const word = "JavaScript";\nconsole.log(word[0]);\nconsole.log(word[word.length - 1]);`
+      },
+      {
+        prompt: "Use a do...while loop to print numbers 1 to 3",
+        answer: `let i = 1;\ndo {\n  console.log(i);\n  i++;\n} while (i <= 3);`
+      },
+      {
+        prompt: "Create a function that returns the absolute value of a number",
+        answer: `function absolute(n) {\n  return n < 0 ? -n : n;\n}\nconsole.log(absolute(-7));`
+      },
+      {
+        prompt: "Create an array of 3 colors and log its second item",
+        answer: `const colors = ["red", "green", "blue"];\nconsole.log(colors[1]);`
       }
+
+
 
 
     ]
@@ -164,6 +200,7 @@ export const sections = [
         prompt: "Filter numbers greater than 10 from [4, 11, 15, 7]",
         answer: `const nums = [4, 11, 15, 7];\nconst result = [];\nfor (let num of nums) {\n  if (num > 10) result.push(num);\n}\nconsole.log(result);`
       },
+      // Day 6
       {
         prompt: "Filter odd numbers from [2, 5, 6, 9, 12]",
         answer: `const nums = [2, 5, 6, 9, 12];\nconst odds = nums.filter(n => n % 2 !== 0);\nconsole.log(odds);`
@@ -171,7 +208,27 @@ export const sections = [
       {
         prompt: "Count the number of true values in [true, false, true, true]",
         answer: `const values = [true, false, true, true];\nlet count = 0;\nfor (let v of values) {\n  if (v === true) count++;\n}\nconsole.log(count);`
+      },
+      // Day 7
+      {
+        prompt: "Count how many numbers are divisible by 4 in [4, 8, 15, 16, 23, 42]",
+        answer: `const nums = [4, 8, 15, 16, 23, 42];\nlet count = 0;\nfor (let n of nums) {\n  if (n % 4 === 0) count++;\n}\nconsole.log(count);`
+      },
+      {
+        prompt: "From an array of booleans, return only the true values",
+        answer: `const flags = [true, false, false, true, true];\nconst trues = flags.filter(f => f);\nconsole.log(trues);`
+      },
+      // Day 8
+      {
+        prompt: "Log all strings in ['a', 3, 'b', 5, 'c']",
+        answer: `const mixed = ['a', 3, 'b', 5, 'c'];\nfor (let item of mixed) {\n  if (typeof item === 'string') console.log(item);\n}`
+      },
+      {
+        prompt: "Filter numbers in [3, 6, 9, 12] that are divisible by 6",
+        answer: `const nums = [3, 6, 9, 12];\nconst result = nums.filter(n => n % 6 === 0);\nconsole.log(result);`
       }
+
+
 
 
 
@@ -237,7 +294,27 @@ export const sections = [
       {
         prompt: "Capitalize all letters in 'robotics'",
         answer: `const word = "robotics";\nconsole.log(word.toUpperCase());`
+      },
+      // Day 7
+      {
+        prompt: "Write a function that returns the middle element of an odd-length array",
+        answer: `function middle(arr) {\n  return arr[Math.floor(arr.length / 2)];\n}\nconsole.log(middle([1, 3, 5]));`
+      },
+      {
+        prompt: "Find and log the second item from a given array",
+        answer: `const arr = ["x", "y", "z"];\nconsole.log(arr[1]);`
+      },
+      // Day 8
+      {
+        prompt: "Write a function that returns the number of digits in a number",
+        answer: `function digitCount(n) {\n  return n.toString().length;\n}\nconsole.log(digitCount(4567));`
+      },
+      {
+        prompt: "Count how many words are in 'hello world program'",
+        answer: `const sentence = "hello world program";\nconst count = sentence.split(" ").length;\nconsole.log(count);`
       }
+
+
 
 
 
@@ -298,7 +375,27 @@ export const sections = [
       {
         prompt: "Chain filter and map: Get square roots of even numbers from [4, 9, 16, 25]",
         answer: `const nums = [4, 9, 16, 25];\nconst result = nums.filter(n => n % 2 === 0).map(n => Math.sqrt(n));\nconsole.log(result);`
+      },
+      // Day 7
+      {
+        prompt: "Chain: Double even numbers and convert to string in [1, 2, 3, 4]",
+        answer: `const nums = [1, 2, 3, 4];\nconst result = nums.filter(n => n % 2 === 0).map(n => (n * 2).toString());\nconsole.log(result);`
+      },
+      {
+        prompt: "From ['a', 'ab', 'abc'], keep only length > 1 and uppercase",
+        answer: `const strings = ['a', 'ab', 'abc'];\nconst result = strings.filter(s => s.length > 1).map(s => s.toUpperCase());\nconsole.log(result);`
+      },
+      // Day 8
+      {
+        prompt: "From [2, 4, 5, 6], filter even and triple them",
+        answer: `const nums = [2, 4, 5, 6];\nconst result = nums.filter(n => n % 2 === 0).map(n => n * 3);\nconsole.log(result);`
+      },
+      {
+        prompt: "Convert ['dog', 'cat', 'bird'] to uppercase and reverse each word",
+        answer: `const animals = ["dog", "cat", "bird"];\nconst result = animals.map(a => a.toUpperCase().split('').reverse().join(''));\nconsole.log(result);`
       }
+
+
 
 
 
@@ -359,7 +456,27 @@ export const sections = [
       {
         prompt: "Write a function that returns the longest word in a sentence",
         answer: `function longestWord(sentence) {\n  const words = sentence.split(" ");\n  let longest = "";\n  for (let word of words) {\n    if (word.length > longest.length) longest = word;\n  }\n  return longest;\n}\nconsole.log(longestWord("JavaScript is awesome"));`
+      },
+      // Day 7
+      {
+        prompt: "Write a function that checks if a string has all unique characters",
+        answer: `function allUnique(str) {\n  const set = new Set(str);\n  return set.size === str.length;\n}\nconsole.log(allUnique("robot"));\nconsole.log(allUnique("hello"));`
+      },
+      {
+        prompt: "Write a function that returns the sum of even numbers in an array",
+        answer: `function sumEven(arr) {\n  return arr.filter(n => n % 2 === 0).reduce((sum, n) => sum + n, 0);\n}\nconsole.log(sumEven([1, 2, 3, 4, 5]));`
+      },
+      // Day 8
+      {
+        prompt: "Write a function that counts how many times a letter appears in a string",
+        answer: `function countLetter(str, letter) {\n  let count = 0;\n  for (let char of str) {\n    if (char === letter) count++;\n  }\n  return count;\n}\nconsole.log(countLetter("banana", "a"));`
+      },
+      {
+        prompt: "Write a function to flatten a nested array one level deep",
+        answer: `function flattenOnce(arr) {\n  return arr.reduce((flat, curr) => flat.concat(curr), []);\n}\nconsole.log(flattenOnce([[1, 2], [3, 4], [5]]));`
       }
+
+
 
 
 
