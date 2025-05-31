@@ -87,18 +87,19 @@ function clearEditor() {
 
 
 function moveCursor(direction) {
-    const pos = editor.getPosition();
-    if (!pos) return;
+  const pos = editor.getPosition();
+  if (!pos) return;
 
-    const newPos = {
-        lineNumber: pos.lineNumber,
-        column: Math.max(1, direction === "left" ? pos.column - 1 : pos.column + 1)
-    };
+  const newPos = {
+    lineNumber: pos.lineNumber,
+    column: Math.max(1, direction === "left" ? pos.column - 1 : pos.column + 1)
+  };
 
-    editor.setPosition(newPos);
-    editor.focus();
+  editor.setPosition(newPos);
 
-    if (!navigator.maxTouchPoints || navigator.maxTouchPoints === 0) {
+  const isTouch = navigator.maxTouchPoints > 0;
+
+  if (!isTouch) {
     editor.focus();
   }
 }
