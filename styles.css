@@ -10,6 +10,24 @@ html, body {
 }
 
 
+.touch-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.touch-controls button {
+  font-size: 1.2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: none;
+  background: #444;
+  color: white;
+  cursor: pointer;
+}
+
+
 body {
   font-family: sans-serif;
   margin: 0;

@@ -9,30 +9,33 @@ let editor;
 
 // Load Monaco and initialize editor
 window.addEventListener("load", () => {
-  if (window.require) {
-    window.require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs' } });
+    if (window.require) {
+        window.require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs' } });
 
-    window.require(['vs/editor/editor.main'], () => {
-      editor = monaco.editor.create(document.getElementById('code-editor'), {
-        value: '',
-        language: 'javascript',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        formatOnType: true,
-        formatOnPaste: true,
-        minimap: { enabled: false }
-      });
+        window.require(['vs/editor/editor.main'], () => {
+            editor = monaco.editor.create(document.getElementById('code-editor'), {
+                value: '',
+                language: 'javascript',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                formatOnType: true,
+                formatOnPaste: true,
+                minimap: { enabled: false },
+                wordWrap: 'on',
+                lineNumbersMinChars: 2,
+                padding: { top: 10, bottom: 10 },
+            });
 
-      renderExercise();
-    });
-  }
+            renderExercise();
+        });
+    }
 
-  // Register SW only in production
-  if ('serviceWorker' in navigator && location.hostname !== 'localhost') {
-    navigator.serviceWorker.register('./sw.js')
-      .then((reg) => console.log('✅ Service Worker registered:', reg.scope))
-      .catch((err) => console.error('❌ Service Worker registration failed:', err));
-  }
+    // Register SW only in production
+    if ('serviceWorker' in navigator && location.hostname !== 'localhost') {
+        navigator.serviceWorker.register('./sw.js')
+            .then((reg) => console.log('✅ Service Worker registered:', reg.scope))
+            .catch((err) => console.error('❌ Service Worker registration failed:', err));
+    }
 });
 
 
@@ -74,6 +77,25 @@ function runCode() {
 };
 
 
+function clearEditor() {
+    if (editor) editor.setValue('');
+}
+
+
+function moveCursor(direction) {
+    const pos = editor.getPosition();
+    if (!pos) return;
+
+    const newPos = {
+        lineNumber: pos.lineNumber,
+        column: Math.max(1, direction === "left" ? pos.column - 1 : pos.column + 1)
+    };
+
+    editor.setPosition(newPos);
+    editor.focus();
+}
+
+
 
 function nextExercise() {
     if (exerciseIndex < sections[sectionIndex].exercises.length - 1) {
@@ -107,4 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("run-btn").addEventListener("click", runCode);
     document.getElementById("next-btn").addEventListener("click", nextExercise);
     document.getElementById("answer-btn").addEventListener("click", toggleAnswer);
+    document.getElementById("cursor-left").addEventListener("click", () => moveCursor("left"));
+    document.getElementById("cursor-right").addEventListener("click", () => moveCursor("right"));
+    document.getElementById("clear-editor").addEventListener("click", clearEditor);
+
 });
