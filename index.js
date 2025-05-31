@@ -27,7 +27,7 @@ window.addEventListener("load", () => {
                 renderLineHighlight: 'none',
                 cursorBlinking: "phase",
                 cursorStyle: 'underline',
-                fontSize: 13,                
+                fontSize: 15,                
             });
 
             renderExercise();
@@ -97,6 +97,10 @@ function moveCursor(direction) {
 
     editor.setPosition(newPos);
     editor.focus();
+
+    if (!navigator.maxTouchPoints || navigator.maxTouchPoints === 0) {
+    editor.focus();
+  }
 }
 
 
