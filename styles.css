@@ -92,7 +92,7 @@ h2 {
 }
 
 #question-text {
-  background: #000000;
+  background: #111111;
   border-left: 4px solid #3b82f6;
   padding: 1rem;
   margin-top: 1rem;
@@ -100,6 +100,7 @@ h2 {
   font-size: 1.1rem;
   line-height: 1.4;
   border-radius: 5px;
+  font-family: sans-serif;
 }
 
 #code-editor {
@@ -159,6 +160,7 @@ button:hover {
   border-radius: 8px;
   display: none;
   font-family: monospace;
+  margin-top: 1rem;
 }
 
 
