@@ -26,8 +26,8 @@ window.addEventListener("load", () => {
                 padding: { top: 10, bottom: 10 },
                 renderLineHighlight: 'none',
                 cursorBlinking: "phase",
-                cursorStyle: 'underline',
-                fontSize: 15,                
+                cursorStyle: 'line',
+                fontSize: 14,                
             });
 
             renderExercise();
