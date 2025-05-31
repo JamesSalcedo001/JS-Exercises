@@ -36,6 +36,21 @@ html, body {
 }
 
 
+
+.fake-cursor {
+  border-left: 2px solid #ffffff;
+  margin-left: -1px;
+  pointer-events: none;
+  animation: blink 1s steps(1) infinite;
+  height: 1.3em;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+
+
 body {
   font-family: sans-serif;
   margin: 0;
