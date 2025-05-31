@@ -1,6 +1,7 @@
 /* styles.css */
 
-html, body {
+html,
+body {
   overflow-x: hidden;
   touch-action: pan-y;
 }
@@ -9,9 +10,9 @@ html, body {
   display: none !important;
 }
 
-.monaco-editor, 
-.monaco-editor-background, 
-.monaco-editor .margin, 
+.monaco-editor,
+.monaco-editor-background,
+.monaco-editor .margin,
 .monaco-editor .view-lines {
   border-radius: 6px !important;
   overflow: hidden;
@@ -28,6 +29,16 @@ textarea.iPadShowKeyboard[widgetid="editor.contrib.ShowKeyboardWidget"] {
   position: absolute !important;
   top: -9999px !important;
   left: -9999px !important;
+}
+
+
+#dom-output {
+  background: #111;
+  padding: 1rem;
+  border-radius: 6px;
+  color: white;
+  font-family: sans-serif;
+  min-height: 2rem;
 }
 
 
@@ -60,7 +71,9 @@ textarea.iPadShowKeyboard[widgetid="editor.contrib.ShowKeyboardWidget"] {
 }
 
 @keyframes blink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 
 
