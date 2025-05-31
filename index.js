@@ -24,6 +24,10 @@ window.addEventListener("load", () => {
                 wordWrap: 'on',
                 lineNumbersMinChars: 2,
                 padding: { top: 10, bottom: 10 },
+                renderLineHighlight: 'none',
+                cursorBlinking: "phase",
+                cursorStyle: 'underline',
+                fontSize: 13,                
             });
 
             renderExercise();
