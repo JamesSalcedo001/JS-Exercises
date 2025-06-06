@@ -240,9 +240,102 @@ export const sections = [
       {
         prompt: "Declare an object with keys 'name' and 'age' and log the age",
         answer: `const person = { name: "Lena", age: 28 };\nconsole.log(person.age);`
+      },
+      // Day 12
+      {
+        prompt: "Print numbers from 1 to 10 using a do...while loop",
+        answer: `let i = 1;\ndo {\n  console.log(i);\n  i++;\n} while (i <= 10);`
+      },
+      {
+        prompt: "Create a function that returns true if a number is negative",
+        answer: `function isNegative(n) {\n  return n < 0;\n}\nconsole.log(isNegative(-5));\nconsole.log(isNegative(3));`
+      },
+      {
+        prompt: "Declare an object for a movie with title and year",
+        answer: `const movie = {\n  title: "Inception",\n  year: 2010\n};\nconsole.log(movie);`
+      },
+      {
+        prompt: "Log the value of the 'year' key from the movie object",
+        answer: `const movie = { title: "Inception", year: 2010 };\nconsole.log(movie.year);`
+      },
+      {
+        prompt: "Log the square of each number in [1, 2, 3]",
+        answer: `const nums = [1, 2, 3];\nfor (let n of nums) {\n  console.log(n * n);\n}`
+      },
+      // Day 13
+      {
+        prompt: "Print numbers from 1 to 5 using a do...while loop",
+        answer: `let i = 1;\ndo {\n  console.log(i);\n  i++;\n} while (i <= 5);`
+      },
+      {
+        prompt: "Log the result of 8 modulo 3",
+        answer: `console.log(8 % 3);`
+      },
+      {
+        prompt: "Declare a string 'developer' and log its second character",
+        answer: `const word = "developer";\nconsole.log(word[1]);`
+      },
+      {
+        prompt: "Create an object with keys name and role, and log the role",
+        answer: `const person = { name: "Tina", role: "Engineer" };\nconsole.log(person.role);`
+      },
+      {
+        prompt: "Write a function that subtracts two numbers",
+        answer: `function subtract(a, b) {\n  return a - b;\n}\nconsole.log(subtract(10, 4));`
+      },
+      // Day 14
+      {
+        prompt: "Log numbers from 1 to 5 using a do...while loop",
+        answer: `let i = 1;\ndo {\n  console.log(i);\n  i++;\n} while (i <= 5);`
+      },
+      {
+        prompt: "Create an array of 3 fruits and print the first one",
+        answer: `const fruits = ["apple", "banana", "cherry"];\nconsole.log(fruits[0]);`
+      },
+      {
+        prompt: "Declare an object with name and favoriteColor properties",
+        answer: `const person = {\n  name: "James",\n  favoriteColor: "blue"\n};\nconsole.log(person);`
+      },
+      {
+        prompt: "Write a function that returns whether a number is negative",
+        answer: `function isNegative(n) {\n  return n < 0;\n}\nconsole.log(isNegative(-5));\nconsole.log(isNegative(3));`
+      },
+      {
+        prompt: "Use a for loop to print numbers 0 to 4",
+        answer: `for (let i = 0; i < 5; i++) {\n  console.log(i);\n}`
+      },
+      // Day 15
+      {
+        prompt: "Print all numbers from 1 to 10 using a do...while loop",
+        answer: `let i = 1;
+do {
+  console.log(i);
+  i++;
+} while (i <= 10);`
+      },
+      {
+        prompt: "Declare a variable 'language' and assign it 'JavaScript', then log it",
+        answer: `const language = "JavaScript";
+console.log(language);`
+      },
+      {
+        prompt: "Create an object representing a laptop with brand and RAM (e.g., 16GB)",
+        answer: `const laptop = {
+  brand: "Apple",
+  ram: "16GB"
+};
+console.log(laptop);`
+      },
+      {
+        prompt: "Log the result of 10 divided by 2",
+        answer: `console.log(10 / 2);`
+      },
+      {
+        prompt: "Create an array with numbers 1 to 3 and log the sum",
+        answer: `const nums = [1, 2, 3];
+const sum = nums[0] + nums[1] + nums[2];
+console.log(sum);`
       }
-
-
 
 
 
@@ -442,7 +535,249 @@ export const sections = [
       {
         prompt: "Check if the string 'hello world' contains the word 'world'",
         answer: `const sentence = "hello world";\nconsole.log(sentence.includes("world"));`
+      },
+      // Day 12
+      {
+        prompt: "Count how many numbers are divisible by 5 in [5, 10, 14, 20, 22]",
+        answer: `const nums = [5, 10, 14, 20, 22];\nlet count = 0;\nfor (let num of nums) {\n  if (num % 5 === 0) count++;\n}\nconsole.log(count);`
+      },
+      {
+        prompt: "Filter out negative numbers from [-3, 4, -1, 5, 0]",
+        answer: `const nums = [-3, 4, -1, 5, 0];\nconst positives = nums.filter(n => n >= 0);\nconsole.log(positives);`
+      },
+      {
+        prompt: "Create a new array with only strings from [1, 'a', 3, 'b', true]",
+        answer: `const mixed = [1, 'a', 3, 'b', true];\nconst strings = mixed.filter(item => typeof item === 'string');\nconsole.log(strings);`
+      },
+      {
+        prompt: "Print numbers from 1 to 20 that are divisible by both 2 and 3",
+        answer: `for (let i = 1; i <= 20; i++) {\n  if (i % 2 === 0 && i % 3 === 0) {\n    console.log(i);\n  }\n}`
+      },
+      {
+        prompt: "Print 'Even' or 'Odd' for each number in [4, 7, 10, 13]",
+        answer: `const nums = [4, 7, 10, 13];\nfor (let n of nums) {\n  console.log(n % 2 === 0 ? "Even" : "Odd");\n}`
+      },
+      {
+        prompt: "Create a new array with triple values from [2, 4, 6]",
+        answer: `const nums = [2, 4, 6];\nconst tripled = nums.map(n => n * 3);\nconsole.log(tripled);`
+      },
+      {
+        prompt: "Push only numbers > 50 into a new array from [20, 55, 80, 30]",
+        answer: `const nums = [20, 55, 80, 30];\nconst result = [];\nfor (let n of nums) {\n  if (n > 50) result.push(n);\n}\nconsole.log(result);`
+      },
+      {
+        prompt: "Count how many items in ['car', 12, 'bus', true, 'bike'] are strings",
+        answer: `const items = ['car', 12, 'bus', true, 'bike'];\nlet count = 0;\nfor (let item of items) {\n  if (typeof item === 'string') count++;\n}\nconsole.log(count);`
+      },
+      {
+        prompt: "Log each number squared from [1, 3, 5, 7]",
+        answer: `const nums = [1, 3, 5, 7];\nfor (let n of nums) {\n  console.log(n * n);\n}`
+      },
+      {
+        prompt: "Filter words with length exactly 4 from ['blue', 'red', 'gray', 'black']",
+        answer: `const words = ['blue', 'red', 'gray', 'black'];\nconst result = words.filter(word => word.length === 4);\nconsole.log(result);`
+      },
+      // Day 13
+      {
+        prompt: "Count how many words are longer than 3 letters in ['hi', 'code', 'sun', 'robot']",
+        answer: `const words = ['hi', 'code', 'sun', 'robot'];\nlet count = 0;\nfor (let word of words) {\n  if (word.length > 3) count++;\n}\nconsole.log(count);`
+      },
+      {
+        prompt: "Push all positive numbers from [-2, 3, -1, 5] into a new array",
+        answer: `const nums = [-2, 3, -1, 5];\nconst positives = [];\nfor (let num of nums) {\n  if (num > 0) positives.push(num);\n}\nconsole.log(positives);`
+      },
+      {
+        prompt: "Log all odd numbers between 10 and 20",
+        answer: `for (let i = 10; i <= 20; i++) {\n  if (i % 2 !== 0) console.log(i);\n}`
+      },
+      {
+        prompt: "Check if the array [1, 2, 3] contains the number 2",
+        answer: `const arr = [1, 2, 3];\nconsole.log(arr.includes(2));`
+      },
+      {
+        prompt: "Push strings containing the letter 'o' from ['cat', 'dog', 'lion']",
+        answer: `const animals = ['cat', 'dog', 'lion'];\nconst result = [];\nfor (let word of animals) {\n  if (word.includes('o')) result.push(word);\n}\nconsole.log(result);`
+      },
+      {
+        prompt: "Log the index of each item in ['a', 'b', 'c']",
+        answer: `const letters = ['a', 'b', 'c'];\nfor (let i = 0; i < letters.length; i++) {\n  console.log(i);\n}`
+      },
+      {
+        prompt: "Count how many numbers are less than 10 in [15, 3, 7, 20]",
+        answer: `const nums = [15, 3, 7, 20];\nlet count = 0;\nfor (let n of nums) {\n  if (n < 10) count++;\n}\nconsole.log(count);`
+      },
+      {
+        prompt: "Log all words from ['robot', 'ai', 'tech'] that start with 't'",
+        answer: `const words = ['robot', 'ai', 'tech'];\nfor (let word of words) {\n  if (word.startsWith('t')) console.log(word);\n}`
+      },
+      {
+        prompt: "Push only numbers divisible by 4 from [2, 4, 8, 10]",
+        answer: `const nums = [2, 4, 8, 10];\nconst result = [];\nfor (let num of nums) {\n  if (num % 4 === 0) result.push(num);\n}\nconsole.log(result);`
+      },
+      {
+        prompt: "Count the number of vowels in 'javascript'",
+        answer: `const word = 'javascript';\nconst vowels = 'aeiou';\nlet count = 0;\nfor (let char of word) {\n  if (vowels.includes(char)) count++;\n}\nconsole.log(count);`
+      },
+      // Day 14
+      {
+        prompt: "Sum all numbers in [3, 6, 9, 12]",
+        answer: `const nums = [3, 6, 9, 12];
+let sum = 0;
+for (let num of nums) {
+  sum += num;
+}
+console.log(sum);`
+      },
+      {
+        prompt: "Create a new array of names starting with 'J': ['Jim', 'Amy', 'Jack', 'Sam']",
+        answer: `const names = ['Jim', 'Amy', 'Jack', 'Sam'];
+const result = names.filter(n => n.startsWith('J'));
+console.log(result);`
+      },
+      {
+        prompt: "Count how many numbers are odd in [2, 5, 7, 8, 11]",
+        answer: `const nums = [2, 5, 7, 8, 11];
+let count = 0;
+for (let num of nums) {
+  if (num % 2 !== 0) count++;
+}
+console.log(count);`
+      },
+      {
+        prompt: "Filter out all false values from [true, false, true, false, true]",
+        answer: `const bools = [true, false, true, false, true];
+const result = bools.filter(b => b);
+console.log(result);`
+      },
+      {
+        prompt: "Create an array of string lengths: ['hi', 'hello', 'ok']",
+        answer: `const words = ['hi', 'hello', 'ok'];
+const lengths = words.map(w => w.length);
+console.log(lengths);`
+      },
+      {
+        prompt: "Print numbers from 10 to 20 that are divisible by 3",
+        answer: `for (let i = 10; i <= 20; i++) {
+  if (i % 3 === 0) console.log(i);
+}`
+      },
+      {
+        prompt: "Create an array of numbers squared: [1, 2, 3, 4]",
+        answer: `const nums = [1, 2, 3, 4];
+const squares = nums.map(n => n * n);
+console.log(squares);`
+      },
+      {
+        prompt: "Count how many strings are longer than 3 characters in ['hi', 'tree', 'oak', 'maple']",
+        answer: `const words = ['hi', 'tree', 'oak', 'maple'];
+let count = 0;
+for (let word of words) {
+  if (word.length > 3) count++;
+}
+console.log(count);`
+      },
+      {
+        prompt: "Log all numbers in [5, 10, 15, 20] that are divisible by 5",
+        answer: `const nums = [5, 10, 15, 20];
+for (let num of nums) {
+  if (num % 5 === 0) console.log(num);
+}`
+      },
+      {
+        prompt: "Push only the negative numbers from [-2, 3, -5, 0, 8]",
+        answer: `const nums = [-2, 3, -5, 0, 8];
+const result = [];
+for (let num of nums) {
+  if (num < 0) result.push(num);
+}
+console.log(result);`
+      },
+      // Day 15
+      {
+        prompt: "Log only numbers greater than 10 from [5, 12, 8, 21]",
+        answer: `const nums = [5, 12, 8, 21];
+for (let num of nums) {
+  if (num > 10) console.log(num);
+}`
+      },
+      {
+        prompt: "Count how many words have more than 4 letters in ['hi', 'hello', 'world', 'yes']",
+        answer: `const words = ['hi', 'hello', 'world', 'yes'];
+let count = 0;
+for (let word of words) {
+  if (word.length > 4) count++;
+}
+console.log(count);`
+      },
+      {
+        prompt: "Filter numbers divisible by 4 from [4, 7, 8, 12]",
+        answer: `const nums = [4, 7, 8, 12];
+const result = nums.filter(n => n % 4 === 0);
+console.log(result);`
+      },
+      {
+        prompt: "Create a new array with the first letter of each word in ['apple', 'banana', 'cherry']",
+        answer: `const words = ['apple', 'banana', 'cherry'];
+const initials = words.map(word => word[0]);
+console.log(initials);`
+      },
+      {
+        prompt: "Print 'Even' or 'Odd' for numbers 1 to 5",
+        answer: `for (let i = 1; i <= 5; i++) {
+  console.log(i % 2 === 0 ? "Even" : "Odd");
+}`
+      },
+      {
+        prompt: "Push all true values from [true, false, true, false] into a new array",
+        answer: `const bools = [true, false, true, false];
+const result = [];
+for (let b of bools) {
+  if (b === true) result.push(b);
+}
+console.log(result);`
+      },
+      {
+        prompt: "Log all lowercase letters in the string 'HeLLo'",
+        answer: `const word = "HeLLo";
+for (let char of word) {
+  if (char === char.toLowerCase() && /[a-z]/.test(char)) {
+    console.log(char);
+  }
+}`
+      },
+      {
+        prompt: "Push all odd numbers from [3, 6, 9, 10] to a new array",
+        answer: `const nums = [3, 6, 9, 10];
+const odds = [];
+for (let n of nums) {
+  if (n % 2 !== 0) odds.push(n);
+}
+console.log(odds);`
+      },
+      {
+        prompt: "Count how many vowels are in ['apple', 'orange', 'grape']",
+        answer: `const words = ['apple', 'orange', 'grape'];
+let count = 0;
+const vowels = "aeiou";
+for (let word of words) {
+  for (let char of word) {
+    if (vowels.includes(char)) count++;
+  }
+}
+console.log(count);`
+      },
+      {
+        prompt: "Log numbers from [1, 2, 3, 4, 5] skipping the number 3",
+        answer: `const nums = [1, 2, 3, 4, 5];
+for (let n of nums) {
+  if (n === 3) continue;
+  console.log(n);
+}`
       }
+
+
+
+
 
 
 
@@ -630,14 +965,173 @@ export const sections = [
       {
         prompt: "Check if 'robotics' has any repeating letters",
         answer: `const word = "robotics";\nconst seen = new Set();\nlet hasRepeats = false;\nfor (let char of word) {\n  if (seen.has(char)) {\n    hasRepeats = true;\n    break;\n  }\n  seen.add(char);\n}\nconsole.log(hasRepeats);`
+      },
+      // Day 12
+      {
+        prompt: "Reverse the string 'JavaScript' manually",
+        answer: `const str = "JavaScript";\nlet reversed = "";\nfor (let i = str.length - 1; i >= 0; i--) {\n  reversed += str[i];\n}\nconsole.log(reversed);`
+      },
+      {
+        prompt: "Find the second smallest number in [3, 1, 4, 2]",
+        answer: `const nums = [3, 1, 4, 2];\nconst sorted = [...nums].sort((a, b) => a - b);\nconsole.log(sorted[1]);`
+      },
+      {
+        prompt: "Capitalize the first and last letter of 'developer'",
+        answer: `const word = "developer";\nconst result = word[0].toUpperCase() + word.slice(1, -1) + word[word.length - 1].toUpperCase();\nconsole.log(result);`
+      },
+      {
+        prompt: "Return true if 'JavaScript' contains the substring 'Script'",
+        answer: `const word = "JavaScript";\nconsole.log(word.includes("Script"));`
+      },
+      {
+        prompt: "Create a string of numbers from 1 to 5 separated by dashes",
+        answer: `let str = "";\nfor (let i = 1; i <= 5; i++) {\n  str += i;\n  if (i !== 5) str += "-";\n}\nconsole.log(str);`
+      },
+      {
+        prompt: "Count how many times the number 2 appears in [1, 2, 2, 3, 2]",
+        answer: `const nums = [1, 2, 2, 3, 2];\nlet count = 0;\nfor (let n of nums) {\n  if (n === 2) count++;\n}\nconsole.log(count);`
+      },
+      {
+        prompt: "Get the middle character of the word 'robotics'",
+        answer: `const word = "robotics";\nconst middle = word[Math.floor(word.length / 2)];\nconsole.log(middle);`
+      },
+      // Day 13
+      {
+        prompt: "Reverse the word 'coding' without using .reverse()",
+        answer: `const word = 'coding';\nlet reversed = '';\nfor (let i = word.length - 1; i >= 0; i--) {\n  reversed += word[i];\n}\nconsole.log(reversed);`
+      },
+      {
+        prompt: "Find the second smallest number in [12, 5, 8, 3, 20]",
+        answer: `const nums = [12, 5, 8, 3, 20];\nconst sorted = [...nums].sort((a, b) => a - b);\nconsole.log(sorted[1]);`
+      },
+      {
+        prompt: "Capitalize the last letter of the word 'develop'",
+        answer: `const word = 'develop';\nconst result = word.slice(0, -1) + word[word.length - 1].toUpperCase();\nconsole.log(result);`
+      },
+      {
+        prompt: "Get the initials of 'Ada Lovelace'",
+        answer: `const name = 'Ada Lovelace';\nconst initials = name.split(' ').map(n => n[0]).join('');\nconsole.log(initials);`
+      },
+      {
+        prompt: "Return true if the word 'function' contains more than 2 vowels",
+        answer: `const word = 'function';\nconst vowels = 'aeiou';\nlet count = 0;\nfor (let char of word) {\n  if (vowels.includes(char)) count++;\n}\nconsole.log(count > 2);`
+      },
+      {
+        prompt: "Count how many letters in 'JavaScript123' are alphabetic",
+        answer: `const str = 'JavaScript123';\nlet count = 0;\nfor (let char of str) {\n  if (/[a-zA-Z]/.test(char)) count++;\n}\nconsole.log(count);`
+      },
+      {
+        prompt: "Check if all characters in 'robot' are lowercase",
+        answer: `const word = 'robot';\nconst allLower = word === word.toLowerCase();\nconsole.log(allLower);`
+      },
+      // Day 14
+      {
+        prompt: "Reverse the string 'javascript' without using .reverse()",
+        answer: `const word = "javascript";
+let reversed = "";
+for (let i = word.length - 1; i >= 0; i--) {
+  reversed += word[i];
+}
+console.log(reversed);`
+      },
+      {
+        prompt: "Find the second smallest number in [5, 1, 8, 3]",
+        answer: `const nums = [5, 1, 8, 3];
+const sorted = [...nums].sort((a, b) => a - b);
+console.log(sorted[1]);`
+      },
+      {
+        prompt: "Capitalize the first and last letter of 'example'",
+        answer: `const word = "example";
+const result = word[0].toUpperCase() + word.slice(1, -1) + word[word.length - 1].toUpperCase();
+console.log(result);`
+      },
+      {
+        prompt: "Count how many digits are in the number 987654",
+        answer: `const num = 987654;
+console.log(num.toString().length);`
+      },
+      {
+        prompt: "Log each vowel in the word 'education'",
+        answer: `const word = "education";
+const vowels = "aeiou";
+for (let char of word) {
+  if (vowels.includes(char)) console.log(char);
+}`
+      },
+      {
+        prompt: "Create a new string by removing all vowels from 'developer'",
+        answer: `const word = "developer";
+const vowels = "aeiou";
+let result = "";
+for (let char of word) {
+  if (!vowels.includes(char)) result += char;
+}
+console.log(result);`
+      },
+      {
+        prompt: "Log every third character in 'ABCDEFGHIJK'",
+        answer: `const str = "ABCDEFGHIJK";
+for (let i = 2; i < str.length; i += 3) {
+  console.log(str[i]);
+}`
+      },
+      // Day 15
+      {
+        prompt: "Reverse the string 'openai' without using .reverse()",
+        answer: `const str = "openai";
+let reversed = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversed += str[i];
+}
+console.log(reversed);`
+      },
+      {
+        prompt: "Find the maximum number in [22, 11, 44, 99]",
+        answer: `const nums = [22, 11, 44, 99];
+let max = nums[0];
+for (let num of nums) {
+  if (num > max) max = num;
+}
+console.log(max);`
+      },
+      {
+        prompt: "Count how many times the letter 'o' appears in 'robot overlord'",
+        answer: `const str = "robot overlord";
+let count = 0;
+for (let char of str) {
+  if (char === 'o') count++;
+}
+console.log(count);`
+      },
+      {
+        prompt: "Get the second-to-last item in ['apple', 'banana', 'cherry']",
+        answer: `const fruits = ['apple', 'banana', 'cherry'];
+console.log(fruits[fruits.length - 2]);`
+      },
+      {
+        prompt: "Capitalize the last letter in 'future'",
+        answer: `const word = "future";
+const result = word.slice(0, -1) + word[word.length - 1].toUpperCase();
+console.log(result);`
+      },
+      {
+        prompt: "Check if all characters in 'aaa' are the same",
+        answer: `const str = "aaa";
+let allSame = true;
+for (let i = 1; i < str.length; i++) {
+  if (str[i] !== str[0]) {
+    allSame = false;
+    break;
+  }
+}
+console.log(allSame);`
+      },
+      {
+        prompt: "Count the number of digits in the number 2025",
+        answer: `const num = 2025;
+console.log(num.toString().length);`
       }
-
-
-
-
-
-
-
 
 
     ]
@@ -798,7 +1292,115 @@ export const sections = [
       {
         prompt: "Get initials of long names: ['Amy', 'Jonathan', 'Catherine'] (length > 4)",
         answer: `const names = ['Amy', 'Jonathan', 'Catherine'];\nconst result = names.filter(n => n.length > 4).map(n => n[0]);\nconsole.log(result);`
+      },
+      // Day 12
+      {
+        prompt: "Filter even numbers and square them: [3, 4, 6, 9]",
+        answer: `const nums = [3, 4, 6, 9];\nconst result = nums.filter(n => n % 2 === 0).map(n => n ** 2);\nconsole.log(result);`
+      },
+      {
+        prompt: "Convert ['apple', 'banana', 'kiwi'] to uppercase and get lengths",
+        answer: `const fruits = ['apple', 'banana', 'kiwi'];\nconst result = fruits.map(f => f.toUpperCase()).map(f => f.length);\nconsole.log(result);`
+      },
+      {
+        prompt: "From [1, 2, 3, 4, 5], double odds and convert to strings",
+        answer: `const nums = [1, 2, 3, 4, 5];\nconst result = nums.filter(n => n % 2 !== 0).map(n => (n * 2).toString());\nconsole.log(result);`
+      },
+      {
+        prompt: "Filter strings that include 'o' and capitalize them: ['dog', 'cat', 'owl']",
+        answer: `const animals = ['dog', 'cat', 'owl'];\nconst result = animals.filter(a => a.includes('o')).map(a => a.toUpperCase());\nconsole.log(result);`
+      },
+      {
+        prompt: "Chain: get lengths of words with more than 2 vowels: ['apple', 'tea', 'sky']",
+        answer: `const words = ['apple', 'tea', 'sky'];\nconst vowels = 'aeiou';\nconst result = words.filter(word => {\n  let count = 0;\n  for (let char of word) {\n    if (vowels.includes(char)) count++;\n  }\n  return count > 2;\n}).map(w => w.length);\nconsole.log(result);`
+      },
+      // Day 13
+      {
+        prompt: "Chain filter and map to triple odd numbers in [2, 3, 4, 5]",
+        answer: `const nums = [2, 3, 4, 5];\nconst result = nums.filter(n => n % 2 !== 0).map(n => n * 3);\nconsole.log(result);`
+      },
+      {
+        prompt: "Get lowercase initials of names longer than 3 chars: ['Al', 'Bob', 'Charlie']",
+        answer: `const names = ['Al', 'Bob', 'Charlie'];\nconst result = names.filter(name => name.length > 3).map(name => name[0].toLowerCase());\nconsole.log(result);`
+      },
+      {
+        prompt: "Convert numbers in [1, 2, 3] to strings and add prefix 'ID-'",
+        answer: `const nums = [1, 2, 3];\nconst result = nums.map(n => 'ID-' + n.toString());\nconsole.log(result);`
+      },
+      {
+        prompt: "Chain: filter > 4 and get string lengths: ['yes', 'hello', 'amazing', 'ok']",
+        answer: `const words = ['yes', 'hello', 'amazing', 'ok'];\nconst result = words.filter(w => w.length > 4).map(w => w.length);\nconsole.log(result);`
+      },
+      {
+        prompt: "From [10, 20, 30], divide by 2 and stringify",
+        answer: `const nums = [10, 20, 30];\nconst result = nums.map(n => (n / 2).toString());\nconsole.log(result);`
+      },
+      // Day 14
+      {
+        prompt: "From [3, 6, 9, 12], double the numbers greater than 5 and convert to strings",
+        answer: `const nums = [3, 6, 9, 12];
+const result = nums.filter(n => n > 5).map(n => (n * 2).toString());
+console.log(result);`
+      },
+      {
+        prompt: "From ['Sam', 'Ann', 'Robert'], keep names longer than 3 characters and lowercase them",
+        answer: `const names = ['Sam', 'Ann', 'Robert'];
+const result = names.filter(name => name.length > 3).map(name => name.toLowerCase());
+console.log(result);`
+      },
+      {
+        prompt: "Square odd numbers and convert to strings: [1, 2, 3, 4]",
+        answer: `const nums = [1, 2, 3, 4];
+const result = nums.filter(n => n % 2 !== 0).map(n => (n ** 2).toString());
+console.log(result);`
+      },
+      {
+        prompt: "From ['yes', 'no', 'maybe'], uppercase those with more than 2 letters",
+        answer: `const words = ['yes', 'no', 'maybe'];
+const result = words.filter(w => w.length > 2).map(w => w.toUpperCase());
+console.log(result);`
+      },
+      {
+        prompt: "From [10, 20, 30], filter numbers divisible by 10 and get their halves",
+        answer: `const nums = [10, 20, 30];
+const result = nums.filter(n => n % 10 === 0).map(n => n / 2);
+console.log(result);`
+      },
+      // Day 15 
+      {
+        prompt: "Filter odd numbers and square them: [2, 3, 4, 5, 6]",
+        answer: `const nums = [2, 3, 4, 5, 6];
+const result = nums.filter(n => n % 2 !== 0).map(n => n ** 2);
+console.log(result);`
+      },
+      {
+        prompt: "Get lowercase strings longer than 4 chars: ['Hello', 'Yes', 'Programming']",
+        answer: `const words = ['Hello', 'Yes', 'Programming'];
+const result = words.filter(w => w.length > 4).map(w => w.toLowerCase());
+console.log(result);`
+      },
+      {
+        prompt: "Triple numbers greater than 10: [4, 12, 9, 18]",
+        answer: `const nums = [4, 12, 9, 18];
+const result = nums.filter(n => n > 10).map(n => n * 3);
+console.log(result);`
+      },
+      {
+        prompt: "From ['hi', 'robotics', 'no'], keep strings > 2 chars and get their lengths",
+        answer: `const words = ['hi', 'robotics', 'no'];
+const result = words.filter(w => w.length > 2).map(w => w.length);
+console.log(result);`
+      },
+      {
+        prompt: "Filter even numbers and convert to strings: [1, 2, 3, 4, 5]",
+        answer: `const nums = [1, 2, 3, 4, 5];
+const result = nums.filter(n => n % 2 === 0).map(n => n.toString());
+console.log(result);`
       }
+
+
+
+
 
 
 
@@ -950,7 +1552,109 @@ export const sections = [
       {
         prompt: "Write a function that removes duplicate values from an array",
         answer: `function removeDuplicates(arr) {\n  return [...new Set(arr)];\n}\nconsole.log(removeDuplicates([1, 2, 2, 3, 4, 4, 5]));`
+      },
+      // Day 12
+      {
+        prompt: "Write a function to check if all elements in an array are unique",
+        answer: `function allUnique(arr) {\n  return new Set(arr).size === arr.length;\n}\nconsole.log(allUnique([1, 2, 3]));\nconsole.log(allUnique([1, 2, 2]));`
+      },
+      {
+        prompt: "Write a function that returns the most frequent element in an array",
+        answer: `function mostFrequent(arr) {\n  const count = {};\n  let maxItem = arr[0];\n  for (let item of arr) {\n    count[item] = (count[item] || 0) + 1;\n    if (count[item] > count[maxItem]) maxItem = item;\n  }\n  return maxItem;\n}\nconsole.log(mostFrequent([1, 2, 2, 3, 3, 3, 4]));`
+      },
+      {
+        prompt: "Write a function that returns the first repeated character in a string",
+        answer: `function firstRepeatedChar(str) {\n  const seen = new Set();\n  for (let char of str) {\n    if (seen.has(char)) return char;\n    seen.add(char);\n  }\n  return null;\n}\nconsole.log(firstRepeatedChar("acbbcd"));\nconsole.log(firstRepeatedChar("abcdef"));`
+      },
+      // Day 13
+      {
+        prompt: "Write a function that returns the number of words in a sentence",
+        answer: `function wordCount(sentence) {\n  return sentence.trim().split(/\\s+/).length;\n}\nconsole.log(wordCount("Hello world from JavaScript"));`
+      },
+      {
+        prompt: "Write a function that checks if a number is a perfect square",
+        answer: `function isPerfectSquare(n) {\n  return Number.isInteger(Math.sqrt(n));\n}\nconsole.log(isPerfectSquare(16));\nconsole.log(isPerfectSquare(18));`
+      },
+      {
+        prompt: "Return the count of each letter in a string as an object",
+        answer: `function letterFrequency(str) {\n  const freq = {};\n  for (let char of str) {\n    if (char.match(/[a-z]/i)) {\n      freq[char] = (freq[char] || 0) + 1;\n    }\n  }\n  return freq;\n}\nconsole.log(letterFrequency("banana"));`
+      },
+      // Day 14
+      {
+        prompt: "Write a function to count how many times each character appears in a string",
+        answer: `function charFrequency(str) {
+  const freq = {};
+  for (let char of str) {
+    freq[char] = (freq[char] || 0) + 1;
+  }
+  return freq;
+}
+console.log(charFrequency("hello world"));`
+      },
+      {
+        prompt: "Write a function to get the unique values from an array",
+        answer: `function getUnique(arr) {
+  return [...new Set(arr)];
+}
+console.log(getUnique([1, 2, 2, 3, 4, 4]));`
+      },
+      {
+        prompt: "Write a function that finds the mode (most frequent value) in an array",
+        answer: `function findMode(arr) {
+  const count = {};
+  let max = 0, mode = null;
+  for (let num of arr) {
+    count[num] = (count[num] || 0) + 1;
+    if (count[num] > max) {
+      max = count[num];
+      mode = num;
+    }
+  }
+  return mode;
+}
+console.log(findMode([1, 2, 2, 3, 3, 3, 4]));`
+      },
+      // Day 15 
+      {
+        prompt: "Write a function that returns the most frequent number in an array",
+        answer: `function mostFrequent(arr) {
+  const counts = {};
+  let maxCount = 0;
+  let mostCommon = null;
+  for (let num of arr) {
+    counts[num] = (counts[num] || 0) + 1;
+    if (counts[num] > maxCount) {
+      maxCount = counts[num];
+      mostCommon = num;
+    }
+  }
+  return mostCommon;
+}
+console.log(mostFrequent([1, 3, 3, 7, 2, 3, 1]));`
+      },
+      {
+        prompt: "Write a function that removes duplicates from an array",
+        answer: `function removeDuplicates(arr) {
+  return [...new Set(arr)];
+}
+console.log(removeDuplicates([1, 2, 2, 3, 4, 4, 5]));`
+      },
+      {
+        prompt: "Write a function that checks if two arrays are equal (same elements, same order)",
+        answer: `function arraysEqual(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+console.log(arraysEqual([1, 2, 3], [1, 2, 3]));
+console.log(arraysEqual([1, 2], [2, 1]));`
       }
+
+
+
+
 
 
 
