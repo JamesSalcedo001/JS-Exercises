@@ -1,4 +1,5 @@
-import { sections } from "./exercises.js";
+// import { sections } from "./exercises.js";
+import { sections } from "./sections.js";
 
 let sectionIndex = 0;
 let exerciseIndex = 0;
