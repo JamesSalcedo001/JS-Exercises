@@ -80,8 +80,8 @@ function renderExercise() {
   const section = sections[sectionIndex];
   const exercise = section.exercises[exerciseIndex];
 
-  document.getElementById("section-title").innerText = title;
-  document.getElementById("question-text").innerText = prompt;
+  document.getElementById("section-title").innerText = section.title;
+  document.getElementById("question-text").innerText = exercise.prompt;
   document.getElementById("output").innerText = "";
   document.getElementById("answer-box").style.display = "none";
 
