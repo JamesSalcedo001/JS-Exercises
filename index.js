@@ -69,16 +69,16 @@ function copySnippet() {
 
   if (snippet) {
     navigator.clipboard.writeText(snippet)
-    .then(() => alert("Snippet Copied!"))
-    .catch(() => alert("Could Not Copy Snippet"))
+      .then(() => alert("Snippet Copied!"))
+      .catch(() => alert("Could Not Copy Snippet"))
   } else {
     alert("No Snippet Available For This Exercise")
   }
 }
 
 function renderExercise() {
-  const { title } = sections[sectionIndex];
-  const { prompt } = sections[sectionIndex].exercises[exerciseIndex];
+  const section = sections[sectionIndex];
+  const exercise = section.exercises[exerciseIndex];
 
   document.getElementById("section-title").innerText = title;
   document.getElementById("question-text").innerText = prompt;
@@ -88,11 +88,9 @@ function renderExercise() {
   if (editor) editor.setValue("");
 
   const copyBtn = document.getElementById("copy-snippet-btn")
-  if (exerciseIndex.snippet) {
-    copyBtn.style.display = "inline-block"
-  } else {
-    copyBtn.style.display = "none";
-  }
+
+  copyBtn.style.display = exercise.snippet ? "inline-block" : "none";
+
 }
 
 function runCode() {
