@@ -794,236 +794,303 @@ for (let n of nums) {
       // Day 1
       {
         prompt: "Reverse an array [1, 2, 3, 4] without using .reverse()",
-        answer: `const nums = [1, 2, 3, 4];\nconst reversed = [];\nfor (let i = nums.length - 1; i >= 0; i--) {\n  reversed.push(nums[i]);\n}\nconsole.log(reversed);`
+        answer: `const nums = [1, 2, 3, 4];\nconst reversed = [];\nfor (let i = nums.length - 1; i >= 0; i--) {\n  reversed.push(nums[i]);\n}\nconsole.log(reversed);`,
+        snippet: `const nums = [1, 2, 3, 4];`
       },
       {
         prompt: "Find the largest number in [10, 5, 8, 20]",
-        answer: `const nums = [10, 5, 8, 20];\nlet max = nums[0];\nfor (let num of nums) {\n  if (num > max) max = num;\n}\nconsole.log(max);`
+        answer: `const nums = [10, 5, 8, 20];\nlet max = nums[0];\nfor (let num of nums) {\n  if (num > max) max = num;\n}\nconsole.log(max);`,
+        snippet: `const nums = [10, 5, 8, 20];`
       },
+
       // Day 2
       {
         prompt: "Reverse the string 'hello' without using .reverse()",
-        answer: `const str = "hello";\nlet reversed = "";\nfor (let i = str.length - 1; i >= 0; i--) {\n  reversed += str[i];\n}\nconsole.log(reversed);`
+        answer: `const str = "hello";\nlet reversed = "";\nfor (let i = str.length - 1; i >= 0; i--) {\n  reversed += str[i];\n}\nconsole.log(reversed);`,
+        snippet: `const str = "hello";`
       },
       {
         prompt: "Find the smallest number in [13, 4, 99, 2]",
-        answer: `const nums = [13, 4, 99, 2];\nlet min = nums[0];\nfor (let num of nums) {\n  if (num < min) min = num;\n}\nconsole.log(min);`
+        answer: `const nums = [13, 4, 99, 2];\nlet min = nums[0];\nfor (let num of nums) {\n  if (num < min) min = num;\n}\nconsole.log(min);`,
+        snippet: `const nums = [13, 4, 99, 2];`
       },
       {
         prompt: "Count how many vowels are in the word 'education'",
-        answer: `const word = "education";\nlet count = 0;\nconst vowels = "aeiou";\nfor (let char of word) {\n  if (vowels.includes(char)) count++;\n}\nconsole.log(count);`
+        answer: `const word = "education";\nlet count = 0;\nconst vowels = "aeiou";\nfor (let char of word) {\n  if (vowels.includes(char)) count++;\n}\nconsole.log(count);`,
+        snippet: `const word = "education";`
       },
+
       // Day 3
       {
         prompt: "Count how many times the letter 'a' appears in 'banana'",
-        answer: `const word = "banana";\nlet count = 0;\nfor (let char of word) {\n  if (char === 'a') count++;\n}\nconsole.log(count);`
+        answer: `const word = "banana";\nlet count = 0;\nfor (let char of word) {\n  if (char === 'a') count++;\n}\nconsole.log(count);`,
+        snippet: `const word = "banana";`
       },
       {
         prompt: "Find the index of the largest number in [3, 7, 2, 9]",
-        answer: `const nums = [3, 7, 2, 9];\nlet maxIndex = 0;\nfor (let i = 1; i < nums.length; i++) {\n  if (nums[i] > nums[maxIndex]) maxIndex = i;\n}\nconsole.log(maxIndex);`
+        answer: `const nums = [3, 7, 2, 9];\nlet maxIndex = 0;\nfor (let i = 1; i < nums.length; i++) {\n  if (nums[i] > nums[maxIndex]) maxIndex = i;\n}\nconsole.log(maxIndex);`,
+        snippet: `const nums = [3, 7, 2, 9];`
       },
+
       // Day 4
       {
         prompt: "Capitalize the first letter of 'robot'",
-        answer: `const word = "robot";\nconst capitalized = word[0].toUpperCase() + word.slice(1);\nconsole.log(capitalized);`
+        answer: `const word = "robot";\nconst capitalized = word[0].toUpperCase() + word.slice(1);\nconsole.log(capitalized);`,
+        snippet: `const word = "robot";`
       },
       {
         prompt: "Get the initials from 'John Doe'",
-        answer: `const name = "John Doe";\nconst initials = name.split(" ").map(word => word[0]).join("");\nconsole.log(initials);`
+        answer: `const name = "John Doe";\nconst initials = name.split(" ").map(word => word[0]).join("");\nconsole.log(initials);`,
+        snippet: `const name = "John Doe";`
       },
+
       // Day 5
       {
         prompt: "Find the average of [4, 6, 8]",
-        answer: `const nums = [4, 6, 8];\nlet sum = 0;\nfor (let num of nums) {\n  sum += num;\n}\nconst avg = sum / nums.length;\nconsole.log(avg);`
+        answer: `const nums = [4, 6, 8];\nlet sum = 0;\nfor (let num of nums) {\n  sum += num;\n}\nconst avg = sum / nums.length;\nconsole.log(avg);`,
+        snippet: `const nums = [4, 6, 8];`
       },
       {
         prompt: "Return true if the string 'hello' contains the letter 'e'",
-        answer: `const word = "hello";\nconsole.log(word.includes("e"));`
+        answer: `const word = "hello";\nconsole.log(word.includes("e"));`,
+        snippet: `const word = "hello";`
       },
       // Day 6
       {
         prompt: "Check if the word 'apple' contains the letter 'p'",
-        answer: `const word = "apple";\nconsole.log(word.includes("p"));`
+        answer: `const word = "apple";\nconsole.log(word.includes("p"));`,
+        snippet: `const word = "apple";`
       },
       {
         prompt: "Capitalize all letters in 'robotics'",
-        answer: `const word = "robotics";\nconsole.log(word.toUpperCase());`
+        answer: `const word = "robotics";\nconsole.log(word.toUpperCase());`,
+        snippet: `const word = "robotics";`
       },
+
       // Day 7
       {
         prompt: "Write a function that returns the middle element of an odd-length array",
-        answer: `function middle(arr) {\n  return arr[Math.floor(arr.length / 2)];\n}\nconsole.log(middle([1, 3, 5]));`
+        answer: `function middle(arr) {\n  return arr[Math.floor(arr.length / 2)];\n}\nconsole.log(middle([1, 3, 5]));`,
+        snippet: `const arr = [1, 3, 5];`
       },
       {
         prompt: "Find and log the second item from a given array",
-        answer: `const arr = ["x", "y", "z"];\nconsole.log(arr[1]);`
+        answer: `const arr = ["x", "y", "z"];\nconsole.log(arr[1]);`,
+        snippet: `const arr = ["x", "y", "z"];`
       },
+
       // Day 8
       {
         prompt: "Write a function that returns the number of digits in a number",
-        answer: `function digitCount(n) {\n  return n.toString().length;\n}\nconsole.log(digitCount(4567));`
+        answer: `function digitCount(n) {\n  return n.toString().length;\n}\nconsole.log(digitCount(4567));`,
+        snippet: `const n = 4567;`
       },
       {
         prompt: "Count how many words are in 'hello world program'",
-        answer: `const sentence = "hello world program";\nconst count = sentence.split(" ").length;\nconsole.log(count);`
+        answer: `const sentence = "hello world program";\nconst count = sentence.split(" ").length;\nconsole.log(count);`,
+        snippet: `const sentence = "hello world program";`
       },
+
       // Day 9
       {
         prompt: "Reverse the string 'world' manually",
-        answer: `const str = "world";\nlet reversed = "";\nfor (let i = str.length - 1; i >= 0; i--) {\n  reversed += str[i];\n}\nconsole.log(reversed);`
+        answer: `const str = "world";\nlet reversed = "";\nfor (let i = str.length - 1; i >= 0; i--) {\n  reversed += str[i];\n}\nconsole.log(reversed);`,
+        snippet: `const str = "world";`
       },
       {
         prompt: "Find the largest number in [2, 99, 45, 78]",
-        answer: `const nums = [2, 99, 45, 78];\nlet max = nums[0];\nfor (let num of nums) {\n  if (num > max) max = num;\n}\nconsole.log(max);`
+        answer: `const nums = [2, 99, 45, 78];\nlet max = nums[0];\nfor (let num of nums) {\n  if (num > max) max = num;\n}\nconsole.log(max);`,
+        snippet: `const nums = [2, 99, 45, 78];`
       },
       {
         prompt: "Check if 'code' contains the letter 'd'",
-        answer: `const word = "code";\nconsole.log(word.includes("d"));`
+        answer: `const word = "code";\nconsole.log(word.includes("d"));`,
+        snippet: `const word = "code";`
       },
       {
         prompt: "Create a string of dashes matching length of 'hello'",
-        answer: `const word = "hello";\nlet dashes = "";\nfor (let i = 0; i < word.length; i++) {\n  dashes += "-";\n}\nconsole.log(dashes);`
+        answer: `const word = "hello";\nlet dashes = "";\nfor (let i = 0; i < word.length; i++) {\n  dashes += "-";\n}\nconsole.log(dashes);`,
+        snippet: `const word = "hello";`
       },
       {
         prompt: "Count the number of lowercase letters in 'HelLo'",
-        answer: `const word = "HelLo";\nlet count = 0;\nfor (let char of word) {\n  if (char === char.toLowerCase()) count++;\n}\nconsole.log(count);`
+        answer: `const word = "HelLo";\nlet count = 0;\nfor (let char of word) {\n  if (char === char.toLowerCase()) count++;\n}\nconsole.log(count);`,
+        snippet: `const word = "HelLo";`
       },
       {
         prompt: "Log each digit of the number 1234 separately",
-        answer: `const num = 1234;\nconst str = num.toString();\nfor (let char of str) {\n  console.log(char);\n}`
+        answer: `const num = 1234;\nconst str = num.toString();\nfor (let char of str) {\n  console.log(char);\n}`,
+        snippet: `const num = 1234;`
       },
       {
         prompt: "Capitalize every letter in 'quiz'",
-        answer: `const word = "quiz";\nconsole.log(word.toUpperCase());`
+        answer: `const word = "quiz";\nconsole.log(word.toUpperCase());`,
+        snippet: `const word = "quiz";`
       },
+
       // Day 10
       {
         prompt: "Reverse the array ['a', 'b', 'c'] without using .reverse()",
-        answer: `const arr = ['a', 'b', 'c'];\nconst reversed = [];\nfor (let i = arr.length - 1; i >= 0; i--) {\n  reversed.push(arr[i]);\n}\nconsole.log(reversed);`
+        answer: `const arr = ['a', 'b', 'c'];\nconst reversed = [];\nfor (let i = arr.length - 1; i >= 0; i--) {\n  reversed.push(arr[i]);\n}\nconsole.log(reversed);`,
+        snippet: `const arr = ['a', 'b', 'c'];`
       },
       {
         prompt: "Find the smallest number in [9, 4, 7, 1, 10]",
-        answer: `const nums = [9, 4, 7, 1, 10];\nlet min = nums[0];\nfor (let num of nums) {\n  if (num < min) min = num;\n}\nconsole.log(min);`
+        answer: `const nums = [9, 4, 7, 1, 10];\nlet min = nums[0];\nfor (let num of nums) {\n  if (num < min) min = num;\n}\nconsole.log(min);`,
+        snippet: `const nums = [9, 4, 7, 1, 10];`
       },
       {
         prompt: "Count how many consonants are in 'robotics'",
-        answer: `const word = "robotics";\nlet count = 0;\nconst vowels = "aeiou";\nfor (let char of word.toLowerCase()) {\n  if (!vowels.includes(char) && /[a-z]/.test(char)) count++;\n}\nconsole.log(count);`
+        answer: `const word = "robotics";\nlet count = 0;\nconst vowels = "aeiou";\nfor (let char of word.toLowerCase()) {\n  if (!vowels.includes(char) && /[a-z]/.test(char)) count++;\n}\nconsole.log(count);`,
+        snippet: `const word = "robotics";`
       },
       {
         prompt: "Get the last two characters from 'sunshine'",
-        answer: `const word = "sunshine";\nconsole.log(word.slice(-2));`
+        answer: `const word = "sunshine";\nconsole.log(word.slice(-2));`,
+        snippet: `const word = "sunshine";`
       },
       {
         prompt: "Count how many uppercase letters in 'HeLLoWorLD'",
-        answer: `const word = "HeLLoWorLD";\nlet count = 0;\nfor (let char of word) {\n  if (char === char.toUpperCase() && /[A-Z]/.test(char)) count++;\n}\nconsole.log(count);`
+        answer: `const word = "HeLLoWorLD";\nlet count = 0;\nfor (let char of word) {\n  if (char === char.toUpperCase() && /[A-Z]/.test(char)) count++;\n}\nconsole.log(count);`,
+        snippet: `const word = "HeLLoWorLD";`
       },
       {
         prompt: "Check if 'developer' includes the substring 'lop'",
-        answer: `const word = "developer";\nconsole.log(word.includes("lop"));`
+        answer: `const word = "developer";\nconsole.log(word.includes("lop"));`,
+        snippet: `const word = "developer";`
       },
       {
         prompt: "Create a string of asterisks with the same length as 'rocket'",
-        answer: `const word = "rocket";\nlet stars = "";\nfor (let i = 0; i < word.length; i++) {\n  stars += "*";\n}\nconsole.log(stars);`
+        answer: `const word = "rocket";\nlet stars = "";\nfor (let i = 0; i < word.length; i++) {\n  stars += "*";\n}\nconsole.log(stars);`,
+        snippet: `const word = "rocket";`
       },
       {
         prompt: "Capitalize the last letter of 'hello'",
-        answer: `const word = "hello";\nconst result = word.slice(0, -1) + word[word.length - 1].toUpperCase();\nconsole.log(result);`
+        answer: `const word = "hello";\nconst result = word.slice(0, -1) + word[word.length - 1].toUpperCase();\nconsole.log(result);`,
+        snippet: `const word = "hello";`
       },
       {
         prompt: "Log every second character in the string 'fantastic'",
-        answer: `const word = "fantastic";\nfor (let i = 1; i < word.length; i += 2) {\n  console.log(word[i]);\n}`
+        answer: `const word = "fantastic";\nfor (let i = 1; i < word.length; i += 2) {\n  console.log(word[i]);\n}`,
+        snippet: `const word = "fantastic";`
       },
       {
         prompt: "Find the average length of ['dog', 'elephant', 'ant']",
-        answer: `const words = ['dog', 'elephant', 'ant'];\nlet total = 0;\nfor (let word of words) {\n  total += word.length;\n}\nconsole.log(total / words.length);`
+        answer: `const words = ['dog', 'elephant', 'ant'];\nlet total = 0;\nfor (let word of words) {\n  total += word.length;\n}\nconsole.log(total / words.length);`,
+        snippet: `const words = ['dog', 'elephant', 'ant'];`
       },
+
       // Day 11
       {
         prompt: "Reverse the string 'JavaScript' without using .reverse()",
-        answer: `const word = "JavaScript";\nlet reversed = "";\nfor (let i = word.length - 1; i >= 0; i--) {\n  reversed += word[i];\n}\nconsole.log(reversed);`
+        answer: `const word = "JavaScript";\nlet reversed = "";\nfor (let i = word.length - 1; i >= 0; i--) {\n  reversed += word[i];\n}\nconsole.log(reversed);`,
+        snippet: `const word = "JavaScript";`
       },
       {
         prompt: "Count how many vowels are in 'Programming'",
-        answer: `const word = "Programming".toLowerCase();\nlet count = 0;\nconst vowels = "aeiou";\nfor (let char of word) {\n  if (vowels.includes(char)) count++;\n}\nconsole.log(count);`
+        answer: `const word = "Programming".toLowerCase();\nlet count = 0;\nconst vowels = "aeiou";\nfor (let char of word) {\n  if (vowels.includes(char)) count++;\n}\nconsole.log(count);`,
+        snippet: `const word = "Programming";`
       },
       {
         prompt: "Capitalize the first letter of each word in 'hello world program'",
-        answer: `const sentence = "hello world program";\nconst result = sentence\n  .split(" ")\n  .map(w => w[0].toUpperCase() + w.slice(1))\n  .join(" ");\nconsole.log(result);`
+        answer: `const sentence = "hello world program";\nconst result = sentence\n  .split(" ")\n  .map(w => w[0].toUpperCase() + w.slice(1))\n  .join(" ");\nconsole.log(result);`,
+        snippet: `const sentence = "hello world program";`
       },
       {
         prompt: "Return true if the string 'level' is a palindrome",
-        answer: `const word = "level";\nconst isPalindrome = word === word.split('').reverse().join('');\nconsole.log(isPalindrome);`
+        answer: `const word = "level";\nconst isPalindrome = word === word.split('').reverse().join('');\nconsole.log(isPalindrome);`,
+        snippet: `const word = "level";`
       },
       {
         prompt: "Find the longest word in ['hi', 'code', 'developer', 'JS']",
-        answer: `const words = ['hi', 'code', 'developer', 'JS'];\nlet longest = words[0];\nfor (let word of words) {\n  if (word.length > longest.length) longest = word;\n}\nconsole.log(longest);`
+        answer: `const words = ['hi', 'code', 'developer', 'JS'];\nlet longest = words[0];\nfor (let word of words) {\n  if (word.length > longest.length) longest = word;\n}\nconsole.log(longest);`,
+        snippet: `const words = ['hi', 'code', 'developer', 'JS'];`
       },
       {
         prompt: "Log all characters in 'function' except vowels",
-        answer: `const word = "function";\nconst vowels = "aeiou";\nfor (let char of word) {\n  if (!vowels.includes(char)) console.log(char);\n}`
+        answer: `const word = "function";\nconst vowels = "aeiou";\nfor (let char of word) {\n  if (!vowels.includes(char)) console.log(char);\n}`,
+        snippet: `const word = "function";`
       },
       {
         prompt: "Check if 'robotics' has any repeating letters",
-        answer: `const word = "robotics";\nconst seen = new Set();\nlet hasRepeats = false;\nfor (let char of word) {\n  if (seen.has(char)) {\n    hasRepeats = true;\n    break;\n  }\n  seen.add(char);\n}\nconsole.log(hasRepeats);`
+        answer: `const word = "robotics";\nconst seen = new Set();\nlet hasRepeats = false;\nfor (let char of word) {\n  if (seen.has(char)) {\n    hasRepeats = true;\n    break;\n  }\n  seen.add(char);\n}\nconsole.log(hasRepeats);`,
+        snippet: `const word = "robotics";`
       },
+
       // Day 12
       {
         prompt: "Reverse the string 'JavaScript' manually",
-        answer: `const str = "JavaScript";\nlet reversed = "";\nfor (let i = str.length - 1; i >= 0; i--) {\n  reversed += str[i];\n}\nconsole.log(reversed);`
+        answer: `const str = "JavaScript";\nlet reversed = "";\nfor (let i = str.length - 1; i >= 0; i--) {\n  reversed += str[i];\n}\nconsole.log(reversed);`,
+        snippet: `const str = "JavaScript";`
       },
       {
         prompt: "Find the second smallest number in [3, 1, 4, 2]",
-        answer: `const nums = [3, 1, 4, 2];\nconst sorted = [...nums].sort((a, b) => a - b);\nconsole.log(sorted[1]);`
+        answer: `const nums = [3, 1, 4, 2];\nconst sorted = [...nums].sort((a, b) => a - b);\nconsole.log(sorted[1]);`,
+        snippet: `const nums = [3, 1, 4, 2];`
       },
       {
         prompt: "Capitalize the first and last letter of 'developer'",
-        answer: `const word = "developer";\nconst result = word[0].toUpperCase() + word.slice(1, -1) + word[word.length - 1].toUpperCase();\nconsole.log(result);`
+        answer: `const word = "developer";\nconst result = word[0].toUpperCase() + word.slice(1, -1) + word[word.length - 1].toUpperCase();\nconsole.log(result);`,
+        snippet: `const word = "developer";`
       },
       {
         prompt: "Return true if 'JavaScript' contains the substring 'Script'",
-        answer: `const word = "JavaScript";\nconsole.log(word.includes("Script"));`
+        answer: `const word = "JavaScript";\nconsole.log(word.includes("Script"));`,
+        snippet: `const word = "JavaScript";`
       },
       {
         prompt: "Create a string of numbers from 1 to 5 separated by dashes",
-        answer: `let str = "";\nfor (let i = 1; i <= 5; i++) {\n  str += i;\n  if (i !== 5) str += "-";\n}\nconsole.log(str);`
+        answer: `let str = "";\nfor (let i = 1; i <= 5; i++) {\n  str += i;\n  if (i !== 5) str += "-";\n}\nconsole.log(str);`,
+        snippet: `// none — all logic, no input to reuse`
       },
       {
         prompt: "Count how many times the number 2 appears in [1, 2, 2, 3, 2]",
-        answer: `const nums = [1, 2, 2, 3, 2];\nlet count = 0;\nfor (let n of nums) {\n  if (n === 2) count++;\n}\nconsole.log(count);`
+        answer: `const nums = [1, 2, 2, 3, 2];\nlet count = 0;\nfor (let n of nums) {\n  if (n === 2) count++;\n}\nconsole.log(count);`,
+        snippet: `const nums = [1, 2, 2, 3, 2];`
       },
       {
         prompt: "Get the middle character of the word 'robotics'",
-        answer: `const word = "robotics";\nconst middle = word[Math.floor(word.length / 2)];\nconsole.log(middle);`
+        answer: `const word = "robotics";\nconst middle = word[Math.floor(word.length / 2)];\nconsole.log(middle);`,
+        snippet: `const word = "robotics";`
       },
+
       // Day 13
       {
         prompt: "Reverse the word 'coding' without using .reverse()",
-        answer: `const word = 'coding';\nlet reversed = '';\nfor (let i = word.length - 1; i >= 0; i--) {\n  reversed += word[i];\n}\nconsole.log(reversed);`
+        answer: `const word = 'coding';\nlet reversed = '';\nfor (let i = word.length - 1; i >= 0; i--) {\n  reversed += word[i];\n}\nconsole.log(reversed);`,
+        snippet: `const word = "coding";`
       },
       {
         prompt: "Find the second smallest number in [12, 5, 8, 3, 20]",
-        answer: `const nums = [12, 5, 8, 3, 20];\nconst sorted = [...nums].sort((a, b) => a - b);\nconsole.log(sorted[1]);`
+        answer: `const nums = [12, 5, 8, 3, 20];\nconst sorted = [...nums].sort((a, b) => a - b);\nconsole.log(sorted[1]);`,
+        snippet: `const nums = [12, 5, 8, 3, 20];`
       },
       {
         prompt: "Capitalize the last letter of the word 'develop'",
-        answer: `const word = 'develop';\nconst result = word.slice(0, -1) + word[word.length - 1].toUpperCase();\nconsole.log(result);`
+        answer: `const word = 'develop';\nconst result = word.slice(0, -1) + word[word.length - 1].toUpperCase();\nconsole.log(result);`,
+        snippet: `const word = "develop";`
       },
       {
         prompt: "Get the initials of 'Ada Lovelace'",
-        answer: `const name = 'Ada Lovelace';\nconst initials = name.split(' ').map(n => n[0]).join('');\nconsole.log(initials);`
+        answer: `const name = 'Ada Lovelace';\nconst initials = name.split(' ').map(n => n[0]).join('');\nconsole.log(initials);`,
+        snippet: `const name = "Ada Lovelace";`
       },
       {
         prompt: "Return true if the word 'function' contains more than 2 vowels",
-        answer: `const word = 'function';\nconst vowels = 'aeiou';\nlet count = 0;\nfor (let char of word) {\n  if (vowels.includes(char)) count++;\n}\nconsole.log(count > 2);`
+        answer: `const word = 'function';\nconst vowels = 'aeiou';\nlet count = 0;\nfor (let char of word) {\n  if (vowels.includes(char)) count++;\n}\nconsole.log(count > 2);`,
+        snippet: `const word = "function";`
       },
       {
         prompt: "Count how many letters in 'JavaScript123' are alphabetic",
-        answer: `const str = 'JavaScript123';\nlet count = 0;\nfor (let char of str) {\n  if (/[a-zA-Z]/.test(char)) count++;\n}\nconsole.log(count);`
+        answer: `const str = 'JavaScript123';\nlet count = 0;\nfor (let char of str) {\n  if (/[a-zA-Z]/.test(char)) count++;\n}\nconsole.log(count);`,
+        snippet: `const str = "JavaScript123";`
       },
       {
         prompt: "Check if all characters in 'robot' are lowercase",
-        answer: `const word = 'robot';\nconst allLower = word === word.toLowerCase();\nconsole.log(allLower);`
+        answer: `const word = 'robot';\nconst allLower = word === word.toLowerCase();\nconsole.log(allLower);`,
+        snippet: `const word = "robot";`
       },
+
       // Day 14
       {
         prompt: "Reverse the string 'javascript' without using .reverse()",
@@ -1032,24 +1099,28 @@ let reversed = "";
 for (let i = word.length - 1; i >= 0; i--) {
   reversed += word[i];
 }
-console.log(reversed);`
+console.log(reversed);`,
+        snippet: `const word = "javascript";`
       },
       {
         prompt: "Find the second smallest number in [5, 1, 8, 3]",
         answer: `const nums = [5, 1, 8, 3];
 const sorted = [...nums].sort((a, b) => a - b);
-console.log(sorted[1]);`
+console.log(sorted[1]);`,
+        snippet: `const nums = [5, 1, 8, 3];`
       },
       {
         prompt: "Capitalize the first and last letter of 'example'",
         answer: `const word = "example";
 const result = word[0].toUpperCase() + word.slice(1, -1) + word[word.length - 1].toUpperCase();
-console.log(result);`
+console.log(result);`,
+        snippet: `const word = "example";`
       },
       {
         prompt: "Count how many digits are in the number 987654",
         answer: `const num = 987654;
-console.log(num.toString().length);`
+console.log(num.toString().length);`,
+        snippet: `const num = 987654;`
       },
       {
         prompt: "Log each vowel in the word 'education'",
@@ -1057,7 +1128,8 @@ console.log(num.toString().length);`
 const vowels = "aeiou";
 for (let char of word) {
   if (vowels.includes(char)) console.log(char);
-}`
+}`,
+        snippet: `const word = "education";`
       },
       {
         prompt: "Create a new string by removing all vowels from 'developer'",
@@ -1067,15 +1139,18 @@ let result = "";
 for (let char of word) {
   if (!vowels.includes(char)) result += char;
 }
-console.log(result);`
+console.log(result);`,
+        snippet: `const word = "developer";`
       },
       {
         prompt: "Log every third character in 'ABCDEFGHIJK'",
         answer: `const str = "ABCDEFGHIJK";
 for (let i = 2; i < str.length; i += 3) {
   console.log(str[i]);
-}`
+}`,
+        snippet: `const str = "ABCDEFGHIJK";`
       },
+
       // Day 15
       {
         prompt: "Reverse the string 'openai' without using .reverse()",
@@ -1084,7 +1159,8 @@ let reversed = "";
 for (let i = str.length - 1; i >= 0; i--) {
   reversed += str[i];
 }
-console.log(reversed);`
+console.log(reversed);`,
+        snippet: `const str = "openai";`
       },
       {
         prompt: "Find the maximum number in [22, 11, 44, 99]",
@@ -1093,7 +1169,8 @@ let max = nums[0];
 for (let num of nums) {
   if (num > max) max = num;
 }
-console.log(max);`
+console.log(max);`,
+        snippet: `const nums = [22, 11, 44, 99];`
       },
       {
         prompt: "Count how many times the letter 'o' appears in 'robot overlord'",
@@ -1102,18 +1179,21 @@ let count = 0;
 for (let char of str) {
   if (char === 'o') count++;
 }
-console.log(count);`
+console.log(count);`,
+        snippet: `const str = "robot overlord";`
       },
       {
         prompt: "Get the second-to-last item in ['apple', 'banana', 'cherry']",
         answer: `const fruits = ['apple', 'banana', 'cherry'];
-console.log(fruits[fruits.length - 2]);`
+console.log(fruits[fruits.length - 2]);`,
+        snippet: `const fruits = ['apple', 'banana', 'cherry'];`
       },
       {
         prompt: "Capitalize the last letter in 'future'",
         answer: `const word = "future";
 const result = word.slice(0, -1) + word[word.length - 1].toUpperCase();
-console.log(result);`
+console.log(result);`,
+        snippet: `const word = "future";`
       },
       {
         prompt: "Check if all characters in 'aaa' are the same",
@@ -1125,14 +1205,15 @@ for (let i = 1; i < str.length; i++) {
     break;
   }
 }
-console.log(allSame);`
+console.log(allSame);`,
+        snippet: `const str = "aaa";`
       },
       {
         prompt: "Count the number of digits in the number 2025",
         answer: `const num = 2025;
-console.log(num.toString().length);`
+console.log(num.toString().length);`,
+        snippet: `const num = 2025;`
       }
-
 
     ]
   },
@@ -1142,272 +1223,310 @@ console.log(num.toString().length);`
       // Day 1
       {
         prompt: "Square all even numbers from [1, 2, 3, 4, 5, 6]",
-        answer: `const numbers = [1, 2, 3, 4, 5, 6];\nconst evenSquares = numbers.filter(n => n % 2 === 0).map(n => n ** 2);\nconsole.log(evenSquares);`
+        answer: `const numbers = [1, 2, 3, 4, 5, 6];\nconst evenSquares = numbers.filter(n => n % 2 === 0).map(n => n ** 2);\nconsole.log(evenSquares);`,
+        snippet: `const numbers = [1, 2, 3, 4, 5, 6];`
       },
       {
         prompt: "Sort names by length: ['Amy', 'Jonathan', 'Li', 'Sebastian']",
-        answer: `const names = ['Amy', 'Jonathan', 'Li', 'Sebastian'];\nnames.sort((a, b) => a.length - b.length);\nconsole.log(names);`
+        answer: `const names = ['Amy', 'Jonathan', 'Li', 'Sebastian'];\nnames.sort((a, b) => a.length - b.length);\nconsole.log(names);`,
+        snippet: `const names = ['Amy', 'Jonathan', 'Li', 'Sebastian'];`
       },
+
       // Day 2
       {
         prompt: "Filter out numbers > 10 and double them: [5, 12, 8, 20]",
-        answer: `const nums = [5, 12, 8, 20];\nconst result = nums.filter(n => n > 10).map(n => n * 2);\nconsole.log(result);`
+        answer: `const nums = [5, 12, 8, 20];\nconst result = nums.filter(n => n > 10).map(n => n * 2);\nconsole.log(result);`,
+        snippet: `const nums = [5, 12, 8, 20];`
       },
       {
         prompt: "Create array of words with > 3 letters: ['hi', 'code', 'dog', 'JavaScript']",
-        answer: `const words = ["hi", "code", "dog", "JavaScript"];\nconst result = words.filter(w => w.length > 3);\nconsole.log(result);`
+        answer: `const words = ["hi", "code", "dog", "JavaScript"];\nconst result = words.filter(w => w.length > 3);\nconsole.log(result);`,
+        snippet: `const words = ["hi", "code", "dog", "JavaScript"];`
       },
+
       // Day 3
       {
         prompt: "Get first letters of each word: ['apple', 'banana', 'cherry']",
-        answer: `const words = ['apple', 'banana', 'cherry'];\nconst initials = words.map(w => w[0]);\nconsole.log(initials);`
+        answer: `const words = ['apple', 'banana', 'cherry'];\nconst initials = words.map(w => w[0]);\nconsole.log(initials);`,
+        snippet: `const words = ['apple', 'banana', 'cherry'];`
       },
       {
         prompt: "Filter and uppercase words longer than 3 letters",
-        answer: `const words = ["hi", "code", "sun", "developer"];\nconst result = words.filter(w => w.length > 3).map(w => w.toUpperCase());\nconsole.log(result);`
+        answer: `const words = ["hi", "code", "sun", "developer"];\nconst result = words.filter(w => w.length > 3).map(w => w.toUpperCase());\nconsole.log(result);`,
+        snippet: `const words = ["hi", "code", "sun", "developer"];`
       },
+
       // Day 4
       {
         prompt: "Double the odd numbers from [1, 2, 3, 4, 5]",
-        answer: `const nums = [1, 2, 3, 4, 5];\nconst doubledOdds = nums.filter(n => n % 2 !== 0).map(n => n * 2);\nconsole.log(doubledOdds);`
+        answer: `const nums = [1, 2, 3, 4, 5];\nconst doubledOdds = nums.filter(n => n % 2 !== 0).map(n => n * 2);\nconsole.log(doubledOdds);`,
+        snippet: `const nums = [1, 2, 3, 4, 5];`
       },
       {
         prompt: "Chain to get squares of numbers > 5 from [2, 5, 8, 12]",
-        answer: `const nums = [2, 5, 8, 12];\nconst result = nums.filter(n => n > 5).map(n => n ** 2);\nconsole.log(result);`
+        answer: `const nums = [2, 5, 8, 12];\nconst result = nums.filter(n => n > 5).map(n => n ** 2);\nconsole.log(result);`,
+        snippet: `const nums = [2, 5, 8, 12];`
       },
       {
         prompt: "Convert [1, 2, 3, 4] to strings and add '!' to each",
-        answer: `const nums = [1, 2, 3, 4];\nconst result = nums.map(n => n.toString() + "!");\nconsole.log(result);`
+        answer: `const nums = [1, 2, 3, 4];\nconst result = nums.map(n => n.toString() + "!");\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3, 4];`
       },
       {
         prompt: "From ['Tom', 'Timothy', 'Tina'], get names longer than 3 letters and lowercase them",
-        answer: `const names = ['Tom', 'Timothy', 'Tina'];\nconst result = names.filter(name => name.length > 3).map(name => name.toLowerCase());\nconsole.log(result);`
+        answer: `const names = ['Tom', 'Timothy', 'Tina'];\nconst result = names.filter(name => name.length > 3).map(name => name.toLowerCase());\nconsole.log(result);`,
+        snippet: `const names = ['Tom', 'Timothy', 'Tina'];`
       },
+
       // Day 6
       {
         prompt: "Double and stringify numbers in [1, 2, 3]",
-        answer: `const nums = [1, 2, 3];\nconst result = nums.map(n => (n * 2).toString());\nconsole.log(result);`
+        answer: `const nums = [1, 2, 3];\nconst result = nums.map(n => (n * 2).toString());\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3];`
       },
       {
         prompt: "Chain filter and map: Get square roots of even numbers from [4, 9, 16, 25]",
-        answer: `const nums = [4, 9, 16, 25];\nconst result = nums.filter(n => n % 2 === 0).map(n => Math.sqrt(n));\nconsole.log(result);`
+        answer: `const nums = [4, 9, 16, 25];\nconst result = nums.filter(n => n % 2 === 0).map(n => Math.sqrt(n));\nconsole.log(result);`,
+        snippet: `const nums = [4, 9, 16, 25];`
       },
+
       // Day 7
       {
         prompt: "Chain: Double even numbers and convert to string in [1, 2, 3, 4]",
-        answer: `const nums = [1, 2, 3, 4];\nconst result = nums.filter(n => n % 2 === 0).map(n => (n * 2).toString());\nconsole.log(result);`
+        answer: `const nums = [1, 2, 3, 4];\nconst result = nums.filter(n => n % 2 === 0).map(n => (n * 2).toString());\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3, 4];`
       },
       {
         prompt: "From ['a', 'ab', 'abc'], keep only length > 1 and uppercase",
-        answer: `const strings = ['a', 'ab', 'abc'];\nconst result = strings.filter(s => s.length > 1).map(s => s.toUpperCase());\nconsole.log(result);`
+        answer: `const strings = ['a', 'ab', 'abc'];\nconst result = strings.filter(s => s.length > 1).map(s => s.toUpperCase());\nconsole.log(result);`,
+        snippet: `const strings = ['a', 'ab', 'abc'];`
       },
+
       // Day 8
       {
         prompt: "From [2, 4, 5, 6], filter even and triple them",
-        answer: `const nums = [2, 4, 5, 6];\nconst result = nums.filter(n => n % 2 === 0).map(n => n * 3);\nconsole.log(result);`
+        answer: `const nums = [2, 4, 5, 6];\nconst result = nums.filter(n => n % 2 === 0).map(n => n * 3);\nconsole.log(result);`,
+        snippet: `const nums = [2, 4, 5, 6];`
       },
       {
         prompt: "Convert ['dog', 'cat', 'bird'] to uppercase and reverse each word",
-        answer: `const animals = ["dog", "cat", "bird"];\nconst result = animals.map(a => a.toUpperCase().split('').reverse().join(''));\nconsole.log(result);`
+        answer: `const animals = ["dog", "cat", "bird"];\nconst result = animals.map(a => a.toUpperCase().split('').reverse().join(''));\nconsole.log(result);`,
+        snippet: `const animals = ["dog", "cat", "bird"];`
       },
+
       // Day 9
       {
         prompt: "Chain filter + map to double odd numbers in [1, 2, 3, 4, 5]",
-        answer: `const nums = [1, 2, 3, 4, 5];\nconst result = nums.filter(n => n % 2 !== 0).map(n => n * 2);\nconsole.log(result);`
+        answer: `const nums = [1, 2, 3, 4, 5];\nconst result = nums.filter(n => n % 2 !== 0).map(n => n * 2);\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3, 4, 5];`
       },
       {
         prompt: "Convert numbers to strings in [5, 10, 15]",
-        answer: `const nums = [5, 10, 15];\nconst result = nums.map(n => n.toString());\nconsole.log(result);`
+        answer: `const nums = [5, 10, 15];\nconst result = nums.map(n => n.toString());\nconsole.log(result);`,
+        snippet: `const nums = [5, 10, 15];`
       },
       {
         prompt: "Chain to get first letters of words longer than 3: ['ant', 'bear', 'cat']",
-        answer: `const animals = ['ant', 'bear', 'cat'];\nconst result = animals.filter(a => a.length > 3).map(a => a[0]);\nconsole.log(result);`
+        answer: `const animals = ['ant', 'bear', 'cat'];\nconst result = animals.filter(a => a.length > 3).map(a => a[0]);\nconsole.log(result);`,
+        snippet: `const animals = ['ant', 'bear', 'cat'];`
       },
       {
         prompt: "Filter out numbers < 5 and square them: [2, 4, 6, 8]",
-        answer: `const nums = [2, 4, 6, 8];\nconst result = nums.filter(n => n < 5).map(n => n ** 2);\nconsole.log(result);`
+        answer: `const nums = [2, 4, 6, 8];\nconst result = nums.filter(n => n < 5).map(n => n ** 2);\nconsole.log(result);`,
+        snippet: `const nums = [2, 4, 6, 8];`
       },
       {
         prompt: "Uppercase words with more than 4 letters: ['hi', 'hello', 'yes', 'world']",
-        answer: `const words = ['hi', 'hello', 'yes', 'world'];\nconst result = words.filter(w => w.length > 4).map(w => w.toUpperCase());\nconsole.log(result);`
+        answer: `const words = ['hi', 'hello', 'yes', 'world'];\nconst result = words.filter(w => w.length > 4).map(w => w.toUpperCase());\nconsole.log(result);`,
+        snippet: `const words = ['hi', 'hello', 'yes', 'world'];`
       },
+
       // Day 10
       {
         prompt: "Chain: filter names starting with 'A' and uppercase them",
-        answer: `const names = ['Alice', 'Bob', 'Amanda', 'Charlie'];\nconst result = names.filter(n => n.startsWith('A')).map(n => n.toUpperCase());\nconsole.log(result);`
+        answer: `const names = ['Alice', 'Bob', 'Amanda', 'Charlie'];\nconst result = names.filter(n => n.startsWith('A')).map(n => n.toUpperCase());\nconsole.log(result);`,
+        snippet: `const names = ['Alice', 'Bob', 'Amanda', 'Charlie'];`
       },
       {
         prompt: "Double all numbers greater than 5 in [3, 6, 8, 2]",
-        answer: `const nums = [3, 6, 8, 2];\nconst result = nums.filter(n => n > 5).map(n => n * 2);\nconsole.log(result);`
+        answer: `const nums = [3, 6, 8, 2];\nconst result = nums.filter(n => n > 5).map(n => n * 2);\nconsole.log(result);`,
+        snippet: `const nums = [3, 6, 8, 2];`
       },
       {
         prompt: "Filter words longer than 4 characters and get their lengths",
-        answer: `const words = ['hi', 'hello', 'world', 'ok'];\nconst result = words.filter(w => w.length > 4).map(w => w.length);\nconsole.log(result);`
+        answer: `const words = ['hi', 'hello', 'world', 'ok'];\nconst result = words.filter(w => w.length > 4).map(w => w.length);\nconsole.log(result);`,
+        snippet: `const words = ['hi', 'hello', 'world', 'ok'];`
       },
       {
         prompt: "Chain: lowercase words and keep only those containing 'a'",
-        answer: `const words = ['Apple', 'Banana', 'Cherry', 'Date'];\nconst result = words.map(w => w.toLowerCase()).filter(w => w.includes('a'));\nconsole.log(result);`
+        answer: `const words = ['Apple', 'Banana', 'Cherry', 'Date'];\nconst result = words.map(w => w.toLowerCase()).filter(w => w.includes('a'));\nconsole.log(result);`,
+        snippet: `const words = ['Apple', 'Banana', 'Cherry', 'Date'];`
       },
       {
         prompt: "Triple the even numbers in [1, 2, 3, 4, 5, 6]",
-        answer: `const nums = [1, 2, 3, 4, 5, 6];\nconst result = nums.filter(n => n % 2 === 0).map(n => n * 3);\nconsole.log(result);`
+        answer: `const nums = [1, 2, 3, 4, 5, 6];\nconst result = nums.filter(n => n % 2 === 0).map(n => n * 3);\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3, 4, 5, 6];`
       },
       {
         prompt: "Filter numbers under 10 and convert to strings",
-        answer: `const nums = [4, 12, 8, 15];\nconst result = nums.filter(n => n < 10).map(n => n.toString());\nconsole.log(result);`
+        answer: `const nums = [4, 12, 8, 15];\nconst result = nums.filter(n => n < 10).map(n => n.toString());\nconsole.log(result);`,
+        snippet: `const nums = [4, 12, 8, 15];`
       },
       {
         prompt: "Uppercase only words starting with 'c': ['cat', 'dog', 'cow']",
-        answer: `const animals = ['cat', 'dog', 'cow'];\nconst result = animals.filter(a => a.startsWith('c')).map(a => a.toUpperCase());\nconsole.log(result);`
+        answer: `const animals = ['cat', 'dog', 'cow'];\nconst result = animals.filter(a => a.startsWith('c')).map(a => a.toUpperCase());\nconsole.log(result);`,
+        snippet: `const animals = ['cat', 'dog', 'cow'];`
       },
       {
         prompt: "Chain: add 1 to odd numbers and get their squares",
-        answer: `const nums = [1, 2, 3, 4];\nconst result = nums.filter(n => n % 2 !== 0).map(n => (n + 1) ** 2);\nconsole.log(result);`
+        answer: `const nums = [1, 2, 3, 4];\nconst result = nums.filter(n => n % 2 !== 0).map(n => (n + 1) ** 2);\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3, 4];`
       },
       {
         prompt: "Convert strings to their lengths: ['hi', 'hello', 'yes']",
-        answer: `const words = ['hi', 'hello', 'yes'];\nconst result = words.map(w => w.length);\nconsole.log(result);`
+        answer: `const words = ['hi', 'hello', 'yes'];\nconst result = words.map(w => w.length);\nconsole.log(result);`,
+        snippet: `const words = ['hi', 'hello', 'yes'];`
       },
       {
         prompt: "Filter numbers divisible by 2 and 3: [6, 9, 12, 15]",
-        answer: `const nums = [6, 9, 12, 15];\nconst result = nums.filter(n => n % 2 === 0 && n % 3 === 0);\nconsole.log(result);`
+        answer: `const nums = [6, 9, 12, 15];\nconst result = nums.filter(n => n % 2 === 0 && n % 3 === 0);\nconsole.log(result);`,
+        snippet: `const nums = [6, 9, 12, 15];`
       },
-      // Day 11 
+
+      // Day 11
       {
         prompt: "Get lowercase words longer than 4 characters: ['Hi', 'Hello', 'World', 'JS']",
-        answer: `const words = ['Hi', 'Hello', 'World', 'JS'];\nconst result = words.filter(w => w.length > 4).map(w => w.toLowerCase());\nconsole.log(result);`
+        answer: `const words = ['Hi', 'Hello', 'World', 'JS'];\nconst result = words.filter(w => w.length > 4).map(w => w.toLowerCase());\nconsole.log(result);`,
+        snippet: `const words = ['Hi', 'Hello', 'World', 'JS'];`
       },
       {
         prompt: "From [5, 12, 8, 3], filter even numbers and square them",
-        answer: `const nums = [5, 12, 8, 3];\nconst result = nums.filter(n => n % 2 === 0).map(n => n ** 2);\nconsole.log(result);`
+        answer: `const nums = [5, 12, 8, 3];\nconst result = nums.filter(n => n % 2 === 0).map(n => n ** 2);\nconsole.log(result);`,
+        snippet: `const nums = [5, 12, 8, 3];`
       },
       {
         prompt: "Filter names starting with 'J' and return their lengths: ['Joe', 'Anna', 'Jack']",
-        answer: `const names = ['Joe', 'Anna', 'Jack'];\nconst result = names.filter(name => name.startsWith('J')).map(name => name.length);\nconsole.log(result);`
+        answer: `const names = ['Joe', 'Anna', 'Jack'];\nconst result = names.filter(name => name.startsWith('J')).map(name => name.length);\nconsole.log(result);`,
+        snippet: `const names = ['Joe', 'Anna', 'Jack'];`
       },
       {
         prompt: "Triple odd numbers in [2, 5, 7, 8] and convert to strings",
-        answer: `const nums = [2, 5, 7, 8];\nconst result = nums.filter(n => n % 2 !== 0).map(n => (n * 3).toString());\nconsole.log(result);`
+        answer: `const nums = [2, 5, 7, 8];\nconst result = nums.filter(n => n % 2 !== 0).map(n => (n * 3).toString());\nconsole.log(result);`,
+        snippet: `const nums = [2, 5, 7, 8];`
       },
       {
         prompt: "Get initials of long names: ['Amy', 'Jonathan', 'Catherine'] (length > 4)",
-        answer: `const names = ['Amy', 'Jonathan', 'Catherine'];\nconst result = names.filter(n => n.length > 4).map(n => n[0]);\nconsole.log(result);`
+        answer: `const names = ['Amy', 'Jonathan', 'Catherine'];\nconst result = names.filter(n => n.length > 4).map(n => n[0]);\nconsole.log(result);`,
+        snippet: `const names = ['Amy', 'Jonathan', 'Catherine'];`
       },
+
       // Day 12
       {
         prompt: "Filter even numbers and square them: [3, 4, 6, 9]",
-        answer: `const nums = [3, 4, 6, 9];\nconst result = nums.filter(n => n % 2 === 0).map(n => n ** 2);\nconsole.log(result);`
+        answer: `const nums = [3, 4, 6, 9];\nconst result = nums.filter(n => n % 2 === 0).map(n => n ** 2);\nconsole.log(result);`,
+        snippet: `const nums = [3, 4, 6, 9];`
       },
       {
         prompt: "Convert ['apple', 'banana', 'kiwi'] to uppercase and get lengths",
-        answer: `const fruits = ['apple', 'banana', 'kiwi'];\nconst result = fruits.map(f => f.toUpperCase()).map(f => f.length);\nconsole.log(result);`
+        answer: `const fruits = ['apple', 'banana', 'kiwi'];\nconst result = fruits.map(f => f.toUpperCase()).map(f => f.length);\nconsole.log(result);`,
+        snippet: `const fruits = ['apple', 'banana', 'kiwi'];`
       },
       {
         prompt: "From [1, 2, 3, 4, 5], double odds and convert to strings",
-        answer: `const nums = [1, 2, 3, 4, 5];\nconst result = nums.filter(n => n % 2 !== 0).map(n => (n * 2).toString());\nconsole.log(result);`
+        answer: `const nums = [1, 2, 3, 4, 5];\nconst result = nums.filter(n => n % 2 !== 0).map(n => (n * 2).toString());\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3, 4, 5];`
       },
       {
         prompt: "Filter strings that include 'o' and capitalize them: ['dog', 'cat', 'owl']",
-        answer: `const animals = ['dog', 'cat', 'owl'];\nconst result = animals.filter(a => a.includes('o')).map(a => a.toUpperCase());\nconsole.log(result);`
+        answer: `const animals = ['dog', 'cat', 'owl'];\nconst result = animals.filter(a => a.includes('o')).map(a => a.toUpperCase());\nconsole.log(result);`,
+        snippet: `const animals = ['dog', 'cat', 'owl'];`
       },
       {
         prompt: "Chain: get lengths of words with more than 2 vowels: ['apple', 'tea', 'sky']",
-        answer: `const words = ['apple', 'tea', 'sky'];\nconst vowels = 'aeiou';\nconst result = words.filter(word => {\n  let count = 0;\n  for (let char of word) {\n    if (vowels.includes(char)) count++;\n  }\n  return count > 2;\n}).map(w => w.length);\nconsole.log(result);`
+        answer: `const words = ['apple', 'tea', 'sky'];\nconst vowels = 'aeiou';\nconst result = words.filter(word => {\n  let count = 0;\n  for (let char of word) {\n    if (vowels.includes(char)) count++;\n  }\n  return count > 2;\n}).map(w => w.length);\nconsole.log(result);`,
+        snippet: `const words = ['apple', 'tea', 'sky'];`
       },
+
       // Day 13
       {
         prompt: "Chain filter and map to triple odd numbers in [2, 3, 4, 5]",
-        answer: `const nums = [2, 3, 4, 5];\nconst result = nums.filter(n => n % 2 !== 0).map(n => n * 3);\nconsole.log(result);`
+        answer: `const nums = [2, 3, 4, 5];\nconst result = nums.filter(n => n % 2 !== 0).map(n => n * 3);\nconsole.log(result);`,
+        snippet: `const nums = [2, 3, 4, 5];`
       },
       {
         prompt: "Get lowercase initials of names longer than 3 chars: ['Al', 'Bob', 'Charlie']",
-        answer: `const names = ['Al', 'Bob', 'Charlie'];\nconst result = names.filter(name => name.length > 3).map(name => name[0].toLowerCase());\nconsole.log(result);`
+        answer: `const names = ['Al', 'Bob', 'Charlie'];\nconst result = names.filter(name => name.length > 3).map(name => name[0].toLowerCase());\nconsole.log(result);`,
+        snippet: `const names = ['Al', 'Bob', 'Charlie'];`
       },
       {
         prompt: "Convert numbers in [1, 2, 3] to strings and add prefix 'ID-'",
-        answer: `const nums = [1, 2, 3];\nconst result = nums.map(n => 'ID-' + n.toString());\nconsole.log(result);`
+        answer: `const nums = [1, 2, 3];\nconst result = nums.map(n => 'ID-' + n.toString());\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3];`
       },
       {
         prompt: "Chain: filter > 4 and get string lengths: ['yes', 'hello', 'amazing', 'ok']",
-        answer: `const words = ['yes', 'hello', 'amazing', 'ok'];\nconst result = words.filter(w => w.length > 4).map(w => w.length);\nconsole.log(result);`
+        answer: `const words = ['yes', 'hello', 'amazing', 'ok'];\nconst result = words.filter(w => w.length > 4).map(w => w.length);\nconsole.log(result);`,
+        snippet: `const words = ['yes', 'hello', 'amazing', 'ok'];`
       },
       {
         prompt: "From [10, 20, 30], divide by 2 and stringify",
-        answer: `const nums = [10, 20, 30];\nconst result = nums.map(n => (n / 2).toString());\nconsole.log(result);`
+        answer: `const nums = [10, 20, 30];\nconst result = nums.map(n => (n / 2).toString());\nconsole.log(result);`,
+        snippet: `const nums = [10, 20, 30];`
       },
+
       // Day 14
       {
         prompt: "From [3, 6, 9, 12], double the numbers greater than 5 and convert to strings",
-        answer: `const nums = [3, 6, 9, 12];
-const result = nums.filter(n => n > 5).map(n => (n * 2).toString());
-console.log(result);`
+        answer: `const nums = [3, 6, 9, 12];\nconst result = nums.filter(n => n > 5).map(n => (n * 2).toString());\nconsole.log(result);`,
+        snippet: `const nums = [3, 6, 9, 12];`
       },
       {
         prompt: "From ['Sam', 'Ann', 'Robert'], keep names longer than 3 characters and lowercase them",
-        answer: `const names = ['Sam', 'Ann', 'Robert'];
-const result = names.filter(name => name.length > 3).map(name => name.toLowerCase());
-console.log(result);`
+        answer: `const names = ['Sam', 'Ann', 'Robert'];\nconst result = names.filter(name => name.length > 3).map(name => name.toLowerCase());\nconsole.log(result);`,
+        snippet: `const names = ['Sam', 'Ann', 'Robert'];`
       },
       {
         prompt: "Square odd numbers and convert to strings: [1, 2, 3, 4]",
-        answer: `const nums = [1, 2, 3, 4];
-const result = nums.filter(n => n % 2 !== 0).map(n => (n ** 2).toString());
-console.log(result);`
+        answer: `const nums = [1, 2, 3, 4];\nconst result = nums.filter(n => n % 2 !== 0).map(n => (n ** 2).toString());\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3, 4];`
       },
       {
         prompt: "From ['yes', 'no', 'maybe'], uppercase those with more than 2 letters",
-        answer: `const words = ['yes', 'no', 'maybe'];
-const result = words.filter(w => w.length > 2).map(w => w.toUpperCase());
-console.log(result);`
+        answer: `const words = ['yes', 'no', 'maybe'];\nconst result = words.filter(w => w.length > 2).map(w => w.toUpperCase());\nconsole.log(result);`,
+        snippet: `const words = ['yes', 'no', 'maybe'];`
       },
       {
         prompt: "From [10, 20, 30], filter numbers divisible by 10 and get their halves",
-        answer: `const nums = [10, 20, 30];
-const result = nums.filter(n => n % 10 === 0).map(n => n / 2);
-console.log(result);`
+        answer: `const nums = [10, 20, 30];\nconst result = nums.filter(n => n % 10 === 0).map(n => n / 2);\nconsole.log(result);`,
+        snippet: `const nums = [10, 20, 30];`
       },
+
       // Day 15 
       {
         prompt: "Filter odd numbers and square them: [2, 3, 4, 5, 6]",
-        answer: `const nums = [2, 3, 4, 5, 6];
-const result = nums.filter(n => n % 2 !== 0).map(n => n ** 2);
-console.log(result);`
+        answer: `const nums = [2, 3, 4, 5, 6];\nconst result = nums.filter(n => n % 2 !== 0).map(n => n ** 2);\nconsole.log(result);`,
+        snippet: `const nums = [2, 3, 4, 5, 6];`
       },
       {
         prompt: "Get lowercase strings longer than 4 chars: ['Hello', 'Yes', 'Programming']",
-        answer: `const words = ['Hello', 'Yes', 'Programming'];
-const result = words.filter(w => w.length > 4).map(w => w.toLowerCase());
-console.log(result);`
+        answer: `const words = ['Hello', 'Yes', 'Programming'];\nconst result = words.filter(w => w.length > 4).map(w => w.toLowerCase());\nconsole.log(result);`,
+        snippet: `const words = ['Hello', 'Yes', 'Programming'];`
       },
       {
         prompt: "Triple numbers greater than 10: [4, 12, 9, 18]",
-        answer: `const nums = [4, 12, 9, 18];
-const result = nums.filter(n => n > 10).map(n => n * 3);
-console.log(result);`
+        answer: `const nums = [4, 12, 9, 18];\nconst result = nums.filter(n => n > 10).map(n => n * 3);\nconsole.log(result);`,
+        snippet: `const nums = [4, 12, 9, 18];`
       },
       {
         prompt: "From ['hi', 'robotics', 'no'], keep strings > 2 chars and get their lengths",
-        answer: `const words = ['hi', 'robotics', 'no'];
-const result = words.filter(w => w.length > 2).map(w => w.length);
-console.log(result);`
+        answer: `const words = ['hi', 'robotics', 'no'];\nconst result = words.filter(w => w.length > 2).map(w => w.length);\nconsole.log(result);`,
+        snippet: `const words = ['hi', 'robotics', 'no'];`
       },
       {
         prompt: "Filter even numbers and convert to strings: [1, 2, 3, 4, 5]",
-        answer: `const nums = [1, 2, 3, 4, 5];
-const result = nums.filter(n => n % 2 === 0).map(n => n.toString());
-console.log(result);`
+        answer: `const nums = [1, 2, 3, 4, 5];\nconst result = nums.filter(n => n % 2 === 0).map(n => n.toString());\nconsole.log(result);`,
+        snippet: `const nums = [1, 2, 3, 4, 5];`
       }
-
-
-
-
-
-
-
-
-
-
-
 
     ]
   },
@@ -1417,168 +1536,217 @@ console.log(result);`
       // Day 1
       {
         prompt: "Check if a string is a palindrome",
-        answer: `function isPalindrome(str) {\n  const reversed = str.split('').reverse().join('');\n  return str === reversed;\n}\nconsole.log(isPalindrome("racecar"));\nconsole.log(isPalindrome("hello"));`
+        answer: `function isPalindrome(str) {\n  const reversed = str.split('').reverse().join('');\n  return str === reversed;\n}\nconsole.log(isPalindrome("racecar"));\nconsole.log(isPalindrome("hello"));`,
+        snippet: `const str = "racecar";`
       },
       {
         prompt: "Merge two sorted arrays [1, 3, 5] and [2, 4, 6]",
-        answer: `function mergeSorted(a, b) {\n  return [...a, ...b].sort((x, y) => x - y);\n}\nconsole.log(mergeSorted([1, 3, 5], [2, 4, 6]));`
+        answer: `function mergeSorted(a, b) {\n  return [...a, ...b].sort((x, y) => x - y);\n}\nconsole.log(mergeSorted([1, 3, 5], [2, 4, 6]));`,
+        snippet: `const a = [1, 3, 5], b = [2, 4, 6];`
       },
+
       // Day 2
       {
         prompt: "Write a function to return factorial of a number (e.g. 5 → 120)",
-        answer: `function factorial(n) {\n  let result = 1;\n  for (let i = 2; i <= n; i++) {\n    result *= i;\n  }\n  return result;\n}\nconsole.log(factorial(5));`
+        answer: `function factorial(n) {\n  let result = 1;\n  for (let i = 2; i <= n; i++) {\n    result *= i;\n  }\n  return result;\n}\nconsole.log(factorial(5));`,
+        snippet: `const n = 5;`
       },
       {
         prompt: "Check if all elements in [2, 4, 6, 8] are even",
-        answer: `const nums = [2, 4, 6, 8];\nconst allEven = nums.every(n => n % 2 === 0);\nconsole.log(allEven);`
+        answer: `const nums = [2, 4, 6, 8];\nconst allEven = nums.every(n => n % 2 === 0);\nconsole.log(allEven);`,
+        snippet: `const nums = [2, 4, 6, 8];`
       },
+
       // Day 3
       {
         prompt: "Write a function that reverses any string",
-        answer: `function reverseString(str) {\n  return str.split('').reverse().join('');\n}\nconsole.log(reverseString("hello"));`
+        answer: `function reverseString(str) {\n  return str.split('').reverse().join('');\n}\nconsole.log(reverseString("hello"));`,
+        snippet: `const str = "hello";`
       },
       {
         prompt: "Check if a number is prime",
-        answer: `function isPrime(n) {\n  if (n < 2) return false;\n  for (let i = 2; i <= Math.sqrt(n); i++) {\n    if (n % i === 0) return false;\n  }\n  return true;\n}\nconsole.log(isPrime(7));\nconsole.log(isPrime(10));`
+        answer: `function isPrime(n) {\n  if (n < 2) return false;\n  for (let i = 2; i <= Math.sqrt(n); i++) {\n    if (n % i === 0) return false;\n  }\n  return true;\n}\nconsole.log(isPrime(7));\nconsole.log(isPrime(10));`,
+        snippet: `const n = 7;`
       },
       {
         prompt: "Write a function that returns the sum of digits of a number",
-        answer: `function sumDigits(n) {\n  return n.toString().split('').reduce((sum, d) => sum + Number(d), 0);\n}\nconsole.log(sumDigits(123));`
+        answer: `function sumDigits(n) {\n  return n.toString().split('').reduce((sum, d) => sum + Number(d), 0);\n}\nconsole.log(sumDigits(123));`,
+        snippet: `const n = 123;`
       },
       {
         prompt: "Check if an array contains duplicates",
-        answer: `function hasDuplicates(arr) {\n  const set = new Set(arr);\n  return set.size !== arr.length;\n}\nconsole.log(hasDuplicates([1, 2, 3, 2]));`
+        answer: `function hasDuplicates(arr) {\n  const set = new Set(arr);\n  return set.size !== arr.length;\n}\nconsole.log(hasDuplicates([1, 2, 3, 2]));`,
+        snippet: `const arr = [1, 2, 3, 2];`
       },
+
       // Day 5
       {
         prompt: "Write a function to find the second largest number in [1, 3, 4, 2]",
-        answer: `function secondLargest(arr) {\n  const sorted = [...arr].sort((a, b) => b - a);\n  return sorted[1];\n}\nconsole.log(secondLargest([1, 3, 4, 2]));`
+        answer: `function secondLargest(arr) {\n  const sorted = [...arr].sort((a, b) => b - a);\n  return sorted[1];\n}\nconsole.log(secondLargest([1, 3, 4, 2]));`,
+        snippet: `const arr = [1, 3, 4, 2];`
       },
       {
         prompt: "Check if two strings are anagrams (e.g., 'listen' and 'silent')",
-        answer: `function areAnagrams(a, b) {\n  return a.split('').sort().join('') === b.split('').sort().join('');\n}\nconsole.log(areAnagrams("listen", "silent"));\nconsole.log(areAnagrams("hello", "world"));`
+        answer: `function areAnagrams(a, b) {\n  return a.split('').sort().join('') === b.split('').sort().join('');\n}\nconsole.log(areAnagrams("listen", "silent"));\nconsole.log(areAnagrams("hello", "world"));`,
+        snippet: `const a = "listen", b = "silent";`
       },
+
       // Day 6
       {
         prompt: "Write a function to find the factorial of a number recursively",
-        answer: `function factorial(n) {\n  if (n === 0 || n === 1) return 1;\n  return n * factorial(n - 1);\n}\nconsole.log(factorial(5));`
+        answer: `function factorial(n) {\n  if (n === 0 || n === 1) return 1;\n  return n * factorial(n - 1);\n}\nconsole.log(factorial(5));`,
+        snippet: `const n = 5;`
       },
       {
         prompt: "Write a function that returns the longest word in a sentence",
-        answer: `function longestWord(sentence) {\n  const words = sentence.split(" ");\n  let longest = "";\n  for (let word of words) {\n    if (word.length > longest.length) longest = word;\n  }\n  return longest;\n}\nconsole.log(longestWord("JavaScript is awesome"));`
+        answer: `function longestWord(sentence) {\n  const words = sentence.split(" ");\n  let longest = "";\n  for (let word of words) {\n    if (word.length > longest.length) longest = word;\n  }\n  return longest;\n}\nconsole.log(longestWord("JavaScript is awesome"));`,
+        snippet: `const sentence = "JavaScript is awesome";`
       },
+
       // Day 7
       {
         prompt: "Write a function that checks if a string has all unique characters",
-        answer: `function allUnique(str) {\n  const set = new Set(str);\n  return set.size === str.length;\n}\nconsole.log(allUnique("robot"));\nconsole.log(allUnique("hello"));`
+        answer: `function allUnique(str) {\n  const set = new Set(str);\n  return set.size === str.length;\n}\nconsole.log(allUnique("robot"));\nconsole.log(allUnique("hello"));`,
+        snippet: `const str = "robot";`
       },
       {
         prompt: "Write a function that returns the sum of even numbers in an array",
-        answer: `function sumEven(arr) {\n  return arr.filter(n => n % 2 === 0).reduce((sum, n) => sum + n, 0);\n}\nconsole.log(sumEven([1, 2, 3, 4, 5]));`
+        answer: `function sumEven(arr) {\n  return arr.filter(n => n % 2 === 0).reduce((sum, n) => sum + n, 0);\n}\nconsole.log(sumEven([1, 2, 3, 4, 5]));`,
+        snippet: `const arr = [1, 2, 3, 4, 5];`
       },
+
       // Day 8
       {
         prompt: "Write a function that counts how many times a letter appears in a string",
-        answer: `function countLetter(str, letter) {\n  let count = 0;\n  for (let char of str) {\n    if (char === letter) count++;\n  }\n  return count;\n}\nconsole.log(countLetter("banana", "a"));`
+        answer: `function countLetter(str, letter) {\n  let count = 0;\n  for (let char of str) {\n    if (char === letter) count++;\n  }\n  return count;\n}\nconsole.log(countLetter("banana", "a"));`,
+        snippet: `const str = "banana", letter = "a";`
       },
       {
         prompt: "Write a function to flatten a nested array one level deep",
-        answer: `function flattenOnce(arr) {\n  return arr.reduce((flat, curr) => flat.concat(curr), []);\n}\nconsole.log(flattenOnce([[1, 2], [3, 4], [5]]));`
+        answer: `function flattenOnce(arr) {\n  return arr.reduce((flat, curr) => flat.concat(curr), []);\n}\nconsole.log(flattenOnce([[1, 2], [3, 4], [5]]));`,
+        snippet: `const arr = [[1, 2], [3, 4], [5]];`
       },
+
       // Day 9
       {
         prompt: "Write a function to count digits in a number",
-        answer: `function countDigits(n) {\n  return n.toString().length;\n}\nconsole.log(countDigits(12345));`
+        answer: `function countDigits(n) {\n  return n.toString().length;\n}\nconsole.log(countDigits(12345));`,
+        snippet: `const n = 12345;`
       },
       {
         prompt: "Check if two words have the same letters (ignore order)",
-        answer: `function sameLetters(a, b) {\n  return a.split('').sort().join('') === b.split('').sort().join('');\n}\nconsole.log(sameLetters("abc", "cab"));\nconsole.log(sameLetters("hi", "bye"));`
+        answer: `function sameLetters(a, b) {\n  return a.split('').sort().join('') === b.split('').sort().join('');\n}\nconsole.log(sameLetters("abc", "cab"));\nconsole.log(sameLetters("hi", "bye"));`,
+        snippet: `const a = "abc", b = "cab";`
       },
       {
         prompt: "Find the sum of all numbers in [1, 2, 3, 4, 5] using reduce",
-        answer: `const nums = [1, 2, 3, 4, 5];\nconst sum = nums.reduce((acc, val) => acc + val, 0);\nconsole.log(sum);`
+        answer: `const nums = [1, 2, 3, 4, 5];\nconst sum = nums.reduce((acc, val) => acc + val, 0);\nconsole.log(sum);`,
+        snippet: `const nums = [1, 2, 3, 4, 5];`
       },
+
       // Day 10
       {
         prompt: "Write a function that returns the factorial of a number using recursion",
-        answer: `function factorial(n) {\n  if (n === 0 || n === 1) return 1;\n  return n * factorial(n - 1);\n}\nconsole.log(factorial(5));`
+        answer: `function factorial(n) {\n  if (n === 0 || n === 1) return 1;\n  return n * factorial(n - 1);\n}\nconsole.log(factorial(5));`,
+        snippet: `const n = 5;`
       },
       {
         prompt: "Write a function to reverse the words in a sentence",
-        answer: `function reverseWords(sentence) {\n  return sentence.split(" ").reverse().join(" ");\n}\nconsole.log(reverseWords("hello world program"));`
+        answer: `function reverseWords(sentence) {\n  return sentence.split(" ").reverse().join(" ");\n}\nconsole.log(reverseWords("hello world program"));`,
+        snippet: `const sentence = "hello world program";`
       },
       {
         prompt: "Check if two strings are anagrams of each other",
-        answer: `function areAnagrams(a, b) {\n  return a.split('').sort().join('') === b.split('').sort().join('');\n}\nconsole.log(areAnagrams("listen", "silent"));\nconsole.log(areAnagrams("hello", "world"));`
+        answer: `function areAnagrams(a, b) {\n  return a.split('').sort().join('') === b.split('').sort().join('');\n}\nconsole.log(areAnagrams("listen", "silent"));\nconsole.log(areAnagrams("hello", "world"));`,
+        snippet: `const a = "listen", b = "silent";`
       },
       {
         prompt: "Write a function that returns the count of vowels in a string",
-        answer: `function countVowels(str) {\n  const vowels = 'aeiouAEIOU';\n  let count = 0;\n  for (let char of str) {\n    if (vowels.includes(char)) count++;\n  }\n  return count;\n}\nconsole.log(countVowels("education"));`
+        answer: `function countVowels(str) {\n  const vowels = 'aeiouAEIOU';\n  let count = 0;\n  for (let char of str) {\n    if (vowels.includes(char)) count++;\n  }\n  return count;\n}\nconsole.log(countVowels("education"));`,
+        snippet: `const str = "education";`
       },
       {
         prompt: "Flatten a nested array completely (deep flatten)",
-        answer: `function flattenDeep(arr) {\n  return arr.flat(Infinity);\n}\nconsole.log(flattenDeep([1, [2, [3, [4]]]]));`
+        answer: `function flattenDeep(arr) {\n  return arr.flat(Infinity);\n}\nconsole.log(flattenDeep([1, [2, [3, [4]]]]));`,
+        snippet: `const arr = [1, [2, [3, [4]]]];`
       },
       {
         prompt: "Write a function that returns the first non-repeating character in a string",
-        answer: `function firstUniqueChar(str) {\n  for (let char of str) {\n    if (str.indexOf(char) === str.lastIndexOf(char)) return char;\n  }\n  return null;\n}\nconsole.log(firstUniqueChar("swiss"));`
+        answer: `function firstUniqueChar(str) {\n  for (let char of str) {\n    if (str.indexOf(char) === str.lastIndexOf(char)) return char;\n  }\n  return null;\n}\nconsole.log(firstUniqueChar("swiss"));`,
+        snippet: `const str = "swiss";`
       },
       {
         prompt: "Write a function that returns true if a number is a power of 2",
-        answer: `function isPowerOfTwo(n) {\n  return n > 0 && (n & (n - 1)) === 0;\n}\nconsole.log(isPowerOfTwo(8));\nconsole.log(isPowerOfTwo(10));`
+        answer: `function isPowerOfTwo(n) {\n  return n > 0 && (n & (n - 1)) === 0;\n}\nconsole.log(isPowerOfTwo(8));\nconsole.log(isPowerOfTwo(10));`,
+        snippet: `const n = 8;`
       },
       {
         prompt: "Return the intersection of two arrays",
-        answer: `function intersection(a, b) {\n  return a.filter(x => b.includes(x));\n}\nconsole.log(intersection([1, 2, 3], [2, 3, 4]));`
+        answer: `function intersection(a, b) {\n  return a.filter(x => b.includes(x));\n}\nconsole.log(intersection([1, 2, 3], [2, 3, 4]));`,
+        snippet: `const a = [1, 2, 3], b = [2, 3, 4];`
       },
       {
         prompt: "Find the longest word in a sentence",
-        answer: `function longestWord(sentence) {\n  return sentence.split(" ").reduce((a, b) => a.length > b.length ? a : b);\n}\nconsole.log(longestWord("JavaScript is incredibly fun"));`
+        answer: `function longestWord(sentence) {\n  return sentence.split(" ").reduce((a, b) => a.length > b.length ? a : b);\n}\nconsole.log(longestWord("JavaScript is incredibly fun"));`,
+        snippet: `const sentence = "JavaScript is incredibly fun";`
       },
       {
         prompt: "Write a function that sums all even numbers in a nested array",
-        answer: `function sumEvenNested(arr) {\n  let sum = 0;\n  for (let item of arr.flat(Infinity)) {\n    if (typeof item === 'number' && item % 2 === 0) sum += item;\n  }\n  return sum;\n}\nconsole.log(sumEvenNested([1, [2, 3, [4, 5, [6]]]]));`
+        answer: `function sumEvenNested(arr) {\n  let sum = 0;\n  for (let item of arr.flat(Infinity)) {\n    if (typeof item === 'number' && item % 2 === 0) sum += item;\n  }\n  return sum;\n}\nconsole.log(sumEvenNested([1, [2, 3, [4, 5, [6]]]]));`,
+        snippet: `const arr = [1, [2, 3, [4, 5, [6]]]];`
       },
 
-      // Day 11 
+      // Day 11
       {
         prompt: "Write a function that checks if two strings are rotations of each other",
-        answer: `function areRotations(a, b) {\n  return a.length === b.length && (a + a).includes(b);\n}\nconsole.log(areRotations("abcd", "cdab"));\nconsole.log(areRotations("abcd", "acbd"));`
+        answer: `function areRotations(a, b) {\n  return a.length === b.length && (a + a).includes(b);\n}\nconsole.log(areRotations("abcd", "cdab"));\nconsole.log(areRotations("abcd", "acbd"));`,
+        snippet: `const a = "abcd", b = "cdab";`
       },
       {
         prompt: "Write a function to count how many times each letter appears in 'robotics'",
-        answer: `function letterFrequency(str) {\n  const freq = {};\n  for (let char of str) {\n    freq[char] = (freq[char] || 0) + 1;\n  }\n  return freq;\n}\nconsole.log(letterFrequency("robotics"));`
+        answer: `function letterFrequency(str) {\n  const freq = {};\n  for (let char of str) {\n    freq[char] = (freq[char] || 0) + 1;\n  }\n  return freq;\n}\nconsole.log(letterFrequency("robotics"));`,
+        snippet: `const str = "robotics";`
       },
       {
         prompt: "Write a function that removes duplicate values from an array",
-        answer: `function removeDuplicates(arr) {\n  return [...new Set(arr)];\n}\nconsole.log(removeDuplicates([1, 2, 2, 3, 4, 4, 5]));`
+        answer: `function removeDuplicates(arr) {\n  return [...new Set(arr)];\n}\nconsole.log(removeDuplicates([1, 2, 2, 3, 4, 4, 5]));`,
+        snippet: `const arr = [1, 2, 2, 3, 4, 4, 5];`
       },
+
       // Day 12
       {
         prompt: "Write a function to check if all elements in an array are unique",
-        answer: `function allUnique(arr) {\n  return new Set(arr).size === arr.length;\n}\nconsole.log(allUnique([1, 2, 3]));\nconsole.log(allUnique([1, 2, 2]));`
+        answer: `function allUnique(arr) {\n  return new Set(arr).size === arr.length;\n}\nconsole.log(allUnique([1, 2, 3]));\nconsole.log(allUnique([1, 2, 2]));`,
+        snippet: `const arr = [1, 2, 3];`
       },
       {
         prompt: "Write a function that returns the most frequent element in an array",
-        answer: `function mostFrequent(arr) {\n  const count = {};\n  let maxItem = arr[0];\n  for (let item of arr) {\n    count[item] = (count[item] || 0) + 1;\n    if (count[item] > count[maxItem]) maxItem = item;\n  }\n  return maxItem;\n}\nconsole.log(mostFrequent([1, 2, 2, 3, 3, 3, 4]));`
+        answer: `function mostFrequent(arr) {\n  const count = {};\n  let maxItem = arr[0];\n  for (let item of arr) {\n    count[item] = (count[item] || 0) + 1;\n    if (count[item] > count[maxItem]) maxItem = item;\n  }\n  return maxItem;\n}\nconsole.log(mostFrequent([1, 2, 2, 3, 3, 3, 4]));`,
+        snippet: `const arr = [1, 2, 2, 3, 3, 3, 4];`
       },
       {
         prompt: "Write a function that returns the first repeated character in a string",
-        answer: `function firstRepeatedChar(str) {\n  const seen = new Set();\n  for (let char of str) {\n    if (seen.has(char)) return char;\n    seen.add(char);\n  }\n  return null;\n}\nconsole.log(firstRepeatedChar("acbbcd"));\nconsole.log(firstRepeatedChar("abcdef"));`
+        answer: `function firstRepeatedChar(str) {\n  const seen = new Set();\n  for (let char of str) {\n    if (seen.has(char)) return char;\n    seen.add(char);\n  }\n  return null;\n}\nconsole.log(firstRepeatedChar("acbbcd"));\nconsole.log(firstRepeatedChar("abcdef"));`,
+        snippet: `const str = "acbbcd";`
       },
+
       // Day 13
       {
         prompt: "Write a function that returns the number of words in a sentence",
-        answer: `function wordCount(sentence) {\n  return sentence.trim().split(/\\s+/).length;\n}\nconsole.log(wordCount("Hello world from JavaScript"));`
+        answer: `function wordCount(sentence) {\n  return sentence.trim().split(/\\s+/).length;\n}\nconsole.log(wordCount("Hello world from JavaScript"));`,
+        snippet: `const sentence = "Hello world from JavaScript";`
       },
       {
         prompt: "Write a function that checks if a number is a perfect square",
-        answer: `function isPerfectSquare(n) {\n  return Number.isInteger(Math.sqrt(n));\n}\nconsole.log(isPerfectSquare(16));\nconsole.log(isPerfectSquare(18));`
+        answer: `function isPerfectSquare(n) {\n  return Number.isInteger(Math.sqrt(n));\n}\nconsole.log(isPerfectSquare(16));\nconsole.log(isPerfectSquare(18));`,
+        snippet: `const n = 16;`
       },
       {
         prompt: "Return the count of each letter in a string as an object",
-        answer: `function letterFrequency(str) {\n  const freq = {};\n  for (let char of str) {\n    if (char.match(/[a-z]/i)) {\n      freq[char] = (freq[char] || 0) + 1;\n    }\n  }\n  return freq;\n}\nconsole.log(letterFrequency("banana"));`
+        answer: `function letterFrequency(str) {\n  const freq = {};\n  for (let char of str) {\n    if (char.match(/[a-z]/i)) {\n      freq[char] = (freq[char] || 0) + 1;\n    }\n  }\n  return freq;\n}\nconsole.log(letterFrequency("banana"));`,
+        snippet: `const str = "banana";`
       },
+
       // Day 14
       {
         prompt: "Write a function to count how many times each character appears in a string",
@@ -1589,14 +1757,16 @@ console.log(result);`
   }
   return freq;
 }
-console.log(charFrequency("hello world"));`
+console.log(charFrequency("hello world"));`,
+        snippet: `const str = "hello world";`
       },
       {
         prompt: "Write a function to get the unique values from an array",
         answer: `function getUnique(arr) {
   return [...new Set(arr)];
 }
-console.log(getUnique([1, 2, 2, 3, 4, 4]));`
+console.log(getUnique([1, 2, 2, 3, 4, 4]));`,
+        snippet: `const arr = [1, 2, 2, 3, 4, 4];`
       },
       {
         prompt: "Write a function that finds the mode (most frequent value) in an array",
@@ -1612,9 +1782,11 @@ console.log(getUnique([1, 2, 2, 3, 4, 4]));`
   }
   return mode;
 }
-console.log(findMode([1, 2, 2, 3, 3, 3, 4]));`
+console.log(findMode([1, 2, 2, 3, 3, 3, 4]));`,
+        snippet: `const arr = [1, 2, 2, 3, 3, 3, 4];`
       },
-      // Day 15 
+
+      // Day 15
       {
         prompt: "Write a function that returns the most frequent number in an array",
         answer: `function mostFrequent(arr) {
@@ -1630,14 +1802,16 @@ console.log(findMode([1, 2, 2, 3, 3, 3, 4]));`
   }
   return mostCommon;
 }
-console.log(mostFrequent([1, 3, 3, 7, 2, 3, 1]));`
+console.log(mostFrequent([1, 3, 3, 7, 2, 3, 1]));`,
+        snippet: `const arr = [1, 3, 3, 7, 2, 3, 1];`
       },
       {
         prompt: "Write a function that removes duplicates from an array",
         answer: `function removeDuplicates(arr) {
   return [...new Set(arr)];
 }
-console.log(removeDuplicates([1, 2, 2, 3, 4, 4, 5]));`
+console.log(removeDuplicates([1, 2, 2, 3, 4, 4, 5]));`,
+        snippet: `const arr = [1, 2, 2, 3, 4, 4, 5];`
       },
       {
         prompt: "Write a function that checks if two arrays are equal (same elements, same order)",
@@ -1649,7 +1823,8 @@ console.log(removeDuplicates([1, 2, 2, 3, 4, 4, 5]));`
   return true;
 }
 console.log(arraysEqual([1, 2, 3], [1, 2, 3]));
-console.log(arraysEqual([1, 2], [2, 1]));`
+console.log(arraysEqual([1, 2], [2, 1]));`,
+        snippet: `const a = [1, 2, 3], b = [1, 2, 3];`
       }
 
 

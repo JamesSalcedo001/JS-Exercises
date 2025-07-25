@@ -62,6 +62,20 @@ window.addEventListener("load", () => {
   }
 });
 
+
+function copySnippet() {
+  const exercise = sections[sectionIndex].exercises[exerciseIndex];
+  const snippet = exercise.snippet;
+
+  if (snippet) {
+    navigator.clipboard.writeText(snippet)
+    .then(() => alert("Snippet Copied!"))
+    .catch(() => alert("Could Not Copy Snippet"))
+  } else {
+    alert("No Snippet Available For This Exercise")
+  }
+}
+
 function renderExercise() {
   const { title } = sections[sectionIndex];
   const { prompt } = sections[sectionIndex].exercises[exerciseIndex];
@@ -72,6 +86,13 @@ function renderExercise() {
   document.getElementById("answer-box").style.display = "none";
 
   if (editor) editor.setValue("");
+
+  const copyBtn = document.getElementById("copy-snippet-btn")
+  if (exerciseIndex.snippet) {
+    copyBtn.style.display = "inline-block"
+  } else {
+    copyBtn.style.display = "none";
+  }
 }
 
 function runCode() {
@@ -184,4 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("clear-editor")
     .addEventListener("click", clearEditor);
+  document
+    .getElementById("copy-snippet-btn")
+    .addEventListener("click", copySnippet);
 });
