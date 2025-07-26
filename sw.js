@@ -8,9 +8,9 @@ const FILES_TO_CACHE = [
   './sections.js',
   './data/tier1-foundations.js',
   './data/tier2-patterns.js',
-  './data/tier3-challenges.js',
-  './data/tier4-chaining.js',
-  './data/tier5-solving.js',
+  './data/tier3-mini-challenges.js',
+  './data/tier4-chaining-composition.js',
+  './data/tier5-problem-solving.js',
   './manifest.json',
   './Code_Icon.png'
 ];
@@ -19,7 +19,13 @@ const FILES_TO_CACHE = [
 self.addEventListener('install', (event) => {
   console.log('Installing service worker and caching assets');
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME).then(async (cache) => {
+      try {
+        await cache.addAll(FILES_TO_CACHE)
+      } catch (err) {
+        console.error("Failed to cache files: ", err);
+      }
+    })
   )
   self.skipWaiting();
 });

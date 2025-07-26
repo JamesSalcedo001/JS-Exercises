@@ -77,6 +77,34 @@ function copySnippet() {
   }
 }
 
+
+function renderSectionCards() {
+  const container = document.getElementById("section-list");
+  container.innerHTML = "";
+
+  sections.forEach((section, i) => {
+    const card = document.createElement("div");
+    card.className = "section-card"
+    card.innerText = section.title;
+    card.addEventListener("click", () => {
+      sectionIndex = i;
+      exerciseIndex = 0;
+      container.style.display = "none";
+      showExerciseUI()
+      renderExercise()
+    })
+    container.appendChild(card);
+  })
+}
+
+function showExerciseUI() {
+  document.getElementById("section-title").style.display = "block"
+  document.getElementById("question-text").style.display = "block"
+  document.getElementById("code-editor").style.display = "block"
+  document.querySelector(".button-row").style.display = "flex"
+  document.getElementById("output").style.display = "block"
+}
+
 function renderExercise() {
   const section = sections[sectionIndex];
   const exercise = section.exercises[exerciseIndex];
@@ -207,4 +235,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("copy-snippet-btn")
     .addEventListener("click", copySnippet);
+
+
+  document.getElementById("section-title").style.display = "block"
+  document.getElementById("question-text").style.display = "block"
+  document.getElementById("code-editor").style.display = "block"
+  document.querySelector(".button-row").style.display = "flex"
+  document.getElementById("output").style.display = "block"
+
+  renderSectionCards();
 });
