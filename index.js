@@ -98,11 +98,16 @@ function renderSectionCards() {
 }
 
 function showExerciseUI() {
+  document.getElementById("home-wrapper").style.display = "none";
   document.getElementById("section-title").style.display = "block"
   document.getElementById("question-text").style.display = "block"
   document.getElementById("code-editor").style.display = "block"
   document.querySelector(".button-row").style.display = "flex"
   document.getElementById("output").style.display = "block"
+  document.getElementById("touch-controls").style.display = "flex";
+  document.getElementById("dom-output").style.display = "block";
+  document.getElementById("back-to-home").style.display = "block";
+
 }
 
 function renderExercise() {
@@ -215,6 +220,8 @@ function toggleAnswer() {
   }
 }
 
+
+
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("run-btn").addEventListener("click", runCode);
   document
@@ -236,12 +243,31 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("copy-snippet-btn")
     .addEventListener("click", copySnippet);
 
+  document.getElementById("back-to-home").addEventListener("click", () => {
+    document.getElementById("home-wrapper").style.display = "flex";
+    document.getElementById("section-list").style.display = "flex";
+    document.getElementById("section-title").style.display = "none";
+    document.getElementById("question-text").style.display = "none";
+    document.getElementById("code-editor").style.display = "none";
+    document.querySelector(".button-row").style.display = "none";
+    document.getElementById("output").style.display = "none";
+    document.getElementById("touch-controls").style.display = "none";
+    document.getElementById("dom-output").style.display = "none";
+    document.getElementById("answer-box").style.display = "none";
+    document.getElementById("back-to-home").style.display = "none";
 
-  document.getElementById("section-title").style.display = "block"
-  document.getElementById("question-text").style.display = "block"
-  document.getElementById("code-editor").style.display = "block"
-  document.querySelector(".button-row").style.display = "flex"
-  document.getElementById("output").style.display = "block"
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+  });
+
+  document.getElementById("section-title").style.display = "none"
+  document.getElementById("question-text").style.display = "none"
+  document.getElementById("code-editor").style.display = "none"
+  document.querySelector(".button-row").style.display = "none"
+  document.getElementById("output").style.display = "none"
+  document.getElementById("touch-controls").style.display = "none";
+  document.getElementById("dom-output").style.display = "none";
+  document.getElementById("back-to-home").style.display = "none";
 
   renderSectionCards();
-});
+}); 
