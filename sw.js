@@ -1,52 +1,34 @@
-const CACHE_NAME = 'js-daily-exercises-v2';
-
+const CACHE_NAME = "js-daily-exercises-flight-v1";
 const FILES_TO_CACHE = [
-  './',
-  './index.html',
-  './styles.css',
-  './index.js',
-  './sections.js',
-  './data/tier1-foundations.js',
-  './data/tier2-patterns.js',
-  './data/tier3-mini-challenges.js',
-  './data/tier4-chaining-composition.js',
-  './data/tier5-problem-solving.js',
-  './manifest.json',
-  './Code_Icon.png'
+  "./", "./index.html", "./styles.css", "./index.js", "./editor.js", "./sections.js",
+  "./practice-worker.js", "./data/flight-practice.js",
+  "./data/tier1-foundations.js", "./data/tier2-patterns.js", "./data/tier3-mini-challenges.js",
+  "./data/tier4-chaining-composition.js", "./data/tier5-problem-solving.js",
+  "./manifest.json", "./Code_Icon.png", "./copy.svg", "./home.svg", "./terminal.svg", "./unlock.svg", "./skip-forward.svg",
+  "./vendor/skulpt/skulpt.min.js", "./vendor/skulpt/skulpt-stdlib.js", "./vendor/skulpt/LICENSE",
 ];
-
-
-self.addEventListener('install', (event) => {
-  console.log('Installing service worker and caching assets');
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(async (cache) => {
-      try {
-        await cache.addAll(FILES_TO_CACHE)
-      } catch (err) {
-        console.error("Failed to cache files: ", err);
-      }
-    })
-  )
-  self.skipWaiting();
+self.addEventListener("install", (event) => {
+  // An incomplete download must not be advertised as offline-ready.
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE)).then(() => self.skipWaiting()));
 });
-
-self.addEventListener('activate', (event) => {
-  console.log('🔄 Activating service worker');
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
-    }).then(() => self.clients.claim())
-  );
+self.addEventListener("activate", (event) => {
+  event.waitUntil(caches.keys().then((keys) => Promise.all(keys
+    .filter((key) => key.startsWith("js-daily-exercises-") && key !== CACHE_NAME)
+    .map((key) => caches.delete(key)))).then(() => self.clients.claim()));
 });
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
-  );
+self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+  // Optional Monaco stays online-only. The built-in editor needs no CDN resources.
+  if (event.request.method !== "GET" || url.origin !== self.location.origin) return;
+  event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
+    const saved = await cache.match(event.request);
+    return saved || fetch(event.request);
+  }));
+});
+self.addEventListener("message", (event) => {
+  if (event.data?.type !== "CHECK_OFFLINE") return;
+  event.waitUntil(caches.open(CACHE_NAME).then(async (cache) => {
+    const files = await Promise.all(FILES_TO_CACHE.map((file) => cache.match(file)));
+    event.ports[0]?.postMessage({ ready: files.every(Boolean) });
+  }));
 });

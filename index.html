@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0 , maximum-scale=1.0, user-scalable=no">
-    <title>JS Quiz</title>
+    <title>Daily Coding Practice</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme_color" content="#3b82f6" />
@@ -15,7 +15,20 @@
 </head>
 
 <body>
+    <p id="offline-status" role="status">Preparing offline practice…</p>
     <div id="home-wrapper">
+        <section id="flight-plan" aria-labelledby="flight-title">
+            <h1 id="flight-title">Your four-hour flight practice</h1>
+            <p>Beginner practice · 12 JavaScript activities + 12 Python activities.</p>
+            <p>Spend about 110 minutes on each language. Take a 10-minute break between languages,
+                then use the last 10 minutes to rewrite a helper without hints.</p>
+            <p>Predict → write → run → check → explain. Try for a few minutes before opening a hint.
+                The times are a guide; it is fine to repeat a block instead of finishing everything.</p>
+            <p id="flight-progress"></p>
+            <button id="resume-flight">Start flight practice</button>
+            <div id="flight-section-list" class="card-grid"></div>
+        </section>
+        <h2>Original JavaScript exercise library</h2>
         <div id="section-list" class="card-grid"></div>
     </div>
     <button id="back-to-home" class="icon-button" style="display: none;" aria-label="Back to Home">
@@ -27,7 +40,19 @@
     </button>
 
     <h2 id="section-title"></h2>
+    <p id="exercise-progress"></p>
     <div id="question-text"></div>
+    <section id="learning-panel" hidden aria-label="Practice guidance">
+        <p id="lesson"></p>
+        <details><summary>Expected printed output</summary><pre id="expected-output"></pre>
+            <p>The check compares output, not your algorithm. Use the extra challenge to test other inputs.</p></details>
+        <button id="hint-btn">Show a hint</button>
+        <ol id="hints"></ol>
+        <p id="stretch"></p>
+        <p id="block-note"></p>
+    </section>
+    <p id="editor-status" role="status"></p>
+    <p id="save-status" role="status"></p>
 
     <div id="code-editor" style="height: 300px; width: 100%;"></div>
 
@@ -38,6 +63,10 @@
     </div>
 
     <div class="button-row">
+        <button id="previous-btn" aria-label="Previous Exercise">Previous</button>
+        <button id="next-block-btn" hidden>Next practice block</button>
+        <button id="check-btn">Check output</button>
+        <button id="stop-btn" hidden>Stop code</button>
         <button id="run-btn" class="icon-button" aria-label="Run Code">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="feather feather-terminal">
@@ -68,11 +97,11 @@
         </button>
     </div>
 
+    <p id="check-result" role="status" aria-live="polite"></p>
     <div id="output"></div>
     <div id="dom-output" style="margin-top: 1rem;"></div>
     <div id="answer-box"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs/loader.js"></script>
 </body>
 
 </html>
