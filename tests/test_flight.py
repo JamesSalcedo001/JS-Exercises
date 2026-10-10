@@ -12,6 +12,11 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 
+def open_dropdown(page, identifier):
+    if page.locator('#' + identifier).get_attribute('open') is None:
+        page.locator('#' + identifier + ' > summary').click()
+
+
 class QuietHandler(SimpleHTTPRequestHandler):
     def log_message(self, *_):
         pass
@@ -44,6 +49,7 @@ def test_app():
             errors = []
             page.on('pageerror', lambda error: errors.append(str(error)))
             page.goto(url)
+            open_dropdown(page, 'flight-plan')
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
             page.wait_for_function('navigator.serviceWorker.controller !== null')
             assert page.locator('#section-list .section-card').count() == 5
@@ -67,7 +73,9 @@ def test_app():
             page.locator('#flight-section-list .section-card').first.click()
             for _ in range(3):
                 page.locator('#previous-btn').click()
+            open_dropdown(page, 'hints-details')
             page.locator('#hint-btn').click()
+            open_dropdown(page, 'hints-details')
             page.locator('#hint-btn').click()
             assert page.locator('#hints li').count() == 2
             assert page.locator('#hint-btn').is_disabled()
@@ -105,6 +113,7 @@ def test_app():
             print('PASS: failed checks, hints, JS/Python errors, loop limits, Stop, and draft navigation')
 
             # The original library still executes in the page context, including DOM work.
+            open_dropdown(page, 'legacy-library')
             page.locator('#section-list .section-card').first.click()
             assert '1 to 10' in page.locator('#question-text').inner_text()
             assert page.locator('#check-btn').is_hidden()
@@ -112,6 +121,7 @@ def test_app():
             page.locator('#run-btn').click()
             assert page.locator('#output').inner_text().strip() == '\n'.join(map(str, range(1, 11)))
             assert page.locator('#dom-output').inner_text() == 'DOM works'
+            open_dropdown(page, 'solution-details')
             page.locator('#answer-btn').click()
             assert 'for' in page.locator('#answer-box').inner_text()
             page.locator('#next-btn').click()
@@ -126,6 +136,7 @@ def test_app():
             page = context.new_page()
             page.on('pageerror', lambda error: errors.append(str(error)))
             page.goto(url)
+            open_dropdown(page, 'flight-plan')
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
             assert '24 of 24' in page.locator('#flight-progress').inner_text()
             page.locator('#resume-flight').click()
@@ -140,6 +151,7 @@ def test_app():
             page.wait_for_function('document.querySelector("#check-result").textContent.includes("Output matches")')
             assert page.locator('#output').inner_text().strip() == '18'
             page.reload()
+            open_dropdown(page, 'flight-plan')
             page.locator('#resume-flight').click()
             assert page.locator('#offline-editor').input_value() == 'console.log(18)'
             assert not errors, errors

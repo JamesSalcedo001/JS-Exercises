@@ -1,7 +1,7 @@
-const CACHE_NAME = "js-daily-exercises-flight-v1";
+const CACHE_NAME = "js-daily-exercises-path-v2";
 const FILES_TO_CACHE = [
   "./", "./index.html", "./styles.css", "./index.js", "./editor.js", "./sections.js",
-  "./practice-worker.js", "./data/flight-practice.js",
+  "./practice-worker.js", "./data/flight-practice.js", "./data/problem-solving.js",
   "./data/tier1-foundations.js", "./data/tier2-patterns.js", "./data/tier3-mini-challenges.js",
   "./data/tier4-chaining-composition.js", "./data/tier5-problem-solving.js",
   "./manifest.json", "./Code_Icon.png", "./copy.svg", "./home.svg", "./terminal.svg", "./unlock.svg", "./skip-forward.svg",
@@ -9,7 +9,10 @@ const FILES_TO_CACHE = [
 ];
 self.addEventListener("install", (event) => {
   // An incomplete download must not be advertised as offline-ready.
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE)).then(() => self.skipWaiting()));
+  // Fetch the new version instead of copying stale HTTP-cache responses into it.
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(
+    FILES_TO_CACHE.map((file) => new Request(file, { cache: "reload" }))
+  )).then(() => self.skipWaiting()));
 });
 self.addEventListener("activate", (event) => {
   event.waitUntil(caches.keys().then((keys) => Promise.all(keys

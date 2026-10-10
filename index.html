@@ -1,107 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0 , maximum-scale=1.0, user-scalable=no">
-    <title>Daily Coding Practice</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme_color" content="#3b82f6" />
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="Code_Icon.png">
-    <script type="module" src="index.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Coding Practice</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#101720">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="Code_Icon.png">
+  <script type="module" src="index.js"></script>
 </head>
-
 <body>
-    <p id="offline-status" role="status">Preparing offline practice…</p>
+  <header class="site-header">
+    <a class="brand" href="./">{ } <span>Daily coding practice</span></a>
+    <details id="device-menu" class="device-menu">
+      <summary><span class="status-dot"></span><span id="offline-badge">Preparing offline…</span></summary>
+      <div class="device-content">
+        <p id="offline-status" role="status">Preparing offline practice…</p>
+        <p id="save-status" role="status"></p>
+        <p id="editor-status" role="status"></p>
+        <p>Before your flight: open this updated app online, then test a reload in airplane mode on this device.</p>
+      </div>
+    </details>
+  </header>
+  <main>
     <div id="home-wrapper">
-        <section id="flight-plan" aria-labelledby="flight-title">
-            <h1 id="flight-title">Your four-hour flight practice</h1>
-            <p>Beginner practice · 12 JavaScript activities + 12 Python activities.</p>
-            <p>Spend about 110 minutes on each language. Take a 10-minute break between languages,
-                then use the last 10 minutes to rewrite a helper without hints.</p>
-            <p>Predict → write → run → check → explain. Try for a few minutes before opening a hint.
-                The times are a guide; it is fine to repeat a block instead of finishing everything.</p>
-            <p id="flight-progress"></p>
-            <button id="resume-flight">Start flight practice</button>
-            <div id="flight-section-list" class="card-grid"></div>
-        </section>
-        <h2>Original JavaScript exercise library</h2>
-        <div id="section-list" class="card-grid"></div>
+      <section class="home-intro">
+        <p class="eyebrow">YOUR PRACTICE PATH</p>
+        <h1>Start simple.<br>Learn to solve independently.</h1>
+        <p class="muted">JavaScript and Python, from the basics to your first DSA patterns.</p>
+      </section>
+      <section class="path-picker" aria-label="Choose your practice">
+        <div class="picker-fields">
+          <label>Language<select id="track-select"><option value="javascript">JavaScript</option><option value="python">Python</option></select></label>
+          <label>Starting point<select id="level-select"></select></label>
+        </div>
+        <div class="level-overview"><span id="level-label" class="pill"></span><p id="level-description"></p></div>
+        <p id="path-progress" class="muted"></p>
+        <div class="home-actions"><button id="start-practice" class="primary">Practice this level →</button><button id="resume-practice" hidden>Resume my practice</button></div>
+        <label class="checkbox-label"><input id="use-starter" type="checkbox"> Use starter code on new activities <span class="muted">(otherwise start blank)</span></label>
+      </section>
+      <div class="home-dropdowns">
+        <details id="learning-path"><summary>Browse the learning path <span>7 levels per language</span></summary><div id="path-section-list" class="section-list"></div></details>
+        <details id="practice-method"><summary>How to build independence</summary><ol class="short-list"><li>Write your plan before touching the editor.</li><li>Try your own approach; reveal one hint when stuck.</li><li>Test edge cases, then explain why it works.</li><li>Retry from blank before you move on.</li></ol><p class="muted">Knowing the concept is the starting point. Repeatedly writing and debugging it is the practice.</p></details>
+        <details id="flight-plan"><summary>Four-hour flight session <span>12 JS + 12 Python warm-ups</span></summary><div class="dropdown-body"><p class="muted">110 minutes per language, a 10-minute break, then 10 minutes of review.</p><p id="flight-progress"></p><button id="resume-flight">Start flight practice</button><div id="flight-section-list" class="section-list"></div></div></details>
+        <details id="legacy-library"><summary>Original JavaScript library <span>331 exercises</span></summary><div id="section-list" class="section-list"></div></details>
+      </div>
     </div>
-    <button id="back-to-home" class="icon-button" style="display: none;" aria-label="Back to Home">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-            stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-        </svg>
-    </button>
-
-    <h2 id="section-title"></h2>
-    <p id="exercise-progress"></p>
-    <div id="question-text"></div>
-    <section id="learning-panel" hidden aria-label="Practice guidance">
-        <p id="lesson"></p>
-        <details><summary>Expected printed output</summary><pre id="expected-output"></pre>
-            <p>The check compares output, not your algorithm. Use the extra challenge to test other inputs.</p></details>
-        <button id="hint-btn">Show a hint</button>
-        <ol id="hints"></ol>
-        <p id="stretch"></p>
-        <p id="block-note"></p>
+    <section id="practice-workspace" hidden aria-label="Coding practice">
+      <div class="workspace-nav"><button id="back-to-home" class="quiet">← Learning path</button><label class="exercise-picker">Activity<select id="exercise-select"></select></label></div>
+      <div class="workspace-heading"><p id="section-title" class="eyebrow"></p><h1 id="activity-title"></h1><p id="exercise-progress" class="muted"></p></div>
+      <div class="workspace-grid">
+        <div class="coding-column">
+          <section class="task-card" aria-label="Your task"><h2>Your task</h2><p id="question-text"></p><code id="function-signature" hidden></code><p id="return-note" class="muted" hidden>Return the value. Keep inputs unchanged.</p><p id="task-example" class="example-line" hidden></p></section>
+          <details id="planning-details"><summary>1 · Sketch your approach</summary><label class="field-label" for="plan-input">Inputs → output → steps</label><textarea id="plan-input" rows="3" placeholder="What comes in? What should come out? What are the smallest steps?"></textarea></details>
+          <section class="editor-card" aria-label="Write and run code">
+            <div class="editor-heading"><h2>2 · Write your solution</h2><details id="editor-tools"><summary>Editor tools</summary><div class="tool-menu"><button id="cursor-left" aria-label="Move cursor left">← Cursor</button><button id="cursor-right" aria-label="Move cursor right">Cursor →</button><button id="clear-editor">Clear code</button><button id="restore-draft" hidden>Restore previous draft</button></div></details></div>
+            <p id="save-warning" class="warning" role="status" hidden></p>
+            <div id="code-editor"></div>
+            <div class="run-actions"><button id="run-btn">Run code</button><button id="check-btn" class="primary">Check output</button><button id="stop-btn" hidden>Stop code</button></div>
+          </section>
+          <section class="output-card" aria-label="Run results"><div class="output-heading"><h2>3 · Test & reflect</h2><p id="check-result" role="status" aria-live="polite"></p></div><pre id="output" tabindex="0">Run your code to see output here.</pre><div id="dom-output"></div><details id="case-results" hidden><summary>Test case results</summary><div id="case-list"></div></details></section>
+          <details id="reflection-details"><summary>Explain it in your own words</summary><p id="stretch"></p><label class="field-label" for="reflection-input">Why does it work? What edge case matters? What is the time/space cost?</label><textarea id="reflection-input" rows="3" placeholder="Write a short explanation you could give without looking at the solution."></textarea><button id="retry-blank" class="quiet">Retry from blank</button></details>
+          <div class="exercise-navigation"><button id="previous-btn">← Previous</button><button id="next-btn">Next activity →</button><button id="next-block-btn" class="primary" hidden>Next level →</button></div><p id="block-note" class="muted"></p>
+        </div>
+        <aside id="support-panel" aria-label="Optional help">
+          <h2 class="support-heading">Help, when you need it</h2>
+          <div id="learning-panel">
+            <details id="concept-details"><summary>Concept refresher</summary><p id="lesson"></p><ul id="constraints"></ul></details>
+            <details id="examples-details"><summary>Examples & edge cases</summary><pre id="expected-output"></pre><div id="example-list"></div><p id="check-explanation" class="muted"></p></details>
+            <details id="hints-details"><summary>Hints, one at a time</summary><p class="muted">Start with a plan. Take the smallest nudge you need.</p><button id="hint-btn">Show a hint</button><ol id="hints"></ol></details>
+          </div>
+          <details id="starter-details"><summary>Starter code</summary><pre id="starter-code"></pre><button id="load-snippet-btn">Load starter into editor</button><button id="copy-snippet-btn">Copy starter</button><p id="starter-note" class="muted"></p></details>
+          <details id="solution-details"><summary>One possible solution</summary><p class="muted">Compare approaches after making your own attempt. Then retry from blank.</p><button id="answer-btn">Reveal solution</button><pre id="answer-box" hidden></pre></details>
+        </aside>
+      </div>
     </section>
-    <p id="editor-status" role="status"></p>
-    <p id="save-status" role="status"></p>
-
-    <div id="code-editor" style="height: 300px; width: 100%;"></div>
-
-    <div class="touch-controls" id="touch-controls">
-        <button id="cursor-left">◀</button>
-        <button id="cursor-right">▶</button>
-        <button id="clear-editor">🗑 Clear</button>
-    </div>
-
-    <div class="button-row">
-        <button id="previous-btn" aria-label="Previous Exercise">Previous</button>
-        <button id="next-block-btn" hidden>Next practice block</button>
-        <button id="check-btn">Check output</button>
-        <button id="stop-btn" hidden>Stop code</button>
-        <button id="run-btn" class="icon-button" aria-label="Run Code">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="feather feather-terminal">
-                <polyline points="4 17 10 11 4 5" />
-                <line x1="12" y1="19" x2="20" y2="19" />
-            </svg>
-        </button>
-        <button id="next-btn" class="icon-button" aria-label="Next Exercise">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="feather feather-skip-forward">
-                <polygon points="5 4 15 12 5 20 5 4" />
-                <line x1="19" y1="5" x2="19" y2="19" />
-            </svg>
-        </button>
-        <button id="answer-btn" class="icon-button" aria-label="Show Answer">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="feather feather-unlock">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-            </svg>
-        </button>
-        <button id="copy-snippet-btn" class="icon-button" aria-label="Copy Snippet" style="display: none;">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-            </svg>
-        </button>
-    </div>
-
-    <p id="check-result" role="status" aria-live="polite"></p>
-    <div id="output"></div>
-    <div id="dom-output" style="margin-top: 1rem;"></div>
-    <div id="answer-box"></div>
-
+  </main>
+  <footer>Practice locally. Build the habit. <span>No accounts or AI prompts required.</span></footer>
 </body>
-
 </html>

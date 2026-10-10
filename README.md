@@ -1,36 +1,61 @@
 # Daily Coding Practice
 
-A static JavaScript exercise app with a four-hour beginner flight path. The
-original 331 JavaScript exercises remain in `data/tier1-foundations.js` through
-`data/tier5-problem-solving.js`. No framework, package installation, backend,
-account, or build step is needed.
+A static practice app for building coding independence in JavaScript and Python.
+No application packages, account, backend, or build step are required. The original
+331 JavaScript exercises and the 24 flight activities remain available.
 
-## Four-hour practice plan
+## Learning path
 
-The new path is in `data/flight-practice.js`. Each of its 24 activities includes
-a short lesson, starter code, two gradual hints, expected output, one possible
-answer, and a follow-up input or question. Estimate your result before running,
-try before revealing hints, and explain your code after checking it.
+Choose a language and level from the home-page dropdowns. There are **24 activities
+per language**: 12 foundation activities followed by 12 function-based challenges.
+Start at the beginning to reinforce your fundamentals, or choose a later level.
 
-| Block | Time | Skills |
-| --- | ---: | --- |
-| JavaScript 1 | 35 min | Variables, text, decisions, boundary debugging |
-| JavaScript 2 | 35 min | Arrays, loops, totals, counting, filtering |
-| JavaScript 3 | 40 min | Functions, objects, travel-budget helper |
-| Break | 10 min | Rest before switching languages |
-| Python 1 | 35 min | Variables, text, indentation, comparisons |
-| Python 2 | 35 min | Lists, range, counters, filtering |
-| Python 3 | 40 min | Functions, dictionaries, study-goal helper |
-| Review | 10 min | Rewrite a helper without hints; note your next practice topic |
+| Level | Focus |
+| --- | --- |
+| 1 · Gentle start | Values, text, decisions, boundary bugs |
+| 2 · Lists & loops | Totals, counting, filtering, repeated work |
+| 3 · Functions & small projects | Parameters, returns, objects/dictionaries |
+| 4 · Arrays & strings | Maximum, manual reverse, linear search |
+| 5 · Maps & sets | Frequencies, duplicate detection, anagrams |
+| 6 · Problem-solving patterns | Two pointers, stacks, binary search |
+| 7 · Interview practice | Two sum, stable partitioning, sliding windows |
 
-These are pacing estimates, not timers or a requirement to finish. Repeat a
-block if needed. Output checks compare printed results, not algorithm correctness;
-the follow-up inputs help you check whether your solution generalizes.
+This is a bridge into DSA and interview practice, not a complete algorithms course.
+Advanced topics such as trees, graphs, and dynamic programming are later steps.
 
-Drafts, current positions, and output-check progress save to localStorage in the
-same browser on the same device. Resume flight practice returns to your last
-flight activity. Private browsing or clearing site data can discard your work.
-If storage is unavailable or full, the app displays a warning to copy your code.
+The workspace keeps the task, editor, and results visible. Concept refreshers,
+examples, hints, starter code, and solutions live in closed dropdowns. The default
+is a blank editor; starter code is opt-in. You can save a plan before coding,
+explain your result afterward, and retry from blank. The previous draft is
+recoverable through Editor tools after clearing or restarting.
+
+Checks in levels 1–3 compare printed output. Levels 4–7 call the requested function
+on multiple inputs, compare returned values and types, and verify that inputs stay
+unchanged. The 24 new JS/Python challenges contain 144 cases in total, including
+empty lists, negative values, duplicates, boundaries, and invalid window sizes.
+Dictionary/object key order does not matter; array order does. The tests do not
+measure complexity or prove correctness for every possible input. Explain the
+suggested time/space cost and try extra inputs after passing.
+
+The app records whether a passing attempt used its starter code, hints, or solution.
+Retry from blank starts a fresh attempt. Drafts, plans, reflections, progress, and
+resume positions save in the same browser on the same device. Private browsing
+or clearing site data can discard them. A visible warning appears when storage
+is unavailable or full. Existing drafts and output-check progress are preserved.
+
+## Four-hour flight session
+
+The original flight session remains under its own home-page dropdown:
+
+| Block | Time |
+| --- | ---: |
+| JavaScript foundations 1–3 | 110 min |
+| Break | 10 min |
+| Python foundations 1–3 | 110 min |
+| Rewrite a helper without hints and review | 10 min |
+
+Times are guides. Repeat a level if needed instead of racing to finish. The full
+seven-level learning path extends beyond this flight session.
 
 ## Run locally
 
@@ -39,64 +64,64 @@ cd /workspace/JS-Exercises
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-On your own computer, use your checkout's directory instead. Open the app at the
-local server's address in your browser. ES modules and service workers require
-HTTP serving; opening `index.html` as a file is not supported. Hosted installation
-requires HTTPS. Codex Cloud's machine and running processes will not be available
-on your flight without connectivity; prepare the app on your actual flight device.
+Use your own checkout's directory on your computer. Open the local server's address
+in a browser. ES modules and service workers require HTTP serving; opening
+`index.html` as a file is not supported. Hosted installation requires HTTPS.
 
-## Prepare for the flight
+## Before boarding
 
-1. Serve or publish **this updated version**, then open it on your flight device
-   while connected. Repository edits do not update an existing hosted site.
-2. Wait for **Offline ready**. This confirms the local app files and Python runtime
-   have been cached. You do not need to open every activity separately.
-3. Open a JavaScript and a Python activity and run their starter/answer code.
+1. Open the updated site on your actual flight device while connected. Repository
+   changes do not update a hosted site until its deployment completes.
+2. Wait for **Offline ready** in the header. Open that dropdown for device details.
+   If the old layout appears after an update, reload again once the new files save.
+3. Run one JavaScript and one Python activity.
 4. Switch to airplane mode, close and reopen the tab at the **same address**, and
-   run both languages again. Confirm your draft resumes before boarding.
-5. Use the same browser and address on the flight. Do not clear its site data.
+   run both languages again. Check that your draft resumes.
+5. Keep the same browser and address on the flight; do not clear its site data.
 
-The built-in text editor works offline and supports Tab indentation. Monaco
-0.52.2 provides optional online highlighting and formatting; a missing CDN never
-blocks the built-in editor. All Python runtime files are stored in the repository
-and cached locally. Skulpt 1.2.0 runs the beginner Python activities in Python 3
-mode; it is a Python subset, not a full CPython installation with pip packages,
-native extensions, or filesystem access. No Python installation is needed to
-practice in the app.
+Codex Cloud requires connectivity; prepare the actual app on your flight device.
+All practice, including the new DSA challenges, runs locally after preparation.
 
-New flight activities run in disposable Web Workers with a five-second limit
-and a Stop button, so mistaken loops do not freeze the page. The original library
-keeps its existing page-context JavaScript execution behavior. This is a personal
-coding playground, not a security sandbox for code from strangers.
+The built-in editor works offline and supports Tab indentation. Monaco 0.52.2 is
+an optional online enhancement; a failed CDN cannot block practice. Python runs
+through the checked-in Skulpt 1.2.0 runtime in Python 3 mode. It supports the syntax
+used here, not a full CPython environment with pip, native extensions, or filesystem
+access. You do not need to install Python to use the browser activities.
 
-## Development and validation
+Guided activities run in disposable Web Workers with a five-second limit and a
+Stop button. The original library retains page-context JavaScript execution for
+DOM access. This is a personal coding playground, not a security sandbox.
 
-`sections.js` combines the original tiers and the new flight blocks. `index.js`
-handles navigation, drafts, hints, output checks, and offline readiness;
-`editor.js` handles the built-in editor and optional Monaco. `practice-worker.js`
-runs the new activities. `sw.js` caches the complete offline app. `exercises.js`
-is an older commented-out collection and is not imported.
+## Repository structure
 
-For a quick manual check, run a solution in each language, change it to an
-incorrect result, check hint/answer navigation, reload to verify saved drafts,
-and test a fresh tab with networking disabled. Also run an original tier exercise.
+- `data/tier1-foundations.js` through `tier5-problem-solving.js`: original library.
+- `data/flight-practice.js`: the 24 foundation/flight activities.
+- `data/problem-solving.js`: 24 JS/Python challenges, cases, hints, and answers.
+- `sections.js`: aggregator; original tier order and existing activity IDs stay stable.
+- `index.js`: language/level navigation, saved work, help, checks, and offline readiness.
+- `editor.js`: built-in editor and optional Monaco.
+- `practice-worker.js`: JavaScript/Python execution and function-case judging.
+- `sw.js`: complete offline app cache.
+- `vendor/skulpt/`: pinned Python runtime and license.
+- `exercises.js`: older commented-out collection, not imported by the app.
 
-The browser regression test uses Python Playwright, Chromium, and Node (to read
-the exercise data). These tools are available in the prepared Codex Cloud runtime.
-If running elsewhere, install the test tools separately; they are not application
-dependencies. Set `CHROMIUM_PATH` if Chromium is at a different location.
+Bump `CACHE_NAME` in `sw.js` whenever cached application assets change so existing
+cache-first installations receive updates. Preserve the vendored runtime license.
+
+## Validation
+
+Tests use Python Playwright, Chromium, and Node to read exercise metadata. These
+are available in the Codex Cloud environment and are not application dependencies.
+Set `CHROMIUM_PATH` if Chromium is installed somewhere else.
 
 ```sh
 python3 tests/test_flight.py
 python3 tests/test_offline_setup.py
+python3 tests/test_learning_path.py
 ```
 
-The test starts its own temporary server, runs all 24 reference answers, checks
-incorrect output, Python errors, hints, drafts, loop limits, Stop, and the original
-library, then shuts down the server and verifies offline JS/Python in a new tab.
-The setup regression test checks upgrades from the old service worker, incomplete
-downloads, unavailable browser storage, block transitions, and a 320px viewport.
-
-When changing cached application assets, bump `CACHE_NAME` in `sw.js` so an
-existing cache-first installation receives the new files. Keep the vendored
-runtime's license and version information in `vendor/skulpt/`.
+The tests run all 48 guided reference answers; exercise errors, hints, draft
+restoration, loop limits, and original-library behavior; check all 144 new function
+cases; and verify a fresh offline tab after stopping the server. Setup checks cover
+old service-worker upgrades, incomplete downloads, disabled browser storage,
+per-language navigation, and small-screen overflow.

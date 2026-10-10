@@ -1,187 +1,267 @@
 import { sections } from "./sections.js";
 import { createEditor } from "./editor.js";
-
 const $ = (id) => document.getElementById(id);
 const flightSections = sections.filter((section) => section.id?.startsWith("flight-"));
-const storageKey = "daily-coding-practice-v1";
-let state = { drafts: {}, completed: {}, positions: {}, lastFlight: null };
+const pathFor = (language) => sections.filter((s) => s.id && s.language === language).sort((a, b) => a.stage - b.stage);
+const storageKey = "daily-coding-practice-v1"; // Keep existing drafts and completion records.
+let state = { drafts: {}, completed: {}, positions: {}, plans: {}, reflections: {}, independent: {}, helpUsage: {}, backups: {}, lastPractice: {}, lastFlight: null, language: "javascript", useStarter: false };
 let storageAvailable = true;
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey));
   if (saved && typeof saved === "object") {
-    for (const key of ["drafts", "completed", "positions"]) {
+    for (const key of ["drafts", "completed", "positions", "plans", "reflections", "independent", "helpUsage", "backups", "lastPractice"]) {
       if (saved[key] && typeof saved[key] === "object" && !Array.isArray(saved[key])) state[key] = saved[key];
     }
     state.lastFlight = typeof saved.lastFlight === "string" ? saved.lastFlight : null;
+    state.language = saved.language === "python" ? "python" : "javascript";
+    state.useStarter = saved.useStarter === true;
   }
 } catch { storageAvailable = false; }
-let sectionIndex = 0;
-let exerciseIndex = 0;
-let inExercise = false;
-let editor;
-let hintIndex = 0;
-let activeRun;
+const oldResume = sections.find((s) => s.exercises.some((e) => e.id && e.id === state.lastFlight));
+if (oldResume && !state.lastPractice[oldResume.language]) state.lastPractice[oldResume.language] = state.lastFlight;
+let sectionIndex = 0, exerciseIndex = 0, hintIndex = 0;
+let inExercise = false, changingExercise = false;
+let editor, activeRun;
+let navigationMode = "path";
 const currentSection = () => sections[sectionIndex];
 const currentExercise = () => currentSection().exercises[exerciseIndex];
 const currentKey = () => currentExercise().id || `legacy:${sectionIndex}:${exerciseIndex}`;
-const isFlight = () => Boolean(currentExercise().id);
-
+const isGuided = () => Boolean(currentExercise().id);
+const help = () => state.helpUsage[currentKey()] || (state.helpUsage[currentKey()] = { hints: 0, solution: false, starter: false });
+const format = (value, language = "javascript") => {
+  const text = JSON.stringify(value);
+  if (text === undefined) return "undefined";
+  if (language !== "python") return text;
+  // Preserve string contents: translate only standalone JSON values for Python examples.
+  if (value === null) return "None";
+  if (value === true) return "True";
+  if (value === false) return "False";
+  if (Array.isArray(value)) return "[" + value.map((v) => format(v, language)).join(", ") + "]";
+  if (value && typeof value === "object") return "{" + Object.entries(value).map(([k, v]) => `${JSON.stringify(k)}: ${format(v, language)}`).join(", ") + "}";
+  return text;
+};
 function persist() {
   try { localStorage.setItem(storageKey, JSON.stringify(state)); storageAvailable = true; }
   catch { storageAvailable = false; }
-  $("save-status").textContent = storageAvailable
-    ? "Drafts and output-check progress save in this browser on this device."
-    : "Browser storage is unavailable or full. Your latest edits may not be saved; copy your code before closing.";
+  const warning = "Browser storage is unavailable or full. Your latest edits may not be saved; copy your code before closing.";
+  $("save-status").textContent = storageAvailable ? "Drafts, plans, and progress save in this browser on this device." : warning;
+  $("save-warning").hidden = storageAvailable;
+  $("save-warning").textContent = warning;
 }
 function busy(value) {
-  $("run-btn").disabled = value;
-  $("check-btn").disabled = value;
-  $("stop-btn").hidden = !value;
+  $("run-btn").disabled = value; $("check-btn").disabled = value; $("stop-btn").hidden = !value;
 }
 function cancelRun() { if (activeRun) activeRun.finish(null); }
 function updateProgress() {
-  const total = flightSections.reduce((n, section) => n + section.exercises.length, 0);
-  const done = flightSections.reduce((n, section) => n + section.exercises.filter((e) => state.completed[e.id]).length, 0);
-  $("flight-progress").textContent = `${done} of ${total} activity outputs checked · 220 minutes of practice + 20 minutes of breaks/review`;
+  const exercises = flightSections.flatMap((s) => s.exercises);
+  $("flight-progress").textContent = `${exercises.filter((e) => state.completed[e.id]).length} of ${exercises.length} outputs checked`;
   $("resume-flight").textContent = state.lastFlight ? "Resume flight practice" : "Start flight practice";
+  const track = pathFor(state.language).flatMap((s) => s.exercises);
+  $("path-progress").textContent = `${track.filter((e) => state.completed[e.id]).length}/${track.length} checked · ${track.filter((e) => state.independent[e.id]).length} solved without help`;
+}
+function selectLevel() {
+  const section = sections.find((s) => s.id === $("level-select").value);
+  if (!section) return;
+  $("level-label").textContent = section.level;
+  $("level-description").textContent = section.description;
+}
+function makeCard(section, index, mode) {
+  const card = document.createElement("button");
+  card.className = "section-card";
+  const title = document.createElement("strong"); title.textContent = section.title;
+  const detail = document.createElement("span");
+  detail.textContent = section.id ? `${section.exercises.filter((e) => state.completed[e.id]).length}/${section.exercises.length} checked` : `${section.exercises.length} exercises`;
+  card.append(title, detail);
+  card.addEventListener("click", () => enterSection(index, mode));
+  return card;
+}
+function renderPathPicker() {
+  $("track-select").value = state.language;
+  $("use-starter").checked = state.useStarter;
+  const previous = $("level-select").value;
+  const track = pathFor(state.language);
+  $("level-select").replaceChildren();
+  $("path-section-list").replaceChildren();
+  for (const section of track) {
+    const option = document.createElement("option"); option.value = section.id;
+    option.textContent = section.title.replace(/^(JavaScript|Python) /, "");
+    $("level-select").appendChild(option);
+    $("path-section-list").appendChild(makeCard(section, sections.indexOf(section), "path"));
+  }
+  const lastId = state.lastPractice[state.language];
+  const resumeSection = track.find((s) => s.exercises.some((e) => e.id === lastId));
+  if (resumeSection) $("level-select").value = resumeSection.id;
+  else if (track.some((s) => s.id === previous)) $("level-select").value = previous;
+  $("resume-practice").hidden = !resumeSection;
+  $("resume-practice").textContent = resumeSection ? `Resume level ${resumeSection.stage}` : "Resume my practice";
+  selectLevel(); updateProgress();
 }
 function renderSectionCards() {
-  $("section-list").replaceChildren();
-  $("flight-section-list").replaceChildren();
+  $("section-list").replaceChildren(); $("flight-section-list").replaceChildren();
   sections.forEach((section, index) => {
-    const card = document.createElement("button");
-    card.className = "section-card";
-    const label = document.createElement("strong");
-    label.textContent = section.title;
-    card.appendChild(label);
-    const detail = document.createElement("span");
-    if (section.id) {
-      const done = section.exercises.filter((e) => state.completed[e.id]).length;
-      detail.textContent = `${section.minutes} min · ${done}/${section.exercises.length} checked\n${section.description}`;
-    } else detail.textContent = `${section.exercises.length} exercises`;
-    card.appendChild(detail);
-    card.addEventListener("click", () => {
-      sectionIndex = index;
-      const position = state.positions[section.id || `legacy:${index}`];
-      exerciseIndex = Number.isInteger(position) && position >= 0 && position < section.exercises.length ? position : 0;
-      openExercise();
-    });
-    $(section.id ? "flight-section-list" : "section-list").appendChild(card);
+    if (!section.id) $("section-list").appendChild(makeCard(section, index, "legacy"));
+    else if (section.id.startsWith("flight-")) $("flight-section-list").appendChild(makeCard(section, index, "flight"));
   });
-  updateProgress();
+  renderPathPicker();
+}
+function enterSection(index, mode, activityId) {
+  sectionIndex = index; navigationMode = mode;
+  const section = currentSection();
+  const position = state.positions[section.id || `legacy:${index}`];
+  const specific = activityId ? section.exercises.findIndex((e) => e.id === activityId) : -1;
+  exerciseIndex = specific >= 0 ? specific : Number.isInteger(position) && position >= 0 && position < section.exercises.length ? position : 0;
+  openExercise();
+}
+function nextSection() {
+  const order = navigationMode === "flight" ? flightSections : navigationMode === "path" ? pathFor(currentSection().language) : [];
+  return order[order.indexOf(currentSection()) + 1];
 }
 function showExerciseUI(show) {
   $("home-wrapper").hidden = show;
-  $("home-wrapper").style.display = show ? "none" : "flex";
-  for (const id of ["section-title", "exercise-progress", "question-text", "code-editor", "editor-status", "save-status", "output", "dom-output", "touch-controls", "back-to-home", "check-result"]) {
-    $(id).style.display = show ? (id === "touch-controls" ? "flex" : "block") : "none";
-  }
-  document.querySelector(".button-row").style.display = show ? "flex" : "none";
-  $("learning-panel").hidden = !show || !isFlight();
-  if (!show) $("answer-box").style.display = "none";
+  $("practice-workspace").hidden = !show;
 }
 function openExercise() {
-  cancelRun();
-  inExercise = true;
-  showExerciseUI(true);
-  renderExercise();
+  cancelRun(); inExercise = true; showExerciseUI(true); renderExercise();
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+function updateStarterControl() {
+  $("load-snippet-btn").disabled = Boolean(editor.getValue().trim());
+  $("starter-note").textContent = editor.getValue().trim() ? "Your draft stays intact. Clear the editor before loading a starter." : "A starter gives you structure, not the solution.";
+  $("restore-draft").hidden = typeof state.backups[currentKey()] !== "string";
 }
 function renderExercise() {
-  const section = currentSection();
-  const exercise = currentExercise();
+  changingExercise = true;
+  const section = currentSection(), exercise = currentExercise();
+  if (section.language) state.language = section.language;
   $("section-title").textContent = section.title;
-  $("exercise-progress").textContent = `Exercise ${exerciseIndex + 1} of ${section.exercises.length}${exercise.minutes ? ` · about ${exercise.minutes} min · ${section.language === "python" ? "Python" : "JavaScript"}` : ""}${state.completed[currentKey()] ? " · output checked ✓" : ""}`;
-  $("question-text").textContent = exercise.title ? `${exercise.title}\n\n${exercise.prompt}` : exercise.prompt;
-  $("output").textContent = "";
-  $("dom-output").replaceChildren();
-  $("answer-box").style.display = "none";
-  $("check-result").textContent = "";
-  $("copy-snippet-btn").style.display = exercise.snippet ? "inline-flex" : "none";
-  $("check-btn").hidden = !isFlight();
-  $("learning-panel").hidden = !isFlight();
+  $("activity-title").textContent = exercise.title || `Exercise ${exerciseIndex + 1}`;
+  $("exercise-progress").textContent = `${exerciseIndex + 1} / ${section.exercises.length}${exercise.minutes ? ` · ~${exercise.minutes} min` : ""}${state.completed[currentKey()] ? state.independent[currentKey()] ? " · Solved without help" : " · Checked" : ""}`;
+  $("question-text").textContent = exercise.prompt;
+  $("function-signature").hidden = !exercise.signature;
+  $("function-signature").textContent = exercise.signature || "";
+  $("return-note").hidden = !exercise.tests;
+  $("task-example").hidden = !exercise.tests;
+  $("task-example").textContent = exercise.tests ? `${exercise.functionName}(${exercise.tests[0].args.map((arg) => format(arg, section.language)).join(", ")}) → ${format(exercise.tests[0].expected, section.language)}` : "";
+  $("output").textContent = "Run your code to see output here."; $("dom-output").replaceChildren(); $("check-result").textContent = "";
+  $("answer-box").hidden = true; $("answer-btn").textContent = "Reveal solution";
+  $("case-results").hidden = true; $("case-list").replaceChildren();
+  for (const detail of document.querySelectorAll("#support-panel details, #planning-details, #reflection-details, #case-results")) detail.open = false;
+  $("check-btn").hidden = !isGuided();
+  $("check-btn").textContent = exercise.tests ? "Check tests" : "Check output";
+  $("learning-panel").hidden = !isGuided();
   $("lesson").textContent = exercise.lesson || "";
+  $("constraints").replaceChildren();
+  for (const text of exercise.constraints || []) { const item = document.createElement("li"); item.textContent = text; $("constraints").appendChild(item); }
+  $("expected-output").hidden = Boolean(exercise.tests);
   $("expected-output").textContent = exercise.expected || "";
-  $("stretch").textContent = exercise.stretch ? `Try another input: ${exercise.stretch}` : "";
-  $("hints").replaceChildren();
-  hintIndex = 0;
-  $("hint-btn").disabled = false;
-  $("hint-btn").textContent = "Show a hint";
+  $("example-list").replaceChildren();
+  for (const test of exercise.tests || []) {
+    const row = document.createElement("p"); row.className = "case-row";
+    row.textContent = `${test.args.map((arg) => format(arg, section.language)).join(", ")} → ${format(test.expected, section.language)}`;
+    $("example-list").appendChild(row);
+  }
+  $("check-explanation").textContent = exercise.tests ? "Checks call your function on each input and compare the returned value. They do not measure algorithmic complexity." : "Checks compare printed output. Try another input to test your reasoning.";
+  $("stretch").textContent = exercise.stretch || "Explain your approach, then try a different input.";
+  $("plan-input").value = typeof state.plans[currentKey()] === "string" ? state.plans[currentKey()] : "";
+  $("reflection-input").value = typeof state.reflections[currentKey()] === "string" ? state.reflections[currentKey()] : "";
+  $("hints").replaceChildren(); hintIndex = 0; $("hint-btn").disabled = false; $("hint-btn").textContent = "Show a hint";
+  $("starter-details").hidden = !exercise.snippet;
+  $("starter-code").textContent = exercise.snippet || "";
   $("previous-btn").disabled = exerciseIndex === 0;
-  $("next-btn").disabled = Boolean(section.id) && exerciseIndex === section.exercises.length - 1;
-  const blockFinished = Boolean(section.id) && exerciseIndex === section.exercises.length - 1;
-  $("next-block-btn").hidden = !blockFinished || sectionIndex === sections.length - 1;
-  $("block-note").textContent = !blockFinished ? "" : section.id === "flight-js-project"
-    ? "Last JavaScript activity. Take a 10-minute break before the Python blocks."
-    : section.id === "flight-py-project"
-      ? "Last Python activity. Spend the final 10 minutes rewriting a helper without hints and noting what to practice next."
-      : "Last activity in this block. When you are ready, continue to the next block or return home to choose one.";
+  const last = exerciseIndex === section.exercises.length - 1;
+  $("next-btn").disabled = Boolean(section.id) && last;
+  $("next-block-btn").hidden = !last || !nextSection();
+  $("block-note").textContent = !last ? "" : navigationMode === "flight" && section.id === "flight-js-project"
+    ? "Take a 10-minute break before Python."
+    : navigationMode === "flight" && section.id === "flight-py-project" ? "Use the last 10 minutes to rewrite a helper without hints."
+      : "Finish by explaining your approach or retrying from blank. Move on when you feel ready.";
+  $("exercise-select").replaceChildren();
+  section.exercises.forEach((entry, i) => { const option = document.createElement("option"); option.value = i; option.textContent = `${i + 1}. ${entry.title || entry.prompt.slice(0, 65)}`; $("exercise-select").appendChild(option); });
+  $("exercise-select").value = exerciseIndex;
   editor.setLanguage(section.language || "javascript");
   const draft = state.drafts[currentKey()];
-  editor.setValue(typeof draft === "string" ? draft : (isFlight() ? exercise.snippet || "" : ""));
+  const starter = state.useStarter && isGuided() ? exercise.snippet || "" : "";
+  editor.setValue(typeof draft === "string" ? draft : starter);
+  if (typeof draft !== "string" && starter) help().starter = true;
   state.positions[section.id || `legacy:${sectionIndex}`] = exerciseIndex;
-  if (isFlight()) state.lastFlight = exercise.id;
-  persist();
+  if (isGuided()) {
+    state.lastPractice[section.language] = exercise.id;
+    if (section.id.startsWith("flight-")) state.lastFlight = exercise.id;
+  }
+  changingExercise = false;
+  updateStarterControl(); persist();
 }
-function executeWorker(code, language) {
+function executeWorker(code, exercise, check) {
   return new Promise((resolve) => {
     let worker;
     try { worker = new Worker(new URL("./practice-worker.js", import.meta.url)); }
     catch (error) { resolve({ output: "", error: String(error) }); return; }
     const run = { worker, timer: null, finish(result) {
-      clearTimeout(run.timer);
-      worker.terminate();
+      clearTimeout(run.timer); worker.terminate();
       if (activeRun === run) { activeRun = null; busy(false); }
       resolve(result);
     } };
-    activeRun = run;
-    busy(true);
+    activeRun = run; busy(true);
     run.timer = setTimeout(() => run.finish({ output: "", error: "Stopped after 5 seconds. Check the loop condition and try a smaller input." }), 5000);
     worker.onmessage = ({ data }) => run.finish(data);
-    worker.onerror = (event) => run.finish({ output: "", error: event.message || "Could not start the local runtime. Reload while online to prepare offline files." });
-    worker.postMessage({ code, language });
+    worker.onerror = (event) => run.finish({ output: "", error: event.message || "Could not start the local runtime. Reload online to prepare offline files." });
+    worker.postMessage({ code, language: currentSection().language, tests: check ? exercise.tests : undefined, functionName: exercise.functionName, preserveInput: exercise.preserveInput });
   });
 }
+function renderCaseResults(results) {
+  $("case-list").replaceChildren(); $("case-results").hidden = false;
+  $("case-results").open = results.some((result) => !result.passed);
+  for (const [i, result] of results.entries()) {
+    const row = document.createElement("div"); row.className = `case-row ${result.passed ? "case-pass" : "case-fail"}`;
+    row.textContent = `${result.passed ? "PASS" : "FAIL"} ${i + 1} · Input: ${result.args.map((arg) => format(arg, currentSection().language)).join(", ")}\nExpected: ${format(result.expected, currentSection().language)} · Returned: ${format(result.actual, currentSection().language)}${result.error ? "\n" + result.error : ""}`;
+    row.style.whiteSpace = "pre-wrap"; $("case-list").appendChild(row);
+  }
+}
 async function runCode(check = false) {
-  const key = currentKey();
-  const code = editor.getValue();
-  $("dom-output").replaceChildren();
-  $("check-result").textContent = "";
+  const key = currentKey(), exercise = currentExercise(), code = editor.getValue();
+  $("dom-output").replaceChildren(); $("check-result").textContent = ""; $("case-results").hidden = true;
   let result;
-  if (isFlight()) {
-    $("output").textContent = "Running…";
-    result = await executeWorker(code, currentSection().language);
+  if (isGuided()) {
+    $("output").textContent = "Running…"; result = await executeWorker(code, exercise, check);
     if (!result || !inExercise || currentKey() !== key) return;
   } else {
-    // Preserve page-context execution for the original library's DOM exercises.
-    let output = "";
-    const originalLog = console.log;
+    // Preserve the original library's page-context execution, including DOM access.
+    let output = ""; const originalLog = console.log;
     console.log = (...args) => { output += args.join(" ") + "\n"; };
     try { eval(code); result = { output }; }
     catch (error) { result = { output, error: error.message }; }
     finally { console.log = originalLog; }
   }
-  $("output").textContent = result.error ? `${result.output || ""}Error:\n${result.error}` : result.output || "[No Output]";
-  if (check) {
-    const normalize = (text) => String(text).replace(/\r\n/g, "\n").trimEnd();
-    const passed = !result.error && normalize(result.output) === normalize(currentExercise().expected);
-    state.completed[key] = passed;
-    $("check-result").textContent = passed
-      ? "Output matches ✓ Now try the extra input and explain your approach before moving on."
-      : "Not a match yet. Compare the expected output, check the error if shown, and try a hint.";
-    persist();
-    updateProgress();
-    $("exercise-progress").textContent = `Exercise ${exerciseIndex + 1} of ${currentSection().exercises.length} · about ${currentExercise().minutes} min${passed ? " · output checked ✓" : ""}`;
-  }
+  $("output").textContent = result.error ? `${result.output || ""}Error:\n${result.error}` : result.output || (exercise.tests ? "No printed output. Use Check tests to call your function." : "[No Output]");
+  if (!check) return;
+  const normalize = (text) => String(text).replace(/\r\n/g, "\n").trimEnd();
+  const passed = !result.error && (exercise.tests ? result.results?.length === exercise.tests.length && result.results.every((r) => r.passed) : normalize(result.output) === normalize(exercise.expected));
+  if (result.results) renderCaseResults(result.results);
+  state.completed[key] = Boolean(passed);
+  state.independent[key] = Boolean(passed && help().hints === 0 && !help().solution && !help().starter);
+  $("check-result").textContent = exercise.tests
+    ? passed ? `${result.results.length}/${exercise.tests.length} tests passed. Explain it, then try from blank.` : `${result.results?.filter((r) => r.passed).length || 0}/${exercise.tests.length} tests passed. Inspect the failing cases.`
+    : passed ? "Output matches ✓ Try another input, then explain your approach." : "Not a match yet. Compare the expected output or try one hint.";
+  if (exercise.tests && passed && !result.output) $("output").textContent = "All tested inputs returned the expected values.";
+  $("exercise-progress").textContent = `${exerciseIndex + 1} / ${currentSection().exercises.length}${passed ? state.independent[key] ? " · Solved without help" : " · Checked with help" : ""}`;
+  persist(); updateProgress();
+}
+function replaceCode(value, backup = true) {
+  cancelRun();
+  if (backup && editor.getValue()) state.backups[currentKey()] = editor.getValue();
+  editor.setValue(value); state.drafts[currentKey()] = value;
+  $("check-result").textContent = ""; updateStarterControl(); persist();
 }
 function nextExercise() {
   if (exerciseIndex < currentSection().exercises.length - 1) exerciseIndex++;
   else if (!currentSection().id && sectionIndex < 4) { sectionIndex++; exerciseIndex = 0; }
-  else { $("check-result").textContent = "Section complete. Return home to choose the next block or take a break."; return; }
+  else { $("check-result").textContent = "Level finished. Reflect, retry, or choose the next level."; return; }
   openExercise();
 }
 async function prepareOffline() {
   const status = $("offline-status");
   if (!("serviceWorker" in navigator) || !window.isSecureContext) {
+    $("offline-badge").textContent = "Online only ▾";
     status.textContent = "Offline reload needs HTTPS (or localhost). Open the hosted app online before your flight.";
     return;
   }
@@ -223,60 +303,71 @@ async function prepareOffline() {
       channel.port1.onmessage = ({ data }) => { clearTimeout(timer); resolve(data.ready); };
       registration.active.postMessage({ type: "CHECK_OFFLINE" }, [channel.port2]);
     });
+    $("offline-badge").textContent = ready ? "Offline ready ▾" : "Offline not ready ▾";
+    $("device-menu").classList.toggle("ready", ready);
     status.textContent = ready
       ? "Offline ready · JavaScript and Python saved. Before boarding, switch to airplane mode and reload this same address to check."
       : "Offline files are not fully saved yet. Reopen while online and wait for Offline ready.";
   } catch {
+    $("offline-badge").textContent = "Offline not ready ▾";
     status.textContent = "Offline preparation failed. Keep this tab open; reconnect and reload before your flight.";
   }
 }
 document.addEventListener("DOMContentLoaded", () => {
   editor = createEditor($("code-editor"), (value) => {
-    if (!inExercise) return;
-    state.drafts[currentKey()] = value;
-    $("check-result").textContent = "";
-    persist();
+    if (!inExercise || changingExercise) return;
+    state.drafts[currentKey()] = value; $("check-result").textContent = ""; updateStarterControl(); persist();
   });
-  $("run-btn").addEventListener("click", () => runCode());
-  $("check-btn").addEventListener("click", () => runCode(true));
+  $("track-select").addEventListener("change", () => { state.language = $("track-select").value; renderPathPicker(); persist(); });
+  $("level-select").addEventListener("change", selectLevel);
+  $("use-starter").addEventListener("change", () => { state.useStarter = $("use-starter").checked; persist(); });
+  $("start-practice").addEventListener("click", () => enterSection(sections.findIndex((s) => s.id === $("level-select").value), "path"));
+  $("resume-practice").addEventListener("click", () => {
+    const id = state.lastPractice[state.language];
+    const index = sections.findIndex((s) => s.exercises.some((e) => e.id === id));
+    if (index >= 0) enterSection(index, "path", id);
+  });
+  $("exercise-select").addEventListener("change", () => { exerciseIndex = Number($("exercise-select").value); openExercise(); });
+  $("plan-input").addEventListener("input", () => { state.plans[currentKey()] = $("plan-input").value; persist(); });
+  $("reflection-input").addEventListener("input", () => { state.reflections[currentKey()] = $("reflection-input").value; persist(); });
+  $("run-btn").addEventListener("click", () => runCode()); $("check-btn").addEventListener("click", () => runCode(true));
   $("stop-btn").addEventListener("click", () => { cancelRun(); $("output").textContent = "Stopped. Your draft is still here."; });
   $("next-btn").addEventListener("click", nextExercise);
-  $("next-block-btn").addEventListener("click", () => {
-    if (isFlight() && sectionIndex < sections.length - 1) { sectionIndex++; exerciseIndex = 0; openExercise(); }
-  });
+  $("next-block-btn").addEventListener("click", () => { const next = nextSection(); if (next) { sectionIndex = sections.indexOf(next); exerciseIndex = 0; openExercise(); } });
   $("previous-btn").addEventListener("click", () => { if (exerciseIndex > 0) { exerciseIndex--; openExercise(); } });
   $("answer-btn").addEventListener("click", () => {
-    $("answer-box").textContent = "One possible answer:\n" + currentExercise().answer;
-    $("answer-box").style.display = $("answer-box").style.display === "none" ? "block" : "none";
+    $("answer-box").textContent = currentExercise().answer;
+    $("answer-box").hidden = !$("answer-box").hidden;
+    $("answer-btn").textContent = $("answer-box").hidden ? "Reveal solution" : "Hide solution";
+    if (!$("answer-box").hidden) help().solution = true;
+    persist();
   });
   $("hint-btn").addEventListener("click", () => {
-    const hints = currentExercise().hints || [];
-    if (hintIndex >= hints.length) return;
-    const item = document.createElement("li");
-    item.textContent = hints[hintIndex++];
-    $("hints").appendChild(item);
-    $("hint-btn").disabled = hintIndex >= hints.length;
-    $("hint-btn").textContent = hintIndex >= hints.length ? "All hints shown" : "Show another hint";
+    const hints = currentExercise().hints || []; if (hintIndex >= hints.length) return;
+    const item = document.createElement("li"); item.textContent = hints[hintIndex++]; $("hints").appendChild(item);
+    help().hints++; $("hint-btn").disabled = hintIndex >= hints.length;
+    $("hint-btn").textContent = hintIndex >= hints.length ? "All hints shown" : "Show another hint"; persist();
   });
-  $("cursor-left").addEventListener("click", () => editor.move(-1));
-  $("cursor-right").addEventListener("click", () => editor.move(1));
-  $("clear-editor").addEventListener("click", () => { editor.setValue(""); state.drafts[currentKey()] = ""; persist(); });
+  $("cursor-left").addEventListener("click", () => editor.move(-1)); $("cursor-right").addEventListener("click", () => editor.move(1));
+  $("clear-editor").addEventListener("click", () => replaceCode(""));
+  $("restore-draft").addEventListener("click", () => { const previous = state.backups[currentKey()]; if (typeof previous === "string") replaceCode(previous); });
+  $("retry-blank").addEventListener("click", () => {
+    replaceCode(""); state.helpUsage[currentKey()] = { hints: 0, solution: false, starter: false };
+    for (const detail of document.querySelectorAll("#support-panel details")) detail.open = false;
+    $("hints").replaceChildren(); hintIndex = 0;
+    $("hint-btn").disabled = false; $("hint-btn").textContent = "Show a hint";
+    $("answer-box").hidden = true; $("answer-btn").textContent = "Reveal solution";
+    $("check-result").textContent = "Fresh attempt. Your previous draft is under Editor tools."; persist(); editor.focus();
+  });
+  $("load-snippet-btn").addEventListener("click", () => { if (!editor.getValue().trim()) { replaceCode(currentExercise().snippet || ""); help().starter = true; persist(); } });
   $("copy-snippet-btn").addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(currentExercise().snippet); $("check-result").textContent = "Starter snippet copied."; }
-    catch { $("check-result").textContent = "Clipboard unavailable. Starter snippet:\n" + currentExercise().snippet; }
+    try { await navigator.clipboard.writeText(currentExercise().snippet); $("starter-note").textContent = "Starter copied."; }
+    catch { $("starter-note").textContent = "Clipboard unavailable. Select and copy the starter above."; }
   });
-  $("back-to-home").addEventListener("click", () => {
-    cancelRun(); inExercise = false; showExerciseUI(false); renderSectionCards();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+  $("back-to-home").addEventListener("click", () => { cancelRun(); inExercise = false; showExerciseUI(false); renderSectionCards(); window.scrollTo({ top: 0, behavior: "auto" }); });
   $("resume-flight").addEventListener("click", () => {
-    sectionIndex = sections.findIndex((s) => s.exercises.some((e) => e.id === state.lastFlight));
-    if (sectionIndex < 0) sectionIndex = sections.indexOf(flightSections[0]);
-    exerciseIndex = Math.max(0, currentSection().exercises.findIndex((e) => e.id === state.lastFlight));
-    openExercise();
+    const section = flightSections.find((s) => s.exercises.some((e) => e.id === state.lastFlight)) || flightSections[0];
+    enterSection(sections.indexOf(section), "flight", state.lastFlight);
   });
-  showExerciseUI(false);
-  renderSectionCards();
-  persist();
-  prepareOffline();
+  showExerciseUI(false); renderSectionCards(); persist(); prepareOffline();
 });

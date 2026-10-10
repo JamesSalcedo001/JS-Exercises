@@ -7,6 +7,9 @@ import { tier3 } from "./data/tier3-mini-challenges.js";
 import { tier4 } from "./data/tier4-chaining-composition.js";
 import { tier5 } from "./data/tier5-problem-solving.js";
 import { flightSections } from "./data/flight-practice.js";
+import { problemSections } from "./data/problem-solving.js";
 
 // Keep the original tiers in their existing order.
-export const sections = [tier1, tier2, tier3, tier4, tier5, ...flightSections];
+export const sections = [tier1, tier2, tier3, tier4, tier5,
+  ...flightSections.map((section, i) => ({ ...section, stage: i % 3 + 1, level: "Foundation" })),
+  ...problemSections];

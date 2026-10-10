@@ -7,11 +7,21 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
+
+def open_flight(page):
+    if page.locator('#flight-plan').get_attribute('open') is None:
+        page.locator('#flight-plan > summary').click()
+
 # The repository's previous service worker is intentionally the upgrade fixture.
 OLD_WORKER = b'''const name = "js-daily-exercises-v2";
 self.addEventListener("install", event => event.waitUntil(caches.open(name).then(cache => cache.addAll(["./", "./index.html"]))));
 self.addEventListener("activate", event => event.waitUntil(self.clients.claim()));
 self.addEventListener("fetch", event => event.respondWith(fetch(event.request).catch(() => caches.match(event.request))));'''
+OLD_CACHED_WORKER = b'''const name = "js-daily-exercises-flight-v1";
+self.addEventListener("install", event => event.waitUntil(caches.open(name).then(cache => cache.addAll(["./", "./index.html"]))));
+self.addEventListener("activate", event => event.waitUntil(self.clients.claim()));
+self.addEventListener("fetch", event => event.respondWith(caches.open(name).then(async cache => (await cache.match(event.request)) || fetch(event.request))));'''
+OLD_PAGE = b'<script>window.controlChanged=false; navigator.serviceWorker.addEventListener("controllerchange",()=>{window.controlChanged=true}); navigator.serviceWorker.register("./sw.js").then(r => { if(r.active) r.update(); });</script>Previous cached layout'
 
 class SetupHandler(SimpleHTTPRequestHandler):
     mode = 'old'
@@ -31,12 +41,18 @@ class SetupHandler(SimpleHTTPRequestHandler):
             self.send_header('Content-Type', 'text/html')
             self.end_headers()
             self.wfile.write(body)
-        elif path == '/sw.js' and self.mode == 'old':
+        elif path in ['/', '/index.html'] and self.mode == 'old-cached':
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html')
+            self.send_header('Cache-Control', 'max-age=3600')
+            self.end_headers()
+            self.wfile.write(OLD_PAGE)
+        elif path == '/sw.js' and self.mode in ['old', 'old-cached']:
             self.send_response(200)
             self.send_header('Content-Type', 'application/javascript')
             self.send_header('Cache-Control', 'no-store')
             self.end_headers()
-            self.wfile.write(OLD_WORKER)
+            self.wfile.write(OLD_CACHED_WORKER if self.mode == 'old-cached' else OLD_WORKER)
         elif path == '/vendor/skulpt/skulpt.min.js' and self.mode == 'broken':
             self.send_error(404)
         else:
@@ -57,6 +73,7 @@ def test_setup():
             page.wait_for_function('navigator.serviceWorker.controller !== null')
             SetupHandler.mode = 'new'
             page.goto(url)
+            open_flight(page)
             try:
                 page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
             except Exception:
@@ -67,6 +84,7 @@ def test_setup():
             assert 'js-daily-exercises-v2' not in keys, keys
             context.set_offline(True)
             page.reload()
+            open_flight(page)
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
             page.locator('#flight-section-list .section-card').nth(3).click()
             page.locator('#offline-editor').fill('print(8)')
@@ -75,11 +93,35 @@ def test_setup():
             print('PASS: old service-worker upgrade activates complete cache and runs Python offline')
             context.close()
 
+            # A cache-first prior app shows its old page once, saves the update,
+            # then serves the new layout on the next reload without losing storage.
+            SetupHandler.mode = 'old-cached'
+            context = browser.new_context()
+            context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
+            page = context.new_page()
+            page.goto(url)
+            page.wait_for_function('navigator.serviceWorker.controller !== null')
+            page.evaluate('localStorage.setItem("daily-coding-practice-v1", JSON.stringify({drafts:{"js-budget":"console.log(18)"},completed:{"js-budget":true},positions:{},lastFlight:"js-budget"}))')
+            SetupHandler.mode = 'new'
+            page.reload()
+            page.wait_for_function('caches.keys().then(keys => keys.includes("js-daily-exercises-path-v2") && !keys.includes("js-daily-exercises-flight-v1"))')
+            page.wait_for_function('window.controlChanged || document.querySelector("#offline-status")')
+            page.reload()
+            page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
+            assert page.locator('#level-select option').count() == 7
+            page.locator('#resume-practice').click()
+            assert page.locator('#offline-editor').input_value() == 'console.log(18)'
+            page.locator('#check-btn').click()
+            page.wait_for_function('document.querySelector("#check-result").textContent.includes("Output matches")')
+            print('PASS: prior cache-first layout upgrades on reload; existing drafts and progress migrate')
+            context.close()
+
             SetupHandler.mode = 'broken'
             context = browser.new_context()
             context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
             page = context.new_page()
             page.goto(url)
+            open_flight(page)
             page.wait_for_function('document.querySelector("#offline-status").textContent.includes("failed")', timeout=35000)
             assert 'Offline ready' not in page.locator('#offline-status').inner_text()
             page.locator('#resume-flight').click()
@@ -95,8 +137,10 @@ def test_setup():
             context.add_init_script('Storage.prototype.setItem = function() { throw new Error("Storage disabled"); };')
             page = context.new_page()
             page.goto(url)
+            open_flight(page)
             page.locator('#resume-flight').click()
-            assert 'may not be saved' in page.locator('#save-status').inner_text()
+            assert page.locator('#save-warning').is_visible()
+            assert 'may not be saved' in page.locator('#save-warning').inner_text()
             page.locator('#offline-editor').fill('console.log(18)')
             page.locator('#check-btn').click()
             page.wait_for_function('document.querySelector("#check-result").textContent.includes("Output matches")')
