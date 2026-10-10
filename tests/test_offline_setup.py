@@ -104,11 +104,11 @@ def test_setup():
             page.evaluate('localStorage.setItem("daily-coding-practice-v1", JSON.stringify({drafts:{"js-budget":"console.log(18)"},completed:{"js-budget":true},positions:{},lastFlight:"js-budget"}))')
             SetupHandler.mode = 'new'
             page.reload()
-            page.wait_for_function('caches.keys().then(keys => keys.includes("js-daily-exercises-path-v2") && !keys.includes("js-daily-exercises-flight-v1"))')
+            page.wait_for_function('caches.keys().then(keys => keys.includes("js-daily-exercises-practical-v3") && !keys.includes("js-daily-exercises-flight-v1"))')
             page.wait_for_function('window.controlChanged || document.querySelector("#offline-status")')
             page.reload()
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
-            assert page.locator('#level-select option').count() == 7
+            assert page.locator('#level-select option').count() == 13
             page.locator('#resume-practice').click()
             assert page.locator('#offline-editor').input_value() == 'console.log(18)'
             page.locator('#check-btn').click()

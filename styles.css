@@ -129,3 +129,6 @@ footer span { margin-left: .8rem; }
   footer { padding: 1rem; }
   footer span { display: block; margin: .3rem 0 0; }
 }
+
+.tool-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: .85rem; }
+.tool-table th, .tool-table td { text-align: left; vertical-align: top; padding: .65rem .4rem; border-bottom: 1px solid var(--border, #334155); overflow-wrap: anywhere; }

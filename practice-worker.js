@@ -1,3 +1,4 @@
+const apiModule = import("./practice-api.js");
 // Practice runs away from the page so a mistaken infinite loop is stoppable.
 const equal = (left, right) => {
   if (left === right) return true;
@@ -9,20 +10,24 @@ const equal = (left, right) => {
   const keys = Object.keys(left);
   return keys.length === Object.keys(right).length && keys.every((key) => Object.prototype.hasOwnProperty.call(right, key) && equal(left[key], right[key]));
 };
-self.onmessage = async ({ data: { language, code, tests, functionName, preserveInput } }) => {
+self.onmessage = async ({ data: { language, code, tests, functionName, preserveInput, api } }) => {
   let output = "";
   const append = (text) => {
     if (output.length + text.length > 20000) throw new Error("Too much output. Try a smaller loop.");
     output += text;
   };
   try {
+    const { createPracticeAPI, pythonPracticeAPI } = await apiModule;
     let pythonModule;
+    let service;
+    if (api && language !== "python") self.fetch = createPracticeAPI().fetch;
     let jsFunction;
     if (language === "python") {
       importScripts("./vendor/skulpt/skulpt.min.js", "./vendor/skulpt/skulpt-stdlib.js");
       Sk.configure({
         output: append,
         read(name) {
+          if (api && name === "src/lib/practice_api.py") return pythonPracticeAPI;
           const file = Sk.builtinFiles.files[name];
           if (file === undefined) throw new Error("This browser Python activity does not include: " + name);
           return file;
@@ -30,7 +35,7 @@ self.onmessage = async ({ data: { language, code, tests, functionName, preserveI
         __future__: Sk.python3, execLimit: 4000,
         inputfun() { throw new Error("Use variables instead of input() in these activities."); },
       });
-      pythonModule = await Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<practice>", false, code, true));
+      pythonModule = await Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<practice>", false, (api ? "import practice_api as _practice_fixture\n" : "") + code, true));
     } else {
       console.log = (...args) => append(args.map((value) =>
         typeof value === "object" && value !== null ? JSON.stringify(value) : String(value)
@@ -52,14 +57,29 @@ self.onmessage = async ({ data: { language, code, tests, functionName, preserveI
       let actual;
       let error;
       try {
+        if (api) {
+          if (language === "python") {
+            await Sk.misceval.asyncToPromise(() => Sk.misceval.callsimOrSuspendArray(pythonModule.$d._practice_fixture.$d.reset, [Sk.ffi.remapToPy(test.seed || []), Sk.ffi.remapToPy(test.apiStatus || 200), Sk.ffi.remapToPy(test.failAt || 0)]));
+          } else {
+            service = createPracticeAPI(test.seed, test.apiStatus, test.failAt);
+            self.fetch = service.fetch;
+          }
+        }
         if (language === "python") {
           const pythonArgs = args.map((arg) => Sk.ffi.remapToPy(arg));
           const value = await Sk.misceval.asyncToPromise(() => Sk.misceval.callsimOrSuspendArray(pythonFunction, pythonArgs));
           actual = Sk.ffi.remapToJs(value);
           if (preserveInput && !equal(pythonArgs.map((arg) => Sk.ffi.remapToJs(arg)), test.args)) error = "Input changed. Return a result without modifying the input.";
         } else {
-          actual = jsFunction(...args);
+          actual = await jsFunction(...args);
           if (preserveInput && !equal(args, test.args)) error = "Input changed. Return a result without modifying the input.";
+        }
+        if (api) {
+          const report = language === "python"
+            ? Sk.ffi.remapToJs(await Sk.misceval.asyncToPromise(() => Sk.misceval.callsimOrSuspendArray(pythonModule.$d._practice_fixture.$d.report, [])))
+            : { requests: service.requests, records: service.records };
+          if (!equal(report.requests, test.requests)) error = "Requests did not match. Expected: " + JSON.stringify(test.requests) + "; sent: " + JSON.stringify(report.requests);
+          else if (!equal(report.records, test.records)) error = "Saved tasks did not match. Expected: " + JSON.stringify(test.records) + "; saved: " + JSON.stringify(report.records);
         }
       } catch (caught) { error = String(caught); }
       results.push({ args: test.args, expected: test.expected, actual, error, passed: !error && equal(actual, test.expected) });

@@ -37,7 +37,7 @@ def test_path():
             total_cases = 0
             for language in ['javascript', 'python']:
                 page.locator('#track-select').select_option(language)
-                assert page.locator('#level-select option').count() == 7
+                assert page.locator('#level-select option').count() == (13 if language == "javascript" else 12)
                 for block in [b for b in blocks if b['language'] == language]:
                     page.locator('#level-select').select_option(block['id'])
                     page.locator('#start-practice').click()
@@ -58,7 +58,7 @@ def test_path():
                             page.locator('#next-btn').click()
                     page.locator('#back-to-home').click()
             assert total_cases == 144
-            print('PASS: all 24 additional challenges, 144 function cases, 7 levels per language, blank defaults and collapsed help')
+            print('PASS: all 24 additional challenges, 144 function cases, expanded level picker, blank defaults and collapsed help')
 
             # Printed answers do not substitute for returning a general result.
             page.locator('#track-select').select_option('javascript')

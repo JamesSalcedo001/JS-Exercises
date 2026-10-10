@@ -1,4 +1,5 @@
 import { sections } from "./sections.js";
+import { runDOM } from "./dom-runner.js";
 import { createEditor } from "./editor.js";
 const $ = (id) => document.getElementById(id);
 const flightSections = sections.filter((section) => section.id?.startsWith("flight-"));
@@ -140,8 +141,9 @@ function renderExercise() {
   $("function-signature").hidden = !exercise.signature;
   $("function-signature").textContent = exercise.signature || "";
   $("return-note").hidden = !exercise.tests;
+  $("return-note").textContent = exercise.dom ? "Change the fixture page. Check tests tries real clicks and forms; no return value is needed." : "Return the result. Keep the inputs unchanged.";
   $("task-example").hidden = !exercise.tests;
-  $("task-example").textContent = exercise.tests ? `${exercise.functionName}(${exercise.tests[0].args.map((arg) => format(arg, section.language)).join(", ")}) → ${format(exercise.tests[0].expected, section.language)}` : "";
+  $("task-example").textContent = exercise.dom ? "Run opens your page. Check tests tries the actions in Examples." : exercise.tests ? `${exercise.functionName}(${exercise.tests[0].args.map((arg) => format(arg, section.language)).join(", ")}) → ${format(exercise.tests[0].expected, section.language)}` : "";
   $("output").textContent = "Run your code to see output here."; $("dom-output").replaceChildren(); $("check-result").textContent = "";
   $("answer-box").hidden = true; $("answer-btn").textContent = "Reveal solution";
   $("case-results").hidden = true; $("case-list").replaceChildren();
@@ -158,9 +160,12 @@ function renderExercise() {
   for (const test of exercise.tests || []) {
     const row = document.createElement("p"); row.className = "case-row";
     row.textContent = `${test.args.map((arg) => format(arg, section.language)).join(", ")} → ${format(test.expected, section.language)}`;
+    if (exercise.dom) row.textContent = "Input: " + format(test.args, section.language) + "\n" + (test.actions.length ? test.actions.map(action => action.type === "submit" ? `Type ${JSON.stringify(action.value)} and submit the form.` : action.type === "input" ? `Type ${JSON.stringify(action.value)} into the input.` : `Click item ${action.index + 1} matching ${action.selector}.`).join("\n") : "No clicks needed.") + "\nPage should show: " + format(test.expected, section.language);
+    if (exercise.api) row.textContent += "\nStarting tasks: " + JSON.stringify(test.seed) + " · Service status: " + test.apiStatus + (test.failAt ? " on request " + test.failAt : "");
     $("example-list").appendChild(row);
   }
-  $("check-explanation").textContent = exercise.tests ? "Checks call your function on each input and compare the returned value. They do not measure algorithmic complexity." : "Checks compare printed output. Try another input to test your reasoning.";
+  if (exercise.dom) { const fixture = document.createElement("pre"); fixture.textContent = exercise.fixture; $("example-list").prepend(fixture); }
+  $("check-explanation").textContent = exercise.dom ? "Each test starts with a fresh fixture, calls setupDOM, tries the listed actions, and checks the page." : exercise.api ? "Each test starts with fresh tasks. Checks compare your return value, requests, and saved records. This API runs locally." : exercise.tests ? "Checks call your function on each input and compare the returned value. They do not measure algorithmic complexity." : "Checks compare printed output. Try another input to test your reasoning.";
   $("stretch").textContent = exercise.stretch || "Explain your approach, then try a different input.";
   $("plan-input").value = typeof state.plans[currentKey()] === "string" ? state.plans[currentKey()] : "";
   $("reflection-input").value = typeof state.reflections[currentKey()] === "string" ? state.reflections[currentKey()] : "";
@@ -205,7 +210,7 @@ function executeWorker(code, exercise, check) {
     run.timer = setTimeout(() => run.finish({ output: "", error: "Stopped after 5 seconds. Check the loop condition and try a smaller input." }), 5000);
     worker.onmessage = ({ data }) => run.finish(data);
     worker.onerror = (event) => run.finish({ output: "", error: event.message || "Could not start the local runtime. Reload online to prepare offline files." });
-    worker.postMessage({ code, language: currentSection().language, tests: check ? exercise.tests : undefined, functionName: exercise.functionName, preserveInput: exercise.preserveInput });
+    worker.postMessage({ code, language: currentSection().language, tests: check ? exercise.tests : undefined, functionName: exercise.functionName, preserveInput: exercise.preserveInput, api: exercise.api });
   });
 }
 function renderCaseResults(results) {
@@ -213,7 +218,7 @@ function renderCaseResults(results) {
   $("case-results").open = results.some((result) => !result.passed);
   for (const [i, result] of results.entries()) {
     const row = document.createElement("div"); row.className = `case-row ${result.passed ? "case-pass" : "case-fail"}`;
-    row.textContent = `${result.passed ? "PASS" : "FAIL"} ${i + 1} · Input: ${result.args.map((arg) => format(arg, currentSection().language)).join(", ")}\nExpected: ${format(result.expected, currentSection().language)} · Returned: ${format(result.actual, currentSection().language)}${result.error ? "\n" + result.error : ""}`;
+    row.textContent = `${result.passed ? "PASS" : "FAIL"} ${i + 1} · Input: ${result.args.map((arg) => format(arg, currentSection().language)).join(", ")}\nExpected: ${format(result.expected, currentSection().language)} · ${currentExercise().dom ? "Page" : "Returned"}: ${format(result.actual, currentSection().language)}${result.error ? "\n" + result.error : ""}`;
     row.style.whiteSpace = "pre-wrap"; $("case-list").appendChild(row);
   }
 }
@@ -222,7 +227,9 @@ async function runCode(check = false) {
   $("dom-output").replaceChildren(); $("check-result").textContent = ""; $("case-results").hidden = true;
   let result;
   if (isGuided()) {
-    $("output").textContent = "Running…"; result = await executeWorker(code, exercise, check);
+    $("output").textContent = "Running…"; result = exercise.dom
+      ? await runDOM(code, exercise, check, $("dom-output"), busy, run => { activeRun = run; })
+      : await executeWorker(code, exercise, check);
     if (!result || !inExercise || currentKey() !== key) return;
   } else {
     // Preserve the original library's page-context execution, including DOM access.
@@ -232,7 +239,7 @@ async function runCode(check = false) {
     catch (error) { result = { output, error: error.message }; }
     finally { console.log = originalLog; }
   }
-  $("output").textContent = result.error ? `${result.output || ""}Error:\n${result.error}` : result.output || (exercise.tests ? "No printed output. Use Check tests to call your function." : "[No Output]");
+  $("output").textContent = result.error ? `${result.output || ""}Error:\n${result.error}` : result.output || (exercise.dom ? "Your page is below. Try the controls yourself." : exercise.tests ? "No printed output. Use Check tests to call your function." : "[No Output]");
   if (!check) return;
   const normalize = (text) => String(text).replace(/\r\n/g, "\n").trimEnd();
   const passed = !result.error && (exercise.tests ? result.results?.length === exercise.tests.length && result.results.every((r) => r.passed) : normalize(result.output) === normalize(exercise.expected));
@@ -242,7 +249,7 @@ async function runCode(check = false) {
   $("check-result").textContent = exercise.tests
     ? passed ? `${result.results.length}/${exercise.tests.length} tests passed. Explain it, then try from blank.` : `${result.results?.filter((r) => r.passed).length || 0}/${exercise.tests.length} tests passed. Inspect the failing cases.`
     : passed ? "Output matches ✓ Try another input, then explain your approach." : "Not a match yet. Compare the expected output or try one hint.";
-  if (exercise.tests && passed && !result.output) $("output").textContent = "All tested inputs returned the expected values.";
+  if (exercise.tests && passed && !result.output) $("output").textContent = exercise.dom ? "The page passed every tested action." : "All tested inputs returned the expected values.";
   $("exercise-progress").textContent = `${exerciseIndex + 1} / ${currentSection().exercises.length}${passed ? state.independent[key] ? " · Solved without help" : " · Checked with help" : ""}`;
   persist(); updateProgress();
 }
