@@ -1,4 +1,4 @@
-const CACHE_NAME = "js-daily-exercises-practical-v3";
+const CACHE_NAME = "js-daily-exercises-focus-v4";
 const FILES_TO_CACHE = [
   "./", "./index.html", "./styles.css", "./index.js", "./editor.js", "./sections.js",
   "./practice-worker.js", "./practice-api.js", "./dom-runner.js", "./data/practical-skills.js", "./data/dom-practice.js", "./data/flight-practice.js", "./data/problem-solving.js",

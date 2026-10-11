@@ -3,7 +3,13 @@ import { runDOM } from "./dom-runner.js";
 import { createEditor } from "./editor.js";
 const $ = (id) => document.getElementById(id);
 const flightSections = sections.filter((section) => section.id?.startsWith("flight-"));
-const pathFor = (language) => sections.filter((s) => s.id && s.language === language).sort((a, b) => a.stage - b.stage);
+// Stable content IDs and stage numbers; the learning route introduces tools before DSA.
+const learningOrder = [1, 2, 3, 8, 9, 10, 11, 12, 13, 4, 5, 6, 7];
+const pathFor = language => sections.filter(s => s.id && s.language === language)
+  .sort((a, b) => learningOrder.indexOf(a.stage) - learningOrder.indexOf(b.stage));
+const stepTitle = section => section.id
+  ? `Step ${pathFor(section.language).indexOf(section) + 1} · ${section.title.replace(/^(JavaScript|Python) \d+ · /, "")}`
+  : section.title;
 const storageKey = "daily-coding-practice-v1"; // Keep existing drafts and completion records.
 let state = { drafts: {}, completed: {}, positions: {}, plans: {}, reflections: {}, independent: {}, helpUsage: {}, backups: {}, lastPractice: {}, lastFlight: null, language: "javascript", useStarter: false };
 let storageAvailable = true;
@@ -57,19 +63,24 @@ function updateProgress() {
   const exercises = flightSections.flatMap((s) => s.exercises);
   $("flight-progress").textContent = `${exercises.filter((e) => state.completed[e.id]).length} of ${exercises.length} outputs checked`;
   $("resume-flight").textContent = state.lastFlight ? "Resume flight practice" : "Start flight practice";
-  const track = pathFor(state.language).flatMap((s) => s.exercises);
-  $("path-progress").textContent = `${track.filter((e) => state.completed[e.id]).length}/${track.length} checked · ${track.filter((e) => state.independent[e.id]).length} solved without help`;
+  const selected = sections.find(s => s.id === $("level-select").value);
+  const track = selected?.exercises || [];
+  $("path-progress").textContent = `${track.filter(e => state.completed[e.id]).length} of ${track.length} practiced in this step`;
 }
 function selectLevel() {
   const section = sections.find((s) => s.id === $("level-select").value);
   if (!section) return;
   $("level-label").textContent = section.level;
   $("level-description").textContent = section.description;
+  $("start-practice").textContent = Number.isInteger(state.positions[section.id]) ? "Continue this step →" : "Start this step →";
+  const lastId = state.lastPractice[state.language];
+  $("resume-practice").hidden = !lastId || section.exercises.some(e => e.id === lastId);
+  updateProgress();
 }
 function makeCard(section, index, mode) {
   const card = document.createElement("button");
   card.className = "section-card";
-  const title = document.createElement("strong"); title.textContent = section.title;
+  const title = document.createElement("strong"); title.textContent = mode === "path" ? stepTitle(section) : section.title;
   const detail = document.createElement("span");
   detail.textContent = section.id ? `${section.exercises.filter((e) => state.completed[e.id]).length}/${section.exercises.length} checked` : `${section.exercises.length} exercises`;
   card.append(title, detail);
@@ -85,7 +96,7 @@ function renderPathPicker() {
   $("path-section-list").replaceChildren();
   for (const section of track) {
     const option = document.createElement("option"); option.value = section.id;
-    option.textContent = section.title.replace(/^(JavaScript|Python) /, "");
+    option.textContent = stepTitle(section);
     $("level-select").appendChild(option);
     $("path-section-list").appendChild(makeCard(section, sections.indexOf(section), "path"));
   }
@@ -94,7 +105,7 @@ function renderPathPicker() {
   if (resumeSection) $("level-select").value = resumeSection.id;
   else if (track.some((s) => s.id === previous)) $("level-select").value = previous;
   $("resume-practice").hidden = !resumeSection;
-  $("resume-practice").textContent = resumeSection ? `Resume level ${resumeSection.stage}` : "Resume my practice";
+  $("resume-practice").textContent = resumeSection ? `Resume saved exercise` : "Resume my practice";
   selectLevel(); updateProgress();
 }
 function renderSectionCards() {
@@ -134,7 +145,7 @@ function renderExercise() {
   changingExercise = true;
   const section = currentSection(), exercise = currentExercise();
   if (section.language) state.language = section.language;
-  $("section-title").textContent = section.title;
+  $("section-title").textContent = navigationMode === "path" ? `${section.language === "python" ? "Python" : "JavaScript"} · ${stepTitle(section)}` : section.title;
   $("activity-title").textContent = exercise.title || `Exercise ${exerciseIndex + 1}`;
   $("exercise-progress").textContent = `${exerciseIndex + 1} / ${section.exercises.length}${exercise.minutes ? ` · ~${exercise.minutes} min` : ""}${state.completed[currentKey()] ? state.independent[currentKey()] ? " · Solved without help" : " · Checked" : ""}`;
   $("question-text").textContent = exercise.prompt;
@@ -144,6 +155,7 @@ function renderExercise() {
   $("return-note").textContent = exercise.dom ? "Change the fixture page. Check tests tries real clicks and forms; no return value is needed." : "Return the result. Keep the inputs unchanged.";
   $("task-example").hidden = !exercise.tests;
   $("task-example").textContent = exercise.dom ? "Run opens your page. Check tests tries the actions in Examples." : exercise.tests ? `${exercise.functionName}(${exercise.tests[0].args.map((arg) => format(arg, section.language)).join(", ")}) → ${format(exercise.tests[0].expected, section.language)}` : "";
+  $("results-panel").hidden = true;
   $("output").textContent = "Run your code to see output here."; $("dom-output").replaceChildren(); $("check-result").textContent = "";
   $("answer-box").hidden = true; $("answer-btn").textContent = "Reveal solution";
   $("case-results").hidden = true; $("case-list").replaceChildren();
@@ -168,6 +180,7 @@ function renderExercise() {
   $("check-explanation").textContent = exercise.dom ? "Each test starts with a fresh fixture, calls setupDOM, tries the listed actions, and checks the page." : exercise.api ? "Each test starts with fresh tasks. Checks compare your return value, requests, and saved records. This API runs locally." : exercise.tests ? "Checks call your function on each input and compare the returned value. They do not measure algorithmic complexity." : "Checks compare printed output. Try another input to test your reasoning.";
   $("stretch").textContent = exercise.stretch || "Explain your approach, then try a different input.";
   $("plan-input").value = typeof state.plans[currentKey()] === "string" ? state.plans[currentKey()] : "";
+  document.querySelector("label[for=reflection-input]").textContent = section.stage >= 4 && section.stage <= 7 ? "Walk through one input. Then explain the time and space cost." : "Walk through one input. What changes at each step?";
   $("reflection-input").value = typeof state.reflections[currentKey()] === "string" ? state.reflections[currentKey()] : "";
   $("hints").replaceChildren(); hintIndex = 0; $("hint-btn").disabled = false; $("hint-btn").textContent = "Show a hint";
   $("starter-details").hidden = !exercise.snippet;
@@ -175,7 +188,9 @@ function renderExercise() {
   $("previous-btn").disabled = exerciseIndex === 0;
   const last = exerciseIndex === section.exercises.length - 1;
   $("next-btn").disabled = Boolean(section.id) && last;
+  $("next-btn").hidden = Boolean(section.id) && last;
   $("next-block-btn").hidden = !last || !nextSection();
+  $("next-block-btn").textContent = navigationMode === "path" && nextSection() ? `Next: ${stepTitle(nextSection()).split(" · ")[1]} →` : "Next block →";
   $("block-note").textContent = !last ? "" : navigationMode === "flight" && section.id === "flight-js-project"
     ? "Take a 10-minute break before Python."
     : navigationMode === "flight" && section.id === "flight-py-project" ? "Use the last 10 minutes to rewrite a helper without hints."
@@ -224,6 +239,7 @@ function renderCaseResults(results) {
 }
 async function runCode(check = false) {
   const key = currentKey(), exercise = currentExercise(), code = editor.getValue();
+  $("results-panel").hidden = false;
   $("dom-output").replaceChildren(); $("check-result").textContent = ""; $("case-results").hidden = true;
   let result;
   if (isGuided()) {
@@ -244,6 +260,7 @@ async function runCode(check = false) {
   const normalize = (text) => String(text).replace(/\r\n/g, "\n").trimEnd();
   const passed = !result.error && (exercise.tests ? result.results?.length === exercise.tests.length && result.results.every((r) => r.passed) : normalize(result.output) === normalize(exercise.expected));
   if (result.results) renderCaseResults(result.results);
+  if (passed) $("reflection-details").open = true;
   state.completed[key] = Boolean(passed);
   state.independent[key] = Boolean(passed && help().hints === 0 && !help().solution && !help().starter);
   $("check-result").textContent = exercise.tests
@@ -323,7 +340,11 @@ async function prepareOffline() {
 document.addEventListener("DOMContentLoaded", () => {
   editor = createEditor($("code-editor"), (value) => {
     if (!inExercise || changingExercise) return;
-    state.drafts[currentKey()] = value; $("check-result").textContent = ""; updateStarterControl(); persist();
+    cancelRun();
+    state.drafts[currentKey()] = value;
+    $("check-result").textContent = ""; $("case-results").hidden = true;
+    $("results-panel").hidden = true; $("dom-output").replaceChildren();
+    updateStarterControl(); persist();
   });
   $("track-select").addEventListener("change", () => { state.language = $("track-select").value; renderPathPicker(); persist(); });
   $("level-select").addEventListener("change", selectLevel);
@@ -368,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   $("load-snippet-btn").addEventListener("click", () => { if (!editor.getValue().trim()) { replaceCode(currentExercise().snippet || ""); help().starter = true; persist(); } });
   $("copy-snippet-btn").addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(currentExercise().snippet); $("starter-note").textContent = "Starter copied."; }
+    try { await navigator.clipboard.writeText(currentExercise().snippet); $("starter-note").textContent = "Starter copied."; help().starter = true; persist(); }
     catch { $("starter-note").textContent = "Clipboard unavailable. Select and copy the starter above."; }
   });
   $("back-to-home").addEventListener("click", () => { cancelRun(); inExercise = false; showExerciseUI(false); renderSectionCards(); window.scrollTo({ top: 0, behavior: "auto" }); });

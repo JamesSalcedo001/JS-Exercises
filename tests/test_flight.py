@@ -13,6 +13,10 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 
 def open_dropdown(page, identifier):
+    ancestors = page.locator('#' + identifier).evaluate("el => { const ids=[]; for (let p=el.parentElement;p;p=p.parentElement) if(p.tagName==='DETAILS' && p.id) ids.unshift(p.id); return ids; }")
+    for ancestor in ancestors:
+        if page.locator('#' + ancestor).get_attribute('open') is None:
+            page.locator('#' + ancestor + ' > summary').click()
     if page.locator('#' + identifier).get_attribute('open') is None:
         page.locator('#' + identifier + ' > summary').click()
 

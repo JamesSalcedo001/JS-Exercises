@@ -38,6 +38,9 @@ def test_path():
             for language in ['javascript', 'python']:
                 page.locator('#track-select').select_option(language)
                 assert page.locator('#level-select option').count() == (13 if language == "javascript" else 12)
+                prefix = "js" if language == "javascript" else "py"
+                expected_route = [f"flight-{prefix}-basics", f"flight-{prefix}-loops", f"flight-{prefix}-project"] + [f"practical-{prefix}-{n}" for n in range(8, 13)] + (["practical-js-13"] if prefix == "js" else []) + [f"path-{prefix}-{n}" for n in range(4, 8)]
+                assert page.locator('#level-select option').evaluate_all('options => options.map(o => o.value)') == expected_route
                 for block in [b for b in blocks if b['language'] == language]:
                     page.locator('#level-select').select_option(block['id'])
                     page.locator('#start-practice').click()
@@ -94,7 +97,7 @@ def test_path():
             assert page.locator('#offline-editor').input_value() == source
             page.locator('#back-to-home').click()
             page.reload()
-            page.locator('#resume-practice').click()
+            page.locator('#start-practice').click()
             assert page.locator('#offline-editor').input_value() == source
             assert page.locator('#plan-input').input_value().startswith('Empty -> null')
             assert 'O(n)' in page.locator('#reflection-input').input_value()
@@ -106,8 +109,9 @@ def test_path():
             page.locator('#start-practice').click()
             page.locator('#exercise-select').select_option('3')
             page.locator('#next-block-btn').click()
-            assert 'JavaScript 4' in page.locator('#section-title').inner_text()
+            assert 'Useful methods' in page.locator('#section-title').inner_text()
             page.locator('#back-to-home').click()
+            open_dropdown(page, 'learning-resources')
             page.locator('#use-starter').check()
             page.locator('#level-select').select_option('flight-js-basics')
             page.locator('#start-practice').click()
@@ -133,7 +137,7 @@ def test_path():
             page.on('pageerror', lambda e: errors.append(str(e)))
             page.goto(url)
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
-            page.locator('#resume-practice').click()
+            page.locator('#start-practice').click()
             page.locator('#exercise-select').select_option('2')
             # Last activity was previously solved. Run the saved sliding-window function.
             page.locator('#check-btn').click(); wait_for_check(page)

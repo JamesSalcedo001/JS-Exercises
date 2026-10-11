@@ -132,3 +132,11 @@ footer span { margin-left: .8rem; }
 
 .tool-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: .85rem; }
 .tool-table th, .tool-table td { text-align: left; vertical-align: top; padding: .65rem .4rem; border-bottom: 1px solid var(--border, #334155); overflow-wrap: anywhere; }
+
+/* A single reading column keeps the task, code, and feedback in order. */
+.workspace-grid { grid-template-columns: minmax(0, 1fr); max-width: 820px; margin-left: auto; margin-right: auto; }
+.workspace-nav, .workspace-heading { max-width: 820px; margin-left: auto; margin-right: auto; }
+#support-panel { margin-bottom: .8rem; }
+#help-drawer { background: transparent; }
+.home-intro h1 { font-size: clamp(1.8rem, 3vw, 2.3rem); }
+#resume-practice { background: transparent; font-size: .85rem; }

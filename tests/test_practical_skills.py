@@ -27,13 +27,29 @@ def test_practical():
                 page.locator('#track-select').select_option(block['language']); page.locator('#level-select').select_option(block['id']); page.locator('#start-practice').click()
                 for i,exercise in enumerate(block['exercises']):
                     assert page.locator('#offline-editor').input_value()==''
+                    assert page.locator('#help-drawer').get_attribute('open') is None
+                    assert page.locator('#results-panel').is_hidden()
                     page.locator('#offline-editor').fill(exercise['answer']); page.locator('#check-btn').click(); wait_for_check(page)
                     assert f"{len(exercise['tests'])}/{len(exercise['tests'])} tests passed" in page.locator('#check-result').inner_text(), (exercise['id'],page.locator('#output').inner_text(),page.locator('#case-list').inner_text())
+                    assert page.locator("#reflection-details").get_attribute("open") is not None
                     total+=len(exercise['tests'])
                     if i<len(block['exercises'])-1: page.locator('#next-btn').click()
                 page.locator('#back-to-home').click()
             assert total == 204
             print(f'PASS: 66 new exercises, {total} actual browser cases, both languages, real DOM events')
+            # Editing cancels an old run; its result must not judge the new draft.
+            page.locator('#track-select').select_option('javascript'); page.locator('#level-select').select_option('practical-js-8'); page.locator('#start-practice').click(); page.locator('#exercise-select').select_option('0')
+            page.locator('#offline-editor').fill('async function practice_even(numbers) { await new Promise(resolve => setTimeout(resolve, 1000)); return numbers.filter(n => n % 2 === 0); }')
+            page.locator('#check-btn').click()
+            page.locator('#offline-editor').fill('function practice_even(numbers) { return []; }')
+            assert page.locator('#check-btn').is_enabled()
+            assert page.locator('#results-panel').is_hidden()
+            page.wait_for_timeout(1200)
+            assert page.locator('#check-result').inner_text() == ''
+            page.locator('#check-btn').click(); wait_for_check(page)
+            assert '1/3 tests passed' in page.locator('#check-result').inner_text()
+            page.locator('#offline-editor').fill('function practice_even(numbers) { return numbers.filter(n => n % 2 === 0); }')
+            page.locator('#back-to-home').click()
             # A hardcoded API result must fail the request/state assertions.
             page.locator('#track-select').select_option('javascript'); page.locator('#level-select').select_option('practical-js-12'); page.locator('#start-practice').click(); page.locator('#exercise-select').select_option('4')
             page.locator('#offline-editor').fill('async function practice_api_delete(id) { return true; }'); page.locator('#check-btn').click(); wait_for_check(page)

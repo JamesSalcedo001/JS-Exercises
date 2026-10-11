@@ -6,42 +6,48 @@ No application packages, account, backend, or build step are required. The origi
 
 ## Learning path
 
-Choose a language and level from the home-page dropdowns. There are **60 JavaScript
+Choose a language and step from the home-page dropdowns. There are **60 JavaScript
 and 54 Python activities**: the existing 24 per language, 30 new everyday-skills
 problems per language, and six JavaScript DOM activities.
-Start at the beginning to reinforce your fundamentals, or choose a later level.
+Start at the beginning to reinforce your fundamentals, or choose a later step.
 
-| Level | Focus |
-| --- | --- |
-| 1 · Gentle start | Values, text, decisions, boundary bugs |
-| 2 · Lists & loops | Totals, counting, filtering, repeated work |
-| 3 · Functions & small projects | Parameters, returns, objects/dictionaries |
-| 4 · Arrays & strings | Maximum, manual reverse, linear search |
-| 5 · Maps & sets | Frequencies, duplicate detection, anagrams |
-| 6 · Problem-solving patterns | Two pointers, stacks, binary search |
-| 7 · Interview practice | Two sum, stable partitioning, sliding windows |
-| 8 · Useful methods | Keep even numbers, double scores, total prices, clean text, membership, pop |
-| 9 · Combine steps | Filter then map, split/count words, join labels, sort/slice, sum, unique tags |
-| 10 · Records | Names, find one record, every/all, some/any, lookups, unfinished work |
-| 11 · CRUD helpers | Create, read, rename, toggle, delete, search tasks |
-| 12 · API requests | GET, POST, PATCH, DELETE, error status handling, a multi-request workflow |
-| 13 · JavaScript DOM | Heading, render a list, forms, toggles, deletion, a complete small CRUD page |
+| Step | Focus | Practice |
+| --- | --- | --- |
+| 1 | Gentle start | Values, text, decisions, boundary bugs |
+| 2 | Lists & loops | Totals, counting, filtering, repeated work |
+| 3 | Functions & small projects | Parameters, returns, records |
+| 4 | Useful methods | Keep, double, add, clean, membership, pop |
+| 5 | Combine steps | Filter then map, split/count, join, sort/slice, unique tags |
+| 6 | Records | Find records, names, any/all, lookups |
+| 7 | CRUD helpers | Create, read, rename, toggle, delete, search |
+| 8 | API requests | GET, POST, PATCH, DELETE, errors, request workflow |
+| JS 9 | DOM | Render, forms, clicks, a small task app |
+| JS 10 / Python 9 | Arrays & strings | Maximum, reverse, linear search |
+| JS 11 / Python 10 | Maps & sets | Frequencies, duplicates, anagrams |
+| JS 12 / Python 11 | Problem-solving patterns | Two pointers, stacks, binary search |
+| JS 13 / Python 12 | Interview practice | Two sum, stable partitioning, sliding windows |
 
-For everyday coding, try levels 1–3, then 8–12 (and JavaScript 13). Return to
-levels 4–7 for DSA practice. The original level numbers and saved work are stable.
+The picker and Next action follow this order. The original content IDs, internal
+stage numbers, and saved work remain stable; visible step labels reflect the route.
+
 All new activities use small word problems and three gradually more specific hints.
 Tools are suggestions: correct loops are welcome in the data exercises.
 
 This is a bridge into DSA and interview practice, not a complete algorithms course.
 Advanced topics such as trees, graphs, and dynamic programming are later steps.
 
-The workspace keeps the task, editor, and results visible. Concept refreshers,
-examples, hints, starter code, and solutions live in closed dropdowns. The default
+The workspace uses one reading column: task, optional plan, code, then results.
+Results appear after running code. Optional help lives under one Need help drawer;
+only one help topic opens at a time. Passing a check opens a short explanation
+prompt so you can trace an input before moving on. Home groups tips, tools, flight
+practice, and the original library into optional drawers. Step progress focuses on
+the current small set of activities. Resume appears only when it offers a different
+destination from the main Start/Continue button. The default
 is a blank editor; starter code is opt-in. You can save a plan before coding,
 explain your result afterward, and retry from blank. The previous draft is
 recoverable through Editor tools after clearing or restarting.
 
-Checks in levels 1–3 compare printed output. Levels 4–12 call the requested function
+Checks in steps 1–3 compare printed output. Data and API activities call the requested function
 on multiple inputs, compare returned values and types, and verify that inputs stay
 unchanged. The 24 new JS/Python challenges contain 144 cases in total, including
 empty lists, negative values, duplicates, boundaries, and invalid window sizes.

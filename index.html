@@ -34,20 +34,25 @@
       <section class="path-picker" aria-label="Choose your practice">
         <div class="picker-fields">
           <label>Language<select id="track-select"><option value="javascript">JavaScript</option><option value="python">Python</option></select></label>
-          <label>Starting point<select id="level-select"></select></label>
+          <label>Choose a step<select id="level-select"></select></label>
         </div>
         <div class="level-overview"><span id="level-label" class="pill"></span><p id="level-description"></p></div>
         <p id="path-progress" class="muted"></p>
-        <div class="home-actions"><button id="start-practice" class="primary">Practice this level →</button><button id="resume-practice" hidden>Resume my practice</button></div>
-        <label class="checkbox-label"><input id="use-starter" type="checkbox"> Use starter code on new activities <span class="muted">(otherwise start blank)</span></label>
+        <div class="home-actions"><button id="start-practice" class="primary">Practice this step →</button><button id="resume-practice" hidden>Resume my practice</button></div>
+
       </section>
       <div class="home-dropdowns">
         <details id="learning-path"><summary>Browse the learning path <span>Methods → CRUD → APIs → DOM</span></summary><div id="path-section-list" class="section-list"></div></details>
-        <details id="practice-route"><summary>Where should I start?</summary><ol class="short-list"><li>New to writing code? Start with levels 1–3.</li><li>Want useful everyday tools? Start at level 8, then work through 12.</li><li>For browser pages, try JavaScript level 13.</li><li>For DSA and coding challenges, practice levels 4–7.</li></ol><p class="muted">One exercise at a time. Repeating a small problem is useful practice.</p></details>
+        <details id="learning-resources"><summary>Practice tips & useful tools</summary>
+        <label class="checkbox-label"><input id="use-starter" type="checkbox"> Use starter code on new activities <span class="muted">(otherwise start blank)</span></label>
+        <details id="practice-route"><summary>How the path works</summary><ol class="short-list"><li>Start with values, loops, and functions.</li><li>Use common methods, then combine small steps.</li><li>Build records, CRUD, and API requests.</li><li>Try browser pages in JavaScript, then DSA problems.</li></ol><p class="muted">One exercise at a time. Repeating a small problem is useful practice.</p></details>
         <details id="toolkit"><summary>Which tool helps with this goal?</summary><p class="muted">Say the goal first. Pick one tool. Save its result in a variable. Then choose the next step.</p><table class="tool-table"><thead><tr><th>Goal</th><th>JavaScript</th><th>Python</th></tr></thead><tbody><tr><td>Keep matching items</td><td>filter</td><td>comprehension with if</td></tr><tr><td>Change each item</td><td>map</td><td>list comprehension</td></tr><tr><td>Add values</td><td>reduce</td><td>sum</td></tr><tr><td>Find one record</td><td>find</td><td>loop + return</td></tr><tr><td>Any / all match?</td><td>some / every</td><td>any / all</td></tr><tr><td>Check membership</td><td>includes / Set.has</td><td>in</td></tr><tr><td>Copy / take part</td><td>slice / spread</td><td>slice [:]</td></tr><tr><td>Remove last item</td><td>pop</td><td>pop</td></tr><tr><td>Put items in order</td><td>sort with a comparator</td><td>sorted</td></tr><tr><td>Clean / split / join text</td><td>trim / split / join</td><td>strip / split / join</td></tr><tr><td>Key-value pairs</td><td>Object.entries / fromEntries</td><td>dict.items / comprehension</td></tr><tr><td>Remove duplicates</td><td>Set</td><td>set</td></tr><tr><td>JSON text ↔ data</td><td>JSON.parse / stringify</td><td>json.loads / dumps</td></tr><tr><td>Change a page</td><td>querySelector / textContent</td><td>Browser DOM uses JavaScript</td></tr><tr><td>React to a click</td><td>addEventListener</td><td>Browser DOM uses JavaScript</td></tr></tbody></table><p class="muted">Example: keep even numbers → double them → add them. Use filter → map → reduce, or a comprehension → sum. You can always write the steps as a loop first.</p></details>
         <details id="practice-method"><summary>How to build independence</summary><ol class="short-list"><li>Write your plan before touching the editor.</li><li>Try your own approach; reveal one hint when stuck.</li><li>Test edge cases, then explain why it works.</li><li>Retry from blank before you move on.</li></ol><p class="muted">Knowing the concept is the starting point. Repeatedly writing and debugging it is the practice.</p></details>
+        </details>
+        <details id="extra-practice"><summary>Other practice options</summary>
         <details id="flight-plan"><summary>Four-hour flight session <span>12 JS + 12 Python warm-ups</span></summary><div class="dropdown-body"><p class="muted">110 minutes per language, a 10-minute break, then 10 minutes of review.</p><p id="flight-progress"></p><button id="resume-flight">Start flight practice</button><div id="flight-section-list" class="section-list"></div></div></details>
         <details id="legacy-library"><summary>Original JavaScript library <span>331 exercises</span></summary><div id="section-list" class="section-list"></div></details>
+        </details>
       </div>
     </div>
     <section id="practice-workspace" hidden aria-label="Coding practice">
@@ -56,6 +61,16 @@
       <div class="workspace-grid">
         <div class="coding-column">
           <section class="task-card" aria-label="Your task"><h2>Your task</h2><p id="question-text"></p><code id="function-signature" hidden></code><p id="return-note" class="muted" hidden>Return the value. Keep inputs unchanged.</p><p id="task-example" class="example-line" hidden></p></section>
+        <aside id="support-panel" aria-label="Optional help">
+          <details id="help-drawer"><summary>Need help?</summary>
+          <div id="learning-panel">
+            <details id="concept-details" name="practice-help"><summary>Concept refresher</summary><p id="lesson"></p><ul id="constraints"></ul></details>
+            <details id="examples-details" name="practice-help"><summary>Examples & edge cases</summary><pre id="expected-output"></pre><div id="example-list"></div><p id="check-explanation" class="muted"></p></details>
+            <details id="hints-details" name="practice-help"><summary>Hints, one at a time</summary><p class="muted">Start with a plan. Take the smallest nudge you need.</p><button id="hint-btn">Show a hint</button><ol id="hints"></ol></details>
+          </div>
+          <details id="starter-details" name="practice-help"><summary>Starter code</summary><pre id="starter-code"></pre><button id="load-snippet-btn">Load starter into editor</button><button id="copy-snippet-btn">Copy starter</button><p id="starter-note" class="muted"></p></details>
+          <details id="solution-details" name="practice-help"><summary>One possible solution</summary><p class="muted">Compare approaches after making your own attempt. Then retry from blank.</p><button id="answer-btn">Reveal solution</button><pre id="answer-box" hidden></pre></details>
+        </details></aside>
           <details id="planning-details"><summary>1 · Sketch your approach</summary><label class="field-label" for="plan-input">Inputs → output → steps</label><textarea id="plan-input" rows="3" placeholder="What comes in? What should come out? What are the smallest steps?"></textarea></details>
           <section class="editor-card" aria-label="Write and run code">
             <div class="editor-heading"><h2>2 · Write your solution</h2><details id="editor-tools"><summary>Editor tools</summary><div class="tool-menu"><button id="cursor-left" aria-label="Move cursor left">← Cursor</button><button id="cursor-right" aria-label="Move cursor right">Cursor →</button><button id="clear-editor">Clear code</button><button id="restore-draft" hidden>Restore previous draft</button></div></details></div>
@@ -63,20 +78,11 @@
             <div id="code-editor"></div>
             <div class="run-actions"><button id="run-btn">Run code</button><button id="check-btn" class="primary">Check output</button><button id="stop-btn" hidden>Stop code</button></div>
           </section>
-          <section class="output-card" aria-label="Run results"><div class="output-heading"><h2>3 · Test & reflect</h2><p id="check-result" role="status" aria-live="polite"></p></div><pre id="output" tabindex="0">Run your code to see output here.</pre><div id="dom-output"></div><details id="case-results" hidden><summary>Test case results</summary><div id="case-list"></div></details></section>
-          <details id="reflection-details"><summary>Explain it in your own words</summary><p id="stretch"></p><label class="field-label" for="reflection-input">Why does it work? What edge case matters? What is the time/space cost?</label><textarea id="reflection-input" rows="3" placeholder="Write a short explanation you could give without looking at the solution."></textarea><button id="retry-blank" class="quiet">Retry from blank</button></details>
+          <section id="results-panel" class="output-card" hidden aria-label="Run results"><div class="output-heading"><h2>3 · Test & reflect</h2><p id="check-result" role="status" aria-live="polite"></p></div><pre id="output" tabindex="0">Run your code to see output here.</pre><div id="dom-output"></div><details id="case-results" hidden><summary>Test case results</summary><div id="case-list"></div></details></section>
+          <details id="reflection-details"><summary>Explain it in your own words</summary><p id="stretch"></p><label class="field-label" for="reflection-input">Walk through one input. What changes at each step?</label><textarea id="reflection-input" rows="3" placeholder="For input ___, first I ___, then I ___. The result is ___."></textarea><button id="retry-blank" class="quiet">Retry from blank</button></details>
           <div class="exercise-navigation"><button id="previous-btn">← Previous</button><button id="next-btn">Next activity →</button><button id="next-block-btn" class="primary" hidden>Next level →</button></div><p id="block-note" class="muted"></p>
         </div>
-        <aside id="support-panel" aria-label="Optional help">
-          <h2 class="support-heading">Help, when you need it</h2>
-          <div id="learning-panel">
-            <details id="concept-details"><summary>Concept refresher</summary><p id="lesson"></p><ul id="constraints"></ul></details>
-            <details id="examples-details"><summary>Examples & edge cases</summary><pre id="expected-output"></pre><div id="example-list"></div><p id="check-explanation" class="muted"></p></details>
-            <details id="hints-details"><summary>Hints, one at a time</summary><p class="muted">Start with a plan. Take the smallest nudge you need.</p><button id="hint-btn">Show a hint</button><ol id="hints"></ol></details>
-          </div>
-          <details id="starter-details"><summary>Starter code</summary><pre id="starter-code"></pre><button id="load-snippet-btn">Load starter into editor</button><button id="copy-snippet-btn">Copy starter</button><p id="starter-note" class="muted"></p></details>
-          <details id="solution-details"><summary>One possible solution</summary><p class="muted">Compare approaches after making your own attempt. Then retry from blank.</p><button id="answer-btn">Reveal solution</button><pre id="answer-box" hidden></pre></details>
-        </aside>
+
       </div>
     </section>
   </main>
