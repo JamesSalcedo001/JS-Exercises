@@ -6,7 +6,7 @@ import subprocess
 import threading
 from http.server import ThreadingHTTPServer
 from playwright.sync_api import sync_playwright
-from test_flight import ROOT, QuietHandler, open_dropdown
+from test_flight import ROOT, QuietHandler, open_dropdown, select_level, start_practice
 
 
 def wait_for_check(page):
@@ -42,8 +42,8 @@ def test_path():
                 expected_route = [f"flight-{prefix}-basics", f"flight-{prefix}-loops", f"flight-{prefix}-project"] + [f"practical-{prefix}-{n}" for n in range(8, 13)] + (["practical-js-13"] if prefix == "js" else []) + [f"path-{prefix}-{n}" for n in range(4, 8)]
                 assert page.locator('#level-select option').evaluate_all('options => options.map(o => o.value)') == expected_route
                 for block in [b for b in blocks if b['language'] == language]:
-                    page.locator('#level-select').select_option(block['id'])
-                    page.locator('#start-practice').click()
+                    select_level(page,block['id'])
+                    start_practice(page)
                     for i, exercise in enumerate(block['exercises']):
                         assert page.locator('#offline-editor').input_value() == ''
                         assert page.locator('#concept-details').get_attribute('open') is None
@@ -65,8 +65,8 @@ def test_path():
 
             # Printed answers do not substitute for returning a general result.
             page.locator('#track-select').select_option('javascript')
-            page.locator('#level-select').select_option('path-js-4')
-            page.locator('#start-practice').click()
+            select_level(page,'path-js-4')
+            start_practice(page)
             page.locator('#exercise-select').select_option('0')
             page.locator('#offline-editor').fill('function findMax(numbers) { console.log(5); }')
             page.locator('#check-btn').click(); wait_for_check(page)
@@ -97,7 +97,7 @@ def test_path():
             assert page.locator('#offline-editor').input_value() == source
             page.locator('#back-to-home').click()
             page.reload()
-            page.locator('#start-practice').click()
+            start_practice(page)
             assert page.locator('#offline-editor').input_value() == source
             assert page.locator('#plan-input').input_value().startswith('Empty -> null')
             assert 'O(n)' in page.locator('#reflection-input').input_value()
@@ -105,21 +105,21 @@ def test_path():
 
             # Path mode continues within the chosen language, not the flight schedule.
             page.locator('#back-to-home').click()
-            page.locator('#level-select').select_option('flight-js-project')
-            page.locator('#start-practice').click()
+            select_level(page,'flight-js-project')
+            start_practice(page)
             page.locator('#exercise-select').select_option('3')
             page.locator('#next-block-btn').click()
             assert 'Useful methods' in page.locator('#section-title').inner_text()
             page.locator('#back-to-home').click()
             open_dropdown(page, 'learning-resources')
             page.locator('#use-starter').check()
-            page.locator('#level-select').select_option('flight-js-basics')
-            page.locator('#start-practice').click()
+            select_level(page,'flight-js-basics')
+            start_practice(page)
             assert 'const budget = 30' in page.locator('#offline-editor').input_value()
             page.locator('#back-to-home').click()
             page.locator('#track-select').select_option('python')
-            page.locator('#level-select').select_option('path-py-6')
-            page.locator('#start-practice').click()
+            select_level(page,'path-py-6')
+            start_practice(page)
             page.locator('#exercise-select').select_option('0')
             page.locator('#offline-editor').fill('def is_palindrome(text):\n    return 0')
             page.locator('#check-btn').click(); wait_for_check(page)
@@ -128,8 +128,8 @@ def test_path():
             print('PASS: per-language progression, opt-in starters, strict boolean/number judging')
 
             # Saved online work remains usable after server shutdown and a cold offline tab.
-            page.locator('#level-select').select_option('path-py-7')
-            page.locator('#start-practice').click()
+            select_level(page,'path-py-7')
+            start_practice(page)
             server.shutdown()
             context.set_offline(True)
             page.close()
@@ -137,15 +137,15 @@ def test_path():
             page.on('pageerror', lambda e: errors.append(str(e)))
             page.goto(url)
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
-            page.locator('#start-practice').click()
+            start_practice(page)
             page.locator('#exercise-select').select_option('2')
             # Last activity was previously solved. Run the saved sliding-window function.
             page.locator('#check-btn').click(); wait_for_check(page)
             assert '7/7 tests passed' in page.locator('#check-result').inner_text()
             page.locator('#back-to-home').click()
             page.locator('#track-select').select_option('javascript')
-            page.locator('#level-select').select_option('path-js-7')
-            page.locator('#start-practice').click()
+            select_level(page,'path-js-7')
+            start_practice(page)
             page.locator('#exercise-select').select_option('0')
             page.locator('#check-btn').click(); wait_for_check(page)
             assert '7/7 tests passed' in page.locator('#check-result').inner_text()

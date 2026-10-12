@@ -6,7 +6,10 @@ No application packages, account, backend, or build step are required. The origi
 
 ## Learning path
 
-Choose a language and step from the home-page dropdowns. There are **60 JavaScript
+Choose a language and use the suggested **Start this step / Continue learning**
+action. It chooses unfinished work in a foundation → project → DSA route, or
+resumes the draft you were working on. Free navigation remains under
+**Choose a different step** and the project drawer. There are **60 JavaScript
 and 54 Python activities**: the existing 24 per language, 30 new everyday-skills
 problems per language, and six JavaScript DOM activities.
 Start at the beginning to reinforce your fundamentals, or choose a later step.
@@ -64,21 +67,28 @@ is unavailable or full. Existing drafts and output-check progress are preserved.
 ## Build projects
 
 The home **Build projects** drawer is separate from the small-exercise path. It
-contains 17 steps with 127 cases across three projects:
+contains 30 steps with 239 cases across three projects:
 
 - **Responsive profile page:** HTML structure, CSS layout, a phone-overflow bug,
   and an independent product-page variation. Layout checks use 320px and 640px.
 - **Shopping list:** rendering, form events, validation, deletion, checked state,
   JSON storage, a duplicate-comparison bug, and a packing checklist with quantities.
-- **Task API (JavaScript or Python):** write server-side route decisions, validate
-  input, fix shared-reference mutation, then implement full CRUD from requirements.
+- **Task API (JavaScript or Python):** start with the shape of a response, then add read, create, ID lookup, update,
+  and delete. Debug copying and rebuild full CRUD from the pieces you practiced.
 
-Guided steps show three short instructions. Debugging steps provide broken code;
+Guided steps show three short instructions. Debugging steps load a broken version and explain the goal;
 independent challenges give requirements without a walkthrough. The existing plan,
 hints, examples, solutions, and reflection tools remain available. Guided builds
 count as assisted work. The collapsed review queue collects passed project steps
 that used guidance; retry from blank closes the guide and preserves a backup.
 Project positions and drafts use stable IDs and do not replace exercise-path resume.
+Earlier numeric project positions are migrated when the new foundation steps are
+inserted. A guided continuation carries your **last passing code**, not later
+untested edits; its own existing draft always takes priority. Saved passing HTML
+also carries into shopping-list behavior steps. The collapsed **Edit your page
+HTML** drawer lets you change the markup used by the runner and page export.
+Independent challenges begin with blank JavaScript/Python, so carrying your own
+HTML does not turn them into another tutorial.
 
 Profile projects use an HTML/CSS editor and isolated preview. Shopping-list preview
 storage is a per-test in-memory `practiceStorage` fixture; its reload action reruns
@@ -92,7 +102,12 @@ of visual design or accessibility: also try keyboard navigation and read the pag
 Task route decisions run offline in the browser. Real Express and Flask backends,
 SQLite persistence, a shared client page, starter handlers, reference handlers,
 and a priority-field extension challenge live in [projects/task-api/README.md](projects/task-api/README.md).
-Choose one backend to learn first. The app can download a source-only ZIP even
+Choose one backend to learn first. The in-app **Run the real API project** drawer
+and [from-scratch walkthrough](projects/task-api/BUILD.md) start with an empty
+folder: install the HTTP library, run a health route, connect YOUR browser-built
+handler, use in-memory records, add SQLite after CRUD works, then connect your page.
+The download is reference material to compare afterward, not a required starting
+point. The app can download a source-only ZIP even
 after offline preparation; rebuild it with `python3 scripts/build_project_bundle.py`
 when changing backend source files. First dependency installation needs internet;
 installed local servers can run offline. These dependencies are optional and do
@@ -102,6 +117,27 @@ run inside the browser or on the static hosted site.
 The project drawer also includes a short roadmap through beginner, intermediate,
 and later engineering skills. Next steps include Git and DevTools, tests, SQL,
 authentication, migrations, deployment, and reliability.
+
+## Practice on an iPhone
+
+Touch devices use the built-in editor instead of loading Monaco. Autocorrect and
+auto-capitalization are off; code and inputs use 16px text to avoid small-field
+zoom. The touch toolbar provides indentation, newline, paired brackets, quotes,
+and Undo. It works in both the code editor and the editable project HTML field;
+selected lines are indented without deleting the selection. Controls have at
+least 44px tap targets, and the layout accounts for screen safe areas.
+
+On iPhone, use Safari → Share → Add to Home Screen if desired. Open that icon
+online and wait for Offline ready, then test it in airplane mode. Drafts stay in
+that browser on that device; they do not sync with a computer. Browser exercises,
+profile/shopping projects, and API route decisions can be practiced on the phone.
+Running a real Node/Flask server needs a computer or Codex Cloud. In the API
+project, Editor tools → Save my route file downloads your own routes.js/routes.py
+for that server; it exports your current draft, so check it before connecting it.
+
+Touch behavior is tested with Chromium's iPhone emulation at 320–844px, including
+portrait and landscape layouts. A physical iPhone/Safari software keyboard is not
+available in the test environment; try one short activity on your own device.
 
 ## Four-hour flight session
 
@@ -178,7 +214,9 @@ a persistent database are later steps.
 - `data/problem-solving.js`: 24 JS/Python challenges, cases, hints, and answers.
 - `data/practical-skills.js`: 60 word problems covering methods, combinations, records, CRUD, and APIs.
 - `data/dom-practice.js`: six browser activities with fixtures and event scenarios.
-- `data/projects.js`: guided project steps, broken starters, independent challenges, and cases.
+- `data/projects.js`: incremental steps, checked-code/markup dependencies, project prerequisites, and cases.
+- `learning-flow.js`: recommended route, saved-position migration, and verified markup lookup.
+- `data/server-build.js`: executable from-scratch server lessons; keep its code in sync with `projects/task-api/BUILD.md`.
 - `projects/`: exported-style reference pages and optional Express/Flask/SQLite backend projects.
 - `practice-api.js`: matching offline HTTP fixtures for JavaScript and Python.
 - `dom-runner.js`: isolated interactive page preview and DOM-case judging.
@@ -205,12 +243,15 @@ python3 tests/test_offline_setup.py
 python3 tests/test_learning_path.py
 python3 tests/test_practical_skills.py
 python3 tests/test_projects.py
+python3 tests/test_phone_flow.py
 ```
 
-The browser tests run 114 exercise answers and 17 project answers; exercise errors, hints, draft
+The browser tests run 114 exercise answers and 30 project answers; exercise errors, hints, draft
 restoration, loop limits, and original-library behavior; check all 144 DSA function
 cases and 204 new method/API/DOM cases; and verify a fresh offline tab after stopping the server. Setup checks cover
 old service-worker upgrades, incomplete downloads, disabled browser storage,
 per-language navigation, responsive layouts, project review/export, and small-screen overflow.
-The project tests check 127 cases and cold offline challenges. Backend commands and
-real HTTP/restart tests are documented in the task API guide above.
+The project tests check 239 cases and cold offline challenges. Phone checks cover touch editing, recommendations, checked-code/HTML continuity,
+and saved-position migration. `python3 tests/test_server_build.py` runs the actual
+from-scratch server programs in empty temporary folders with your project handler.
+Backend commands and real HTTP/restart tests are documented in the task API guide above.

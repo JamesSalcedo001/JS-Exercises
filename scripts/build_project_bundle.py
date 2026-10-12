@@ -4,7 +4,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 API = ROOT / 'projects/task-api'
-FILES = ['README.md', 'cases.json', 'javascript/package.json', 'javascript/package-lock.json',
+FILES = ['BUILD.md', 'README.md', 'cases.json', 'javascript/package.json', 'javascript/package-lock.json',
          'javascript/routes.js', 'javascript/routes.starter.js', 'javascript/routes.test.js',
          'javascript/server.js', 'python/app.py', 'python/routes.py', 'python/routes_starter.py',
          'python/test_routes.py', 'python/requirements.txt', 'web/index.html']

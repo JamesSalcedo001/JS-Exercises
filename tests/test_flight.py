@@ -21,6 +21,16 @@ def open_dropdown(page, identifier):
         page.locator('#' + identifier + ' > summary').click()
 
 
+def select_level(page, value):
+    open_dropdown(page, 'choose-step')
+    page.locator('#level-select').select_option(value)
+
+
+def start_practice(page):
+    open_dropdown(page, 'choose-step')
+    page.locator('#start-practice').click()
+
+
 class QuietHandler(SimpleHTTPRequestHandler):
     def log_message(self, *_):
         pass

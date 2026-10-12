@@ -5,7 +5,7 @@ from pathlib import Path
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from playwright.sync_api import sync_playwright
-from test_flight import open_dropdown
+from test_flight import open_dropdown, select_level, start_practice
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -104,12 +104,12 @@ def test_setup():
             page.evaluate('localStorage.setItem("daily-coding-practice-v1", JSON.stringify({drafts:{"js-budget":"console.log(18)"},completed:{"js-budget":true},positions:{},lastFlight:"js-budget"}))')
             SetupHandler.mode = 'new'
             page.reload()
-            page.wait_for_function('caches.keys().then(keys => keys.includes("js-daily-exercises-projects-v5") && !keys.includes("js-daily-exercises-flight-v1"))')
+            page.wait_for_function('caches.keys().then(keys => keys.includes("js-daily-exercises-incremental-v6") && !keys.includes("js-daily-exercises-flight-v1"))')
             page.wait_for_function('window.controlChanged || document.querySelector("#offline-status")')
             page.reload()
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
             assert page.locator('#level-select option').count() == 13
-            page.locator('#start-practice').click()
+            start_practice(page)
             assert page.locator('#offline-editor').input_value() == 'console.log(18)'
             page.locator('#check-btn').click()
             page.wait_for_function('document.querySelector("#check-result").textContent.includes("Output matches")')

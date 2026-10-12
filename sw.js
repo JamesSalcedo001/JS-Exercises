@@ -1,7 +1,7 @@
-const CACHE_NAME = "js-daily-exercises-projects-v5";
+const CACHE_NAME = "js-daily-exercises-incremental-v6";
 const FILES_TO_CACHE = [
   "./", "./index.html", "./styles.css", "./index.js", "./editor.js", "./sections.js",
-  "./data/projects.js", "./projects/task-api/README.md", "./projects/task-api/task-api.zip", "./practice-worker.js", "./practice-api.js", "./dom-runner.js", "./data/practical-skills.js", "./data/dom-practice.js", "./data/flight-practice.js", "./data/problem-solving.js",
+  "./learning-flow.js", "./data/server-build.js", "./projects/task-api/BUILD.md", "./data/projects.js", "./projects/task-api/README.md", "./projects/task-api/task-api.zip", "./practice-worker.js", "./practice-api.js", "./dom-runner.js", "./data/practical-skills.js", "./data/dom-practice.js", "./data/flight-practice.js", "./data/problem-solving.js",
   "./data/tier1-foundations.js", "./data/tier2-patterns.js", "./data/tier3-mini-challenges.js",
   "./data/tier4-chaining-composition.js", "./data/tier5-problem-solving.js",
   "./manifest.json", "./Code_Icon.png", "./copy.svg", "./home.svg", "./terminal.svg", "./unlock.svg", "./skip-forward.svg",

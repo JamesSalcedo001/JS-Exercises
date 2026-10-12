@@ -26,7 +26,7 @@ def http(base,method,path,body=None,raw=None):
 
 def test_backends():
     with zipfile.ZipFile(ROOT/'projects/task-api/task-api.zip') as bundle:
-        assert len(bundle.namelist()) == 14
+        assert len(bundle.namelist()) == 15
         for name in bundle.namelist():
             assert name.startswith('task-api/') and '..' not in name
             assert bundle.read(name) == (ROOT/'projects'/name).read_bytes()

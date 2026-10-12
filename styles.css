@@ -140,3 +140,30 @@ footer span { margin-left: .8rem; }
 #help-drawer { background: transparent; }
 .home-intro h1 { font-size: clamp(1.8rem, 3vw, 2.3rem); }
 #resume-practice { background: transparent; font-size: .85rem; }
+
+.recommended-step { margin-top: 1.1rem; }
+.recommended-step h2 { font-size: 1.15rem; margin-bottom: .4rem; }
+#choose-step { margin-top: 1rem; background: transparent; }
+#project-ready { margin-bottom: .8rem; }
+#previous-project-step { margin-bottom: .8rem; }
+#markup-editor { font: 16px/1.6 ui-monospace, monospace; tab-size: 4; }
+.phone-code-tools { display: none; }
+@media (pointer: coarse), (max-width: 640px) {
+  input, select, textarea, .exercise-picker select, #offline-editor { font-size: 16px; }
+  button, summary { min-height: 44px; }
+  .phone-code-tools { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin-bottom: .6rem; }
+  .phone-code-tools button { padding: .5rem .65rem; min-width: 44px; }
+  .phone-code-tools details { margin: 0; flex: 1 0 90px; position: relative; }
+  .phone-code-tools summary { padding: .6rem; }
+  .symbol-buttons { display: flex; flex-wrap: wrap; gap: .3rem; }
+  #code-editor { height: clamp(230px, 42svh, 360px); }
+  #offline-editor { -webkit-text-size-adjust: 100%; padding: .65rem; }
+  .run-actions > button { flex: 1; }
+  .path-picker { padding: 1rem; }
+  .workspace-nav { flex-wrap: wrap; gap: .5rem; }
+  .exercise-picker { min-width: 170px; }
+  .section-card { flex-wrap: wrap; gap: .25rem; }
+  .site-header { padding-top: max(1rem, env(safe-area-inset-top)); padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
+  main { padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
+  footer { padding-bottom: max(1rem, env(safe-area-inset-bottom)); padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
+}

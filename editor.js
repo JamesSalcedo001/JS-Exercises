@@ -7,7 +7,12 @@ export function createEditor(container, onChange) {
   textarea.spellcheck = false;
   textarea.autocapitalize = "off";
   textarea.autocomplete = "off";
+  textarea.setAttribute("autocorrect", "off");
+  textarea.setAttribute("enterkeyhint", "enter");
   container.appendChild(textarea);
+  const history = [];
+  const remember = () => { history.push({value:textarea.value, start:textarea.selectionStart, end:textarea.selectionEnd}); if (history.length > 50) history.shift(); };
+  textarea.addEventListener("beforeinput", event => { if (!event.inputType?.startsWith("history")) remember(); });
   let monacoEditor;
   let language = "javascript";
   const status = document.getElementById("editor-status");
@@ -16,17 +21,41 @@ export function createEditor(container, onChange) {
   textarea.addEventListener("keydown", (event) => {
     if (event.key !== "Tab") return;
     event.preventDefault();
-    textarea.setRangeText("    ", textarea.selectionStart, textarea.selectionEnd, "end");
-    onChange(textarea.value);
+    editor.indent();
   });
   const editor = {
     getValue: () => monacoEditor ? monacoEditor.getValue() : textarea.value,
-    setValue(value) { if (monacoEditor) monacoEditor.setValue(value); else textarea.value = value; },
+    setValue(value) { history.length = 0; if (monacoEditor) monacoEditor.setValue(value); else textarea.value = value; },
     setLanguage(value) {
       language = value;
       if (monacoEditor) window.monaco.editor.setModelLanguage(monacoEditor.getModel(), value);
     },
-    focus() { (monacoEditor || textarea).focus(); },
+    focus() { if (monacoEditor) monacoEditor.focus(); else textarea.focus({preventScroll:true}); },
+    blur() { textarea.blur(); if (monacoEditor) container.querySelector('textarea')?.blur(); },
+    insert(text) {
+      if (typeof text !== 'string') return;
+      if (monacoEditor) { monacoEditor.executeEdits('touch', [{range:monacoEditor.getSelection(), text, forceMoveMarkers:true}]); monacoEditor.focus(); }
+      else { remember(); textarea.setRangeText(text, textarea.selectionStart, textarea.selectionEnd, 'end'); textarea.focus({preventScroll:true}); onChange(textarea.value); }
+    },
+    indent() {
+      if (monacoEditor) { monacoEditor.trigger('touch', 'editor.action.indentLines'); monacoEditor.focus(); }
+      else { const selected = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd); editor.insert('    ' + selected.replace(/\n/g, '\n    ')); }
+    },
+    insertPair(pair) {
+      if (monacoEditor) {
+        const selected = monacoEditor.getModel().getValueInRange(monacoEditor.getSelection());
+        editor.insert(pair[0] + selected + pair[1]);
+        editor.move(-1);
+      } else {
+        const start = textarea.selectionStart, end = textarea.selectionEnd;
+        remember(); textarea.setRangeText(pair[0] + textarea.value.slice(start, end) + pair[1], start, end, 'end');
+        textarea.setSelectionRange(start + 1, end + 1); textarea.focus({preventScroll:true}); onChange(textarea.value);
+      }
+    },
+    undo() {
+      if (monacoEditor) { monacoEditor.trigger('touch', 'undo'); monacoEditor.focus(); }
+      else { const saved = history.pop(); if (!saved) return; textarea.value = saved.value; textarea.setSelectionRange(saved.start, saved.end); textarea.focus({preventScroll:true}); onChange(textarea.value); }
+    },
     move(direction) {
       if (monacoEditor) {
         const pos = monacoEditor.getPosition();
@@ -41,7 +70,9 @@ export function createEditor(container, onChange) {
       }
     },
   };
-  if (navigator.onLine) {
+  const touchEditor = matchMedia("(pointer: coarse)").matches || matchMedia("(max-width: 640px)").matches;
+  if (touchEditor) status.textContent = "Touch editor · use Indent and Symbols above your code";
+  if (navigator.onLine && !touchEditor) {
     const loader = document.createElement("script");
     loader.src = "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js";
     loader.onload = () => {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Daily Coding Practice</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="manifest" href="manifest.json">
@@ -20,7 +20,7 @@
         <p id="offline-status" role="status">Preparing offline practice…</p>
         <p id="save-status" role="status"></p>
         <p id="editor-status" role="status"></p>
-        <p>Before your flight: open this updated app online, then test a reload in airplane mode on this device.</p>
+        <p>iPhone: use Share → Add to Home Screen. Indent and Symbols help with typing code.</p><p>Before your flight: open this updated app online, then test a reload in airplane mode on this device.</p>
       </div>
     </details>
   </header>
@@ -28,18 +28,18 @@
     <div id="home-wrapper">
       <section class="home-intro">
         <p class="eyebrow">YOUR PRACTICE PATH</p>
-        <h1>Start simple.<br>Learn to solve independently.</h1>
-        <p class="muted">Small word problems. Useful methods. Real practice.</p>
+        <h1>One small step<br>at a time.</h1>
+        <p class="muted">Follow the suggested step. Learn it, check it, then build on it.</p>
       </section>
       <section class="path-picker" aria-label="Choose your practice">
-        <div class="picker-fields">
-          <label>Language<select id="track-select"><option value="javascript">JavaScript</option><option value="python">Python</option></select></label>
+        <label>Practice language<select id="track-select"><option value="javascript">JavaScript</option><option value="python">Python</option></select></label>
+        <div class="recommended-step"><h2 id="recommended-title"></h2><p id="recommended-description" class="muted"></p><button id="recommended-start" class="primary">Start here →</button></div>
+        <details id="choose-step"><summary>Choose a different step</summary>
           <label>Choose a step<select id="level-select"></select></label>
-        </div>
-        <div class="level-overview"><span id="level-label" class="pill"></span><p id="level-description"></p></div>
-        <p id="path-progress" class="muted"></p>
-        <div class="home-actions"><button id="start-practice" class="primary">Practice this step →</button><button id="resume-practice" hidden>Resume my practice</button></div>
-
+          <div class="level-overview"><span id="level-label" class="pill"></span><p id="level-description"></p></div>
+          <p id="path-progress" class="muted"></p>
+          <div class="home-actions"><button id="start-practice">Practice this step →</button><button id="resume-practice" hidden>Resume my practice</button></div>
+        </details>
       </section>
       <div class="home-dropdowns">
         <details id="build-projects"><summary>Build projects <span>Guided build → your own variation</span></summary><p class="muted">Start with a page, then an interactive list, then a server. Browser projects work offline.</p><div id="project-list" class="section-list"></div><details id="engineering-roadmap"><summary>What comes after these projects?</summary><ol class="short-list"><li><strong>Foundation:</strong> HTML meaning, CSS layout, functions, state, forms, accessibility, Git, and reading errors in DevTools.</li><li><strong>Intermediate:</strong> modules, asynchronous requests, server validation, SQL, transactions, automated tests, and client/server responsibilities.</li><li><strong>Later:</strong> authentication and permissions, database migrations, performance, logging, caching, deployment, and reviewing code with other developers.</li></ol><p class="muted">Keep improving a working project. Add one responsibility at a time; these projects begin the path rather than cover every engineering skill.</p></details><details id="project-review"><summary>Rebuild something you needed help with</summary><p id="review-empty" class="muted"></p><div id="review-list" class="section-list"></div></details></details>
@@ -61,7 +61,7 @@
       <div class="workspace-heading"><p id="section-title" class="eyebrow"></p><h1 id="activity-title"></h1><p id="exercise-progress" class="muted"></p></div>
       <div class="workspace-grid">
         <div class="coding-column">
-          <section class="task-card" aria-label="Your task"><h2>Your task</h2><p id="question-text"></p><code id="function-signature" hidden></code><p id="return-note" class="muted" hidden>Return the value. Keep inputs unchanged.</p><p id="task-example" class="example-line" hidden></p></section>
+          <section class="task-card" aria-label="Your task"><h2>Your task</h2><p id="question-text"></p><p id="step-why" class="muted" hidden></p><code id="function-signature" hidden></code><p id="return-note" class="muted" hidden>Return the value. Keep inputs unchanged.</p><p id="task-example" class="example-line" hidden></p></section>
         <aside id="support-panel" aria-label="Optional help">
           <details id="help-drawer"><summary>Need help?</summary>
           <div id="learning-panel">
@@ -72,13 +72,18 @@
           <details id="starter-details" name="practice-help"><summary>Starter code</summary><pre id="starter-code"></pre><button id="load-snippet-btn">Load starter into editor</button><button id="copy-snippet-btn">Copy starter</button><p id="starter-note" class="muted"></p></details>
           <details id="solution-details" name="practice-help"><summary>One possible solution</summary><p class="muted">Compare approaches after making your own attempt. Then retry from blank.</p><button id="answer-btn">Reveal solution</button><pre id="answer-box" hidden></pre></details>
         </details></aside>
+          <p id="continuity-note" class="muted" role="status" hidden></p><button id="previous-project-step" hidden>Build the previous step first</button><div id="project-ready" hidden><p id="project-prerequisite" class="muted"></p><button id="practice-prerequisite">Practice this first</button></div>
           <details id="project-guide" hidden><summary id="project-guide-title">Build one small step</summary><ol id="project-steps" class="short-list"></ol><p id="project-prediction" class="muted">Before running: predict what the page or response should show.</p></details>
-          <details id="backend-guide" hidden><summary>Run the real API project</summary><p>The browser checks route decisions. Express or Flask serves real HTTP; SQLite keeps records after a restart. Choose one language.</p><pre id="backend-commands"></pre><p><a href="projects/task-api/task-api.zip" download>Download the backend project files</a></p><a href="projects/task-api/README.md" download>Save the setup and challenge guide</a></details>
+          <details id="project-markup" hidden><summary>Edit your page HTML</summary><label class="field-label" for="markup-editor">Your page from the earlier step. Keep the IDs your JavaScript uses.</label><textarea id="markup-editor" rows="7" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea></details>
+          <details id="backend-guide" hidden><summary>Run the real API project</summary><p>Every route decision can be built and tested here on your phone. To run an actual server, use a computer or Codex Cloud and follow the steps below from an empty folder.</p><div id="server-build-steps"></div><p><a href="projects/task-api/BUILD.md" download>Save the from-scratch walkthrough</a></p><details><summary>Reference files, if you want to compare afterward</summary><pre id="backend-commands"></pre><p><a href="projects/task-api/task-api.zip" download>Download the backend project files</a></p><a href="projects/task-api/README.md" download>Save the setup and challenge guide</a></details></details>
           <details id="planning-details"><summary>1 · Sketch your approach</summary><label class="field-label" for="plan-input">Inputs → output → steps</label><textarea id="plan-input" rows="3" placeholder="What comes in? What should come out? What are the smallest steps?"></textarea></details>
           <section class="editor-card" aria-label="Write and run code">
             <div class="editor-heading"><h2>2 · Write your solution</h2><details id="editor-tools"><summary>Editor tools</summary><div class="tool-menu"><button id="cursor-left" aria-label="Move cursor left">← Cursor</button><button id="cursor-right" aria-label="Move cursor right">Cursor →</button><button id="export-project" hidden>Save runnable page</button><button id="clear-editor">Clear code</button><button id="restore-draft" hidden>Restore previous draft</button></div></details></div>
             <p id="save-warning" class="warning" role="status" hidden></p>
-            <div id="code-editor"></div>
+            <div id="phone-code-tools" class="phone-code-tools" aria-label="Touch coding tools">
+              <button type="button" data-code-action="indent">Indent</button><button type="button" data-code-action="newline" aria-label="Insert new line">↵</button><button type="button" data-code-pair="()" aria-label="Insert parentheses">( )</button><button type="button" data-code-pair="{}" aria-label="Insert braces">{ }</button>
+              <details><summary>Symbols</summary><div class="symbol-buttons"><button type="button" data-code-pair="[]" aria-label="Insert square brackets">[ ]</button><button type="button" data-code-pair="''" aria-label="Insert quotes">' '</button><button type="button" data-code-insert=":" aria-label="Insert colon">:</button><button type="button" data-code-insert="=" aria-label="Insert equals">=</button><button type="button" data-code-insert=";" aria-label="Insert semicolon">;</button><button type="button" data-code-insert="<" aria-label="Insert opening angle bracket">&lt;</button><button type="button" data-code-insert=">" aria-label="Insert closing angle bracket">&gt;</button><button type="button" data-code-action="undo">Undo</button></div></details>
+            </div><div id="code-editor"></div>
             <div class="run-actions"><button id="run-btn">Run code</button><button id="check-btn" class="primary">Check output</button><button id="stop-btn" hidden>Stop code</button></div>
           </section>
           <section id="results-panel" class="output-card" hidden aria-label="Run results"><div class="output-heading"><h2>3 · Test & reflect</h2><p id="check-result" role="status" aria-live="polite"></p></div><pre id="output" tabindex="0">Run your code to see output here.</pre><div id="dom-output"></div><details id="case-results" hidden><summary>Test case results</summary><div id="case-list"></div></details></section>

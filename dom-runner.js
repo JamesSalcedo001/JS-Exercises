@@ -45,11 +45,16 @@ function frameRuntime() {
           markup: Boolean(document.querySelector('#tasks b')),
           prevented,
         };
+        const sourceDocument = data.exercise.html ? new DOMParser().parseFromString(data.code, "text/html") : null;
         const inspect = assertion => {
           const elements = [...document.querySelectorAll(assertion.selector || 'body')];
           const first = elements[0];
           const boxes = elements.map(el => el.getBoundingClientRect());
           switch (assertion.kind) {
+            case 'doctype': return sourceDocument?.doctype?.name.toLowerCase() === 'html';
+            case 'sourceNonempty': return Boolean(sourceDocument?.querySelector(assertion.selector)?.textContent.trim());
+            case 'sourceExists': return Boolean(sourceDocument?.querySelector(assertion.selector));
+            case 'sourceAttribute': return sourceDocument?.querySelector(assertion.selector)?.getAttribute(assertion.attribute)?.toLowerCase() === assertion.value.toLowerCase();
             case 'exists': return Boolean(first);
             case 'absent': return elements.length === 0;
             case 'count': return elements.length === assertion.value;
@@ -58,6 +63,8 @@ function frameRuntime() {
             case 'text': return first?.textContent === assertion.value;
             case 'texts': return JSON.stringify(elements.map(el => el.textContent)) === JSON.stringify(assertion.value);
             case 'checked': return first?.checked === assertion.value;
+            case 'attribute': return first?.getAttribute(assertion.attribute) === assertion.value;
+            case 'computedMin': return Boolean(first) && parseFloat(getComputedStyle(first)[assertion.property]) >= assertion.value;
             case 'attributePrefix': return Boolean(first?.getAttribute(assertion.attribute)?.startsWith(assertion.value));
             case 'noOverflow': return document.documentElement.scrollWidth <= innerWidth;
             case 'sideBySide': return boxes.length >= 2 && boxes.slice(0,2).every(box => box.width > 0 && box.height > 0) && Math.abs(boxes[0].top - boxes[1].top) < 2 && boxes[1].left >= boxes[0].right;

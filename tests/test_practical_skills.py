@@ -6,7 +6,7 @@ import subprocess
 import threading
 from http.server import ThreadingHTTPServer
 from playwright.sync_api import sync_playwright
-from test_flight import ROOT, QuietHandler, open_dropdown
+from test_flight import ROOT, QuietHandler, open_dropdown, select_level, start_practice
 from test_learning_path import wait_for_check
 
 
@@ -24,7 +24,7 @@ def test_practical():
             page.goto(url); page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
             total=0
             for block in blocks:
-                page.locator('#track-select').select_option(block['language']); page.locator('#level-select').select_option(block['id']); page.locator('#start-practice').click()
+                page.locator('#track-select').select_option(block['language']); select_level(page,block['id']); start_practice(page)
                 for i,exercise in enumerate(block['exercises']):
                     assert page.locator('#offline-editor').input_value()==''
                     assert page.locator('#help-drawer').get_attribute('open') is None
@@ -38,7 +38,7 @@ def test_practical():
             assert total == 204
             print(f'PASS: 66 new exercises, {total} actual browser cases, both languages, real DOM events')
             # Editing cancels an old run; its result must not judge the new draft.
-            page.locator('#track-select').select_option('javascript'); page.locator('#level-select').select_option('practical-js-8'); page.locator('#start-practice').click(); page.locator('#exercise-select').select_option('0')
+            page.locator('#track-select').select_option('javascript'); select_level(page,'practical-js-8'); start_practice(page); page.locator('#exercise-select').select_option('0')
             page.locator('#offline-editor').fill('async function practice_even(numbers) { await new Promise(resolve => setTimeout(resolve, 1000)); return numbers.filter(n => n % 2 === 0); }')
             page.locator('#check-btn').click()
             page.locator('#offline-editor').fill('function practice_even(numbers) { return []; }')
@@ -51,13 +51,13 @@ def test_practical():
             page.locator('#offline-editor').fill('function practice_even(numbers) { return numbers.filter(n => n % 2 === 0); }')
             page.locator('#back-to-home').click()
             # A hardcoded API result must fail the request/state assertions.
-            page.locator('#track-select').select_option('javascript'); page.locator('#level-select').select_option('practical-js-12'); page.locator('#start-practice').click(); page.locator('#exercise-select').select_option('4')
+            page.locator('#track-select').select_option('javascript'); select_level(page,'practical-js-12'); start_practice(page); page.locator('#exercise-select').select_option('4')
             page.locator('#offline-editor').fill('async function practice_api_delete(id) { return true; }'); page.locator('#check-btn').click(); wait_for_check(page)
             assert '0/4 tests passed' in page.locator('#check-result').inner_text()
             assert 'Requests did not match' in page.locator('#case-list').inner_text()
             page.locator('#back-to-home').click()
             # Run produces an interactive opaque-origin DOM page.
-            page.locator('#level-select').select_option('practical-js-13'); page.locator('#start-practice').click(); page.locator('#exercise-select').select_option('5'); page.locator('#run-btn').click()
+            select_level(page,'practical-js-13'); start_practice(page); page.locator('#exercise-select').select_option('5'); page.locator('#run-btn').click()
             page.wait_for_function('!document.querySelector("#run-btn").disabled')
             frame=page.frame_locator('#dom-output iframe'); frame.locator('#task-title').fill('My task'); frame.locator('#task-form button').click(); assert frame.locator('li span').inner_text()=='My task'
             assert page.locator('#dom-output iframe').get_attribute('sandbox')=='allow-scripts allow-forms'
@@ -66,7 +66,7 @@ def test_practical():
             server.shutdown(); context.set_offline(True); page.close(); page=context.new_page(); page.goto(url)
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
             for language,level in [('javascript','practical-js-9'),('python','practical-py-9'),('javascript','practical-js-12'),('python','practical-py-12'),('javascript','practical-js-13')]:
-                page.locator('#track-select').select_option(language); page.locator('#level-select').select_option(level); page.locator('#start-practice').click(); page.locator('#exercise-select').select_option('0'); page.locator('#check-btn').click(); wait_for_check(page)
+                page.locator('#track-select').select_option(language); select_level(page,level); start_practice(page); page.locator('#exercise-select').select_option('0'); page.locator('#check-btn').click(); wait_for_check(page)
                 assert 'tests passed. Explain' in page.locator('#check-result').inner_text(), page.locator('#output').inner_text()
                 page.locator('#back-to-home').click()
             page.set_viewport_size({'width':320,'height':640}); assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')

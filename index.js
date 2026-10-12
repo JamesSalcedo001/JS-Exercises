@@ -1,3 +1,5 @@
+import { recommend, previousMarkup, migrateProjectPositions } from "./learning-flow.js";
+import { serverBuildSteps } from "./data/server-build.js";
 import { sections } from "./sections.js";
 import { runDOM } from "./dom-runner.js";
 import { createEditor } from "./editor.js";
@@ -11,24 +13,28 @@ const stepTitle = section => section.id
   ? `Step ${pathFor(section.language).indexOf(section) + 1} · ${section.title.replace(/^(JavaScript|Python) \d+ · /, "")}`
   : section.title;
 const storageKey = "daily-coding-practice-v1"; // Keep existing drafts and completion records.
-let state = { drafts: {}, completed: {}, positions: {}, plans: {}, reflections: {}, independent: {}, helpUsage: {}, backups: {}, lastPractice: {}, lastProject: {}, lastFlight: null, language: "javascript", useStarter: false };
+let state = { drafts: {}, completed: {}, positions: {}, plans: {}, reflections: {}, independent: {}, helpUsage: {}, backups: {}, lastPractice: {}, lastProject: {}, lastLearning: {}, checkedDrafts: {}, checkedMarkup: {}, markupDrafts: {}, projectFlowVersion: 2, lastFlight: null, language: "javascript", useStarter: false };
 let storageAvailable = true;
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey));
   if (saved && typeof saved === "object") {
-    for (const key of ["drafts", "completed", "positions", "plans", "reflections", "independent", "helpUsage", "backups", "lastPractice", "lastProject"]) {
+    for (const key of ["drafts", "completed", "positions", "plans", "reflections", "independent", "helpUsage", "backups", "lastPractice", "lastProject", "lastLearning", "checkedDrafts", "checkedMarkup", "markupDrafts"]) {
       if (saved[key] && typeof saved[key] === "object" && !Array.isArray(saved[key])) state[key] = saved[key];
     }
     state.lastFlight = typeof saved.lastFlight === "string" ? saved.lastFlight : null;
     state.language = saved.language === "python" ? "python" : "javascript";
     state.useStarter = saved.useStarter === true;
+    state.projectFlowVersion = saved.projectFlowVersion;
   }
 } catch { storageAvailable = false; }
+migrateProjectPositions(sections, state);
 const oldResume = sections.find((s) => s.exercises.some((e) => e.id && e.id === state.lastFlight));
 if (oldResume && !state.lastPractice[oldResume.language]) state.lastPractice[oldResume.language] = state.lastFlight;
 let sectionIndex = 0, exerciseIndex = 0, hintIndex = 0;
 let inExercise = false, changingExercise = false;
 let editor, activeRun;
+let touchTarget = "code";
+const markupHistory = [];
 let navigationMode = "path";
 const currentSection = () => sections[sectionIndex];
 const currentExercise = () => currentSection().exercises[exerciseIndex];
@@ -108,6 +114,13 @@ function renderPathPicker() {
   $("resume-practice").textContent = resumeSection ? `Resume saved exercise` : "Resume my practice";
   selectLevel(); updateProgress();
 }
+function renderRecommendation() {
+  const next = recommend(sections, state);
+  $("recommended-title").textContent = next ? `${next.resume ? "Continue" : "Next"}: ${next.exercise.title}` : "You have practiced the full path";
+  $("recommended-description").textContent = next ? `${next.section.title.replace(/^(JavaScript|Python) \d+ · /, "")} · ${next.section.exercises.indexOf(next.exercise) + 1} of ${next.section.exercises.length}. Read the task, try one change, then check it.` : "Choose a project to rebuild from blank, or practice the other language.";
+  $("recommended-start").hidden = !next;
+  $("recommended-start").textContent = next?.resume ? "Continue learning →" : "Start this step →";
+}
 function renderProjects() {
   $("project-list").replaceChildren();
   for (const section of sections.filter(s => s.kind === "project" && (!s.backend || s.language === state.language))) {
@@ -129,7 +142,7 @@ function renderSectionCards() {
     if (!section.id) $("section-list").appendChild(makeCard(section, index, "legacy"));
     else if (section.id.startsWith("flight-")) $("flight-section-list").appendChild(makeCard(section, index, "flight"));
   });
-  renderPathPicker(); renderProjects();
+  renderPathPicker(); renderProjects(); renderRecommendation();
 }
 function enterSection(index, mode, activityId) {
   sectionIndex = index; navigationMode = mode;
@@ -157,22 +170,52 @@ function updateStarterControl() {
   $("restore-draft").hidden = typeof state.backups[currentKey()] !== "string";
 }
 function renderExercise() {
-  changingExercise = true;
+  changingExercise = true; touchTarget = "code"; markupHistory.length = 0;
+  for (const detail of document.querySelectorAll("#phone-code-tools details")) detail.open = false;
   const section = currentSection(), exercise = currentExercise();
   if (section.language) state.language = section.language;
   $("section-title").textContent = navigationMode === "path" ? `${section.language === "python" ? "Python" : "JavaScript"} · ${stepTitle(section)}` : section.title;
   $("activity-title").textContent = exercise.title || `Exercise ${exerciseIndex + 1}`;
   $("exercise-progress").textContent = `${exerciseIndex + 1} / ${section.exercises.length}${exercise.minutes ? ` · ~${exercise.minutes} min` : ""}${state.completed[currentKey()] ? state.independent[currentKey()] ? " · Solved without help" : " · Checked" : ""}`;
   $("question-text").textContent = exercise.prompt;
+  $("step-why").hidden = !exercise.why; $("step-why").textContent = exercise.why ? "Why this step: " + exercise.why : "";
+  const ownMarkup = previousMarkup(sections, state, exercise.markupFrom);
+  if (exercise.dom && !exercise.html) {
+    if (typeof state.markupDrafts[exercise.id] !== "string") state.markupDrafts[exercise.id] = ownMarkup ?? exercise.fixture;
+    $("markup-editor").value = state.markupDrafts[exercise.id];
+  }
+  $("project-markup").hidden = section.kind !== "project" || !exercise.dom || exercise.html;
+  $("project-markup").open = false;
+  const checkedSource = exercise.continuesFrom && state.checkedDrafts[exercise.continuesFrom];
+  const sourceCode = typeof checkedSource === "string" ? checkedSource : undefined;
+  $("continuity-note").hidden = !exercise.continuesFrom;
+  $("continuity-note").textContent = sourceCode !== undefined ? "Build on your last passing version. Your later edits stay saved in their original step." : "Check the previous step to carry your own code forward. You can still work here from blank.";
+  const earlier = section.kind === "project" ? section.exercises.slice(0,exerciseIndex).find(e => !state.completed[e.id] && typeof state.checkedDrafts[e.id] !== "string") : undefined;
+  const neededPrevious = earlier?.id || (exercise.continuesFrom && sourceCode === undefined ? exercise.continuesFrom : undefined);
+  $("previous-project-step").hidden = !neededPrevious;
+  $("previous-project-step").dataset.exercise = neededPrevious || "";
+  const prerequisiteStep = section.exercises.find(e => e.id === neededPrevious);
+  $("previous-project-step").textContent = prerequisiteStep ? "Build first: " + prerequisiteStep.title : "Build the previous step first";
+  const missing = (section.prerequisites || []).map(id => sections.find(s => s.id === id)).find(s => s && s.exercises.some(e => !state.completed[e.id]));
+  $("project-ready").hidden = !missing;
+  $("project-prerequisite").textContent = missing ? "Helpful before this project: " + missing.title + ". You can review it or continue if you know it." : "";
+  $("practice-prerequisite").dataset.section = missing?.id || "";
+  $("server-build-steps").replaceChildren();
+  if (section.backend) for (const step of serverBuildSteps[section.language]) {
+    const details = document.createElement("details"), summary = document.createElement("summary"), why = document.createElement("p"), code = document.createElement("pre"), test = document.createElement("p");
+    summary.textContent = step.title; why.textContent = step.why; code.textContent = step.code; test.textContent = (step.run ? "Run in the terminal: " + step.run + ". " : "") + "Check: " + step.check;
+    details.append(summary, why, code, test); $("server-build-steps").append(details);
+  }
   $("project-guide").hidden = !exercise.guide?.length;
-  $("project-guide").open = exercise.mode === "guided";
-  if (exercise.mode === "guided") help().guide = true;
+  $("project-guide").open = exercise.mode === "guided" || exercise.mode === "debug";
+  if (exercise.mode === "guided" || exercise.mode === "debug") help().guide = true;
   $("project-guide-title").textContent = exercise.mode === "debug" ? "Debug one small step" : "Build one small step";
   $("project-steps").replaceChildren();
   for (const step of exercise.guide || []) { const li = document.createElement("li"); li.textContent = step; $("project-steps").append(li); }
   $("backend-guide").hidden = !section.backend; $("backend-guide").open = false;
   $("backend-commands").textContent = section.language === "python" ? "cd projects/task-api/python\npython3 -m venv .venv\n.venv/bin/pip install -r requirements.txt\n.venv/bin/python app.py" : "cd projects/task-api/javascript\nnpm ci\nnpm start";
-  $("export-project").hidden = section.kind !== "project" || !exercise.dom;
+  $("export-project").hidden = section.kind !== "project";
+  $("export-project").textContent = exercise.dom ? "Save runnable page" : "Save my route file";
   $("function-signature").hidden = !exercise.signature;
   $("function-signature").textContent = exercise.signature || "";
   $("return-note").hidden = !exercise.tests;
@@ -225,11 +268,14 @@ function renderExercise() {
   $("exercise-select").value = exerciseIndex;
   editor.setLanguage(exercise.html ? "html" : section.language || "javascript");
   const draft = state.drafts[currentKey()];
-  const starter = state.useStarter && isGuided() ? exercise.snippet || "" : "";
-  editor.setValue(typeof draft === "string" ? draft : starter);
-  if (typeof draft !== "string" && starter) help().starter = true;
+  const starter = (state.useStarter || exercise.mode === "debug") && isGuided() ? exercise.snippet || "" : "";
+  editor.setValue(typeof draft === "string" ? draft : sourceCode ?? starter);
+  if (typeof draft !== "string" && sourceCode !== undefined) state.drafts[exercise.id] = sourceCode;
+  if (typeof draft !== "string" && sourceCode === undefined && starter) help().starter = true;
+  if (exercise.mode === "debug") { $("continuity-note").hidden = false; $("continuity-note").textContent = typeof draft === "string" ? "Your debugging draft is restored. Check it, then explain the fix." : "The broken version is ready in the editor. Predict the bug before changing it."; }
   state.positions[section.id || `legacy:${sectionIndex}`] = exerciseIndex;
   if (isGuided()) {
+    state.lastLearning[section.language] = exercise.id;
     if (section.kind === "project") state.lastProject[section.language] = exercise.id;
     else state.lastPractice[section.language] = exercise.id;
     if (section.id.startsWith("flight-")) state.lastFlight = exercise.id;
@@ -270,7 +316,7 @@ async function runCode(check = false) {
   let result;
   if (isGuided()) {
     $("output").textContent = "Running…"; result = exercise.dom
-      ? await runDOM(code, exercise, check, $("dom-output"), busy, run => { activeRun = run; })
+      ? await runDOM(code, {...exercise, fixture:state.markupDrafts[exercise.id] ?? exercise.fixture}, check, $("dom-output"), busy, run => { activeRun = run; })
       : await executeWorker(code, exercise, check);
     if (!result || !inExercise || currentKey() !== key) return;
   } else {
@@ -288,6 +334,7 @@ async function runCode(check = false) {
   if (result.results) renderCaseResults(result.results);
   if (passed) $("reflection-details").open = true;
   state.completed[key] = Boolean(passed);
+  if (passed) { state.checkedDrafts[key] = code; if (exercise.dom && !exercise.html) state.checkedMarkup[key] = state.markupDrafts[key] ?? exercise.fixture; }
   state.independent[key] = Boolean(passed && help().hints === 0 && !help().solution && !help().starter && !help().guide);
   $("check-result").textContent = exercise.tests
     ? passed ? `${result.results.length}/${exercise.tests.length} tests passed. Explain it, then try from blank.` : `${result.results?.filter((r) => r.passed).length || 0}/${exercise.tests.length} tests passed. Inspect the failing cases.`
@@ -372,7 +419,14 @@ document.addEventListener("DOMContentLoaded", () => {
     $("results-panel").hidden = true; $("dom-output").replaceChildren();
     updateStarterControl(); persist();
   });
-  $("track-select").addEventListener("change", () => { state.language = $("track-select").value; renderPathPicker(); renderProjects(); persist(); });
+  $("recommended-start").addEventListener("click", () => { const next = recommend(sections, state); if (next) enterSection(sections.indexOf(next.section), next.section.kind === "project" ? "project" : "path", next.exercise.id); });
+  $("previous-project-step").addEventListener("click", () => { const id = $("previous-project-step").dataset.exercise; if (id) enterSection(sectionIndex, "project", id); });
+  $("practice-prerequisite").addEventListener("click", () => { const section = sections.find(s => s.id === $("practice-prerequisite").dataset.section); if (section) enterSection(sections.indexOf(section), "path", section.exercises.find(e => !state.completed[e.id])?.id); });
+  $("markup-editor").addEventListener("focus", () => { touchTarget = "markup"; });
+  $("code-editor").addEventListener("focusin", () => { touchTarget = "code"; });
+  $("markup-editor").addEventListener("beforeinput", () => { const field = $("markup-editor"); markupHistory.push({value:field.value,start:field.selectionStart,end:field.selectionEnd}); if (markupHistory.length > 50) markupHistory.shift(); });
+  $("markup-editor").addEventListener("input", () => { cancelRun(); state.markupDrafts[currentKey()] = $("markup-editor").value; $("dom-output").replaceChildren(); $("case-results").hidden = true; $("results-panel").hidden = true; $("check-result").textContent = ""; persist(); });
+  $("track-select").addEventListener("change", () => { state.language = $("track-select").value; renderPathPicker(); renderProjects(); renderRecommendation(); persist(); });
   $("level-select").addEventListener("change", selectLevel);
   $("use-starter").addEventListener("change", () => { state.useStarter = $("use-starter").checked; persist(); });
   $("start-practice").addEventListener("click", () => enterSection(sections.findIndex((s) => s.id === $("level-select").value), "path"));
@@ -384,7 +438,27 @@ document.addEventListener("DOMContentLoaded", () => {
   $("exercise-select").addEventListener("change", () => { exerciseIndex = Number($("exercise-select").value); openExercise(); });
   $("plan-input").addEventListener("input", () => { state.plans[currentKey()] = $("plan-input").value; persist(); });
   $("reflection-input").addEventListener("input", () => { state.reflections[currentKey()] = $("reflection-input").value; persist(); });
-  $("run-btn").addEventListener("click", () => runCode()); $("check-btn").addEventListener("click", () => runCode(true));
+  $("run-btn").addEventListener("click", () => { if (matchMedia("(pointer: coarse)").matches) editor.blur(); runCode(); }); $("check-btn").addEventListener("click", () => { if (matchMedia("(pointer: coarse)").matches) editor.blur(); runCode(true); });
+  for (const button of document.querySelectorAll("#phone-code-tools button")) {
+    button.addEventListener("pointerdown", event => event.preventDefault());
+    button.addEventListener("click", () => {
+      if (touchTarget === "markup" && !$("project-markup").hidden) {
+        const field = $("markup-editor"), start = field.selectionStart, end = field.selectionEnd;
+        if (button.dataset.codeAction === "undo") { const saved = markupHistory.pop(); if (!saved) return; field.value = saved.value; field.setSelectionRange(saved.start, saved.end); }
+        else {
+          markupHistory.push({value:field.value,start,end}); if (markupHistory.length > 50) markupHistory.shift();
+          const pair = button.dataset.codePair;
+          const text = pair ? pair[0] + field.value.slice(start,end) + pair[1] : button.dataset.codeAction === "indent" ? "    " + field.value.slice(start,end).replace(/\n/g, "\n    ") : button.dataset.codeAction === "newline" ? "\n" : button.dataset.codeInsert;
+          field.setRangeText(text,start,end,"end"); if (pair) field.setSelectionRange(start+1,end+1);
+        }
+        field.focus({preventScroll:true}); field.dispatchEvent(new Event("input", {bubbles:true})); return;
+      }
+      if (button.dataset.codePair) editor.insertPair(button.dataset.codePair);
+      else if (button.dataset.codeAction === "undo") editor.undo();
+      else if (button.dataset.codeAction === "indent") editor.indent();
+      else editor.insert(button.dataset.codeAction === "indent" ? "    " : button.dataset.codeAction === "newline" ? "\n" : button.dataset.codeInsert);
+    });
+  }
   $("stop-btn").addEventListener("click", () => { cancelRun(); $("output").textContent = "Stopped. Your draft is still here."; });
   $("next-btn").addEventListener("click", nextExercise);
   $("next-block-btn").addEventListener("click", () => { const next = nextSection(); if (next) { sectionIndex = sections.indexOf(next); exerciseIndex = 0; openExercise(); } });
@@ -404,9 +478,28 @@ document.addEventListener("DOMContentLoaded", () => {
     $("hint-btn").textContent = hintIndex >= hints.length ? "All hints shown" : "Show another hint"; persist();
   });
   $("export-project").addEventListener("click", () => {
-    const exercise = currentExercise();
+    const exercise = {...currentExercise(), fixture:state.markupDrafts[currentKey()] ?? currentExercise().fixture};
     const code = editor.getValue();
-    const page = exercise.html ? `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My practice page</title></head><body>${code}</body></html>` : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My practice project</title></head><body>${exercise.fixture}<script>const practiceStorage = localStorage;\n${code.replace(/<\/script/gi, "<\\/script")}\nsetupDOM(...${JSON.stringify(exercise.tests[0].args)});<\/script></body></html>`;
+    if (!exercise.dom) {
+      const javascript = currentSection().language === "javascript";
+      const content = javascript ? code + "\nexport { handleRequest };\n" : code;
+      const url = URL.createObjectURL(new Blob([content], {type:javascript ? "text/javascript" : "text/x-python"}));
+      const link = document.createElement("a"); link.href = url; link.download = javascript ? "routes.js" : "routes.py"; link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000); return;
+    }
+    let page = code;
+    if (!exercise.html) {
+      const document = new DOMParser().parseFromString(exercise.fixture, "text/html");
+      if (!document.querySelector('meta[charset]')) { const meta = document.createElement('meta'); meta.setAttribute('charset','utf-8'); document.head.append(meta); }
+      if (!document.querySelector('meta[name=viewport]')) { const meta = document.createElement('meta'); meta.name = 'viewport'; meta.content = 'width=device-width,initial-scale=1'; document.head.append(meta); }
+      if (!document.documentElement.lang) document.documentElement.lang = 'en';
+      if (!document.title) document.title = 'My practice project';
+      const script = document.createElement('script');
+      script.textContent = (`const practiceStorage = localStorage;\n${code}\nsetupDOM(...${JSON.stringify(exercise.tests[0].args)});`).replace(/<\/script/gi, "<\\/script");
+      document.body.append(script); page = '<!doctype html>\n' + document.documentElement.outerHTML;
+    } else if (!/<html(?:\s|>)/i.test(code)) {
+      page = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My practice page</title></head><body>${code}</body></html>`;
+    }
     const url = URL.createObjectURL(new Blob([page], {type:"text/html"}));
     const link = document.createElement("a"); link.href = url; link.download = currentSection().id + ".html"; link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);

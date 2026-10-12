@@ -1,6 +1,8 @@
 # Build a real task API
 
-Start in the app's **Build projects** drawer. Choose the Task API for your selected
+Start in the app's **Build projects** drawer. Follow [BUILD.md](BUILD.md) or the
+in-app server walkthrough to create your own project from an empty folder. The
+files in this directory are completed references to compare afterward. Choose the Task API for your selected
 language. Browser checks call your route handler with example requests; they do
 not run Express, Flask, or SQLite. Then choose ONE backend below to run real HTTP.
 
