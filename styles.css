@@ -167,3 +167,25 @@ footer span { margin-left: .8rem; }
   main { padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
   footer { padding-bottom: max(1rem, env(safe-area-inset-bottom)); padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
 }
+
+/* Shrinking a flex child must not widen the page when a title or code is long. */
+.coding-column, .workspace-heading, .workspace-nav > *, .site-header > * { min-width: 0; }
+.task-card, .workspace-heading, summary, button, #lesson-position { overflow-wrap: anywhere; }
+pre, #function-signature, .example-line { max-width: 100%; overflow-x: auto; }
+#lesson-review-list { display: grid; gap: .5rem; }
+#lesson-review-list button { text-align: left; }
+#return-to-lesson { margin-bottom: .8rem; }
+#markup-editor { width: 100%; max-width: 100%; resize: vertical; }
+@media (max-width: 480px) {
+  .workspace-nav .exercise-picker { flex: 1 1 100%; max-width: none; }
+  .workspace-heading h1 { font-size: 1.6rem; }
+  .brand { white-space: normal; }
+  .brand span { display: block; margin-left: 0; }
+  .run-actions { flex-wrap: wrap; }
+  .run-actions > button { flex: 1 1 100px; }
+  .home-actions > button { flex: 1 1 100%; }
+}
+@media (pointer: coarse) and (max-height: 500px) {
+  #code-editor { height: 200px; }
+  main { padding-top: .8rem; }
+}

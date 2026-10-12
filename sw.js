@@ -1,4 +1,4 @@
-const CACHE_NAME = "js-daily-exercises-incremental-v6";
+const CACHE_NAME = "js-daily-exercises-incremental-v7";
 const FILES_TO_CACHE = [
   "./", "./index.html", "./styles.css", "./index.js", "./editor.js", "./sections.js",
   "./learning-flow.js", "./data/server-build.js", "./projects/task-api/BUILD.md", "./data/projects.js", "./projects/task-api/README.md", "./projects/task-api/task-api.zip", "./practice-worker.js", "./practice-api.js", "./dom-runner.js", "./data/practical-skills.js", "./data/dom-practice.js", "./data/flight-practice.js", "./data/problem-solving.js",

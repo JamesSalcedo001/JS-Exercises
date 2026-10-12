@@ -1,4 +1,4 @@
-import { recommend, previousMarkup, migrateProjectPositions } from "./learning-flow.js";
+import { recommend, previousMarkup, migrateProjectPositions, lessonTrail } from "./learning-flow.js";
 import { serverBuildSteps } from "./data/server-build.js";
 import { sections } from "./sections.js";
 import { runDOM } from "./dom-runner.js";
@@ -13,6 +13,7 @@ const stepTitle = section => section.id
   ? `Step ${pathFor(section.language).indexOf(section) + 1} · ${section.title.replace(/^(JavaScript|Python) \d+ · /, "")}`
   : section.title;
 const storageKey = "daily-coding-practice-v1"; // Keep existing drafts and completion records.
+let reviewOrigin = null;
 let state = { drafts: {}, completed: {}, positions: {}, plans: {}, reflections: {}, independent: {}, helpUsage: {}, backups: {}, lastPractice: {}, lastProject: {}, lastLearning: {}, checkedDrafts: {}, checkedMarkup: {}, markupDrafts: {}, projectFlowVersion: 2, lastFlight: null, language: "javascript", useStarter: false };
 let storageAvailable = true;
 try {
@@ -116,8 +117,9 @@ function renderPathPicker() {
 }
 function renderRecommendation() {
   const next = recommend(sections, state);
+  const lesson = next && lessonTrail(sections, state.language, next.exercise.id);
   $("recommended-title").textContent = next ? `${next.resume ? "Continue" : "Next"}: ${next.exercise.title}` : "You have practiced the full path";
-  $("recommended-description").textContent = next ? `${next.section.title.replace(/^(JavaScript|Python) \d+ · /, "")} · ${next.section.exercises.indexOf(next.exercise) + 1} of ${next.section.exercises.length}. Read the task, try one change, then check it.` : "Choose a project to rebuild from blank, or practice the other language.";
+  $("recommended-description").textContent = next ? `Lesson ${lesson.number} · ${next.section.title.replace(/^(JavaScript|Python) \d+ · /, "")}. Read the task, try one change, then check it.` : "Choose a project to rebuild from blank, or practice the other language.";
   $("recommended-start").hidden = !next;
   $("recommended-start").textContent = next?.resume ? "Continue learning →" : "Start this step →";
 }
@@ -173,6 +175,22 @@ function renderExercise() {
   changingExercise = true; touchTarget = "code"; markupHistory.length = 0;
   for (const detail of document.querySelectorAll("#phone-code-tools details")) detail.open = false;
   const section = currentSection(), exercise = currentExercise();
+  const trail = lessonTrail(sections, section.language, exercise.id);
+  $("lesson-position").hidden = !trail;
+  $("lesson-position").textContent = trail ? `Lesson ${trail.number} of ${trail.total} · ${section.language === "python" ? "Python" : "JavaScript"}` : "";
+  $("return-to-lesson").hidden = !reviewOrigin || reviewOrigin.id === exercise.id;
+  $("earlier-lessons").hidden = !trail?.reviews.length;
+  $("earlier-lessons").open = false;
+  $("lesson-review-list").replaceChildren();
+  for (const item of trail?.reviews || []) {
+    const button = document.createElement("button");
+    button.textContent = `Lesson ${item.number}: ${item.exercise.title}`;
+    button.addEventListener("click", () => {
+      reviewOrigin ||= { index: sectionIndex, mode: navigationMode, id: exercise.id };
+      enterSection(sections.indexOf(item.section), item.section.kind === "project" ? "project" : "path", item.exercise.id);
+    });
+    $("lesson-review-list").append(button);
+  }
   if (section.language) state.language = section.language;
   $("section-title").textContent = navigationMode === "path" ? `${section.language === "python" ? "Python" : "JavaScript"} · ${stepTitle(section)}` : section.title;
   $("activity-title").textContent = exercise.title || `Exercise ${exerciseIndex + 1}`;
@@ -420,6 +438,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateStarterControl(); persist();
   });
   $("recommended-start").addEventListener("click", () => { const next = recommend(sections, state); if (next) enterSection(sections.indexOf(next.section), next.section.kind === "project" ? "project" : "path", next.exercise.id); });
+  $("return-to-lesson").addEventListener("click", () => {
+    const origin = reviewOrigin; reviewOrigin = null;
+    if (origin) enterSection(origin.index, origin.mode, origin.id);
+  });
   $("previous-project-step").addEventListener("click", () => { const id = $("previous-project-step").dataset.exercise; if (id) enterSection(sectionIndex, "project", id); });
   $("practice-prerequisite").addEventListener("click", () => { const section = sections.find(s => s.id === $("practice-prerequisite").dataset.section); if (section) enterSection(sections.indexOf(section), "path", section.exercises.find(e => !state.completed[e.id])?.id); });
   $("markup-editor").addEventListener("focus", () => { touchTarget = "markup"; });
@@ -520,7 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try { await navigator.clipboard.writeText(currentExercise().snippet); $("starter-note").textContent = "Starter copied."; help().starter = true; persist(); }
     catch { $("starter-note").textContent = "Clipboard unavailable. Select and copy the starter above."; }
   });
-  $("back-to-home").addEventListener("click", () => { cancelRun(); inExercise = false; showExerciseUI(false); renderSectionCards(); window.scrollTo({ top: 0, behavior: "auto" }); });
+  $("back-to-home").addEventListener("click", () => { reviewOrigin = null; cancelRun(); inExercise = false; showExerciseUI(false); renderSectionCards(); window.scrollTo({ top: 0, behavior: "auto" }); });
   $("resume-flight").addEventListener("click", () => {
     const section = flightSections.find((s) => s.exercises.some((e) => e.id === state.lastFlight)) || flightSections[0];
     enterSection(sections.indexOf(section), "flight", state.lastFlight);

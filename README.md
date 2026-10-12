@@ -255,3 +255,11 @@ The project tests check 239 cases and cold offline challenges. Phone checks cove
 and saved-position migration. `python3 tests/test_server_build.py` runs the actual
 from-scratch server programs in empty temporary folders with your project handler.
 Backend commands and real HTTP/restart tests are documented in the task API guide above.
+
+Activities on the recommended JavaScript and Python routes now show a lesson number,
+including project steps. **Builds on earlier lessons** links to the previous activity,
+checked-code sources, project prerequisites, and named tool exercises for combinations
+such as filter → map and CRUD → API requests. Review links include the lesson number
+and title; **Return to your current lesson** restores the current draft. The original
+library remains separate. Lesson numbers reflect the current curriculum order; saved
+work still uses the existing stable exercise IDs.

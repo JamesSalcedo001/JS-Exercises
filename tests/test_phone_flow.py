@@ -47,6 +47,13 @@ def test_phone():
             assert page.locator('#offline-editor').evaluate('el=>document.activeElement!==el')
             page.locator('#back-to-home').tap();page.locator('#recommended-start').tap()
             assert page.locator('#exercise-select').input_value()=='1'
+            assert page.locator('#lesson-position').inner_text().startswith('Lesson 2 of ')
+            page.locator('#offline-editor').fill('// keep this draft while reviewing')
+            page.locator('#earlier-lessons summary').tap()
+            page.locator('#lesson-review-list button').first.tap()
+            assert page.locator('#lesson-position').inner_text().startswith('Lesson 1 of ')
+            page.locator('#return-to-lesson').tap()
+            assert page.locator('#offline-editor').input_value()=='// keep this draft while reviewing'
             page.locator('#offline-editor').fill('// my next attempt');page.locator('#back-to-home').tap();page.reload();page.locator('#recommended-start').tap()
             assert page.locator('#offline-editor').input_value()=='// my next attempt'
             page.locator('#back-to-home').tap()

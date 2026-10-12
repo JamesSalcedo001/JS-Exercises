@@ -21,6 +21,54 @@ export function recommend(sections, state) {
   }
   return null;
 }
+// Number actual activities in the recommended route, including project steps.
+export function lessonTrail(sections, language, id) {
+  const lessons = learningRoute(sections, language).flatMap(section =>
+    section.exercises.map(exercise => ({ section, exercise })));
+  const index = lessons.findIndex(item => item.exercise.id === id);
+  if (index < 0) return null;
+  const current = lessons[index];
+  const prefix = language === 'python' ? 'py' : 'js';
+  // Explicit tool dependencies: chaining and projects reuse named earlier tasks.
+  const tools = {
+    'even': [`${prefix}-filter`, `${prefix}-function`],
+    'double': [`${prefix}-function`, `${prefix}-pack`],
+    'total': [`${prefix}-total`, `${prefix}-sum-function`],
+    'even-double': [`practical-${prefix}-even`, `practical-${prefix}-double`],
+    'positive-total': [`practical-${prefix}-even`, `practical-${prefix}-total`],
+    'names': [`${prefix}-object`, `practical-${prefix}-double`],
+    'find': [`${prefix}-object`, `practical-${prefix}-even`],
+    'open-titles': [`practical-${prefix}-names`, `practical-${prefix}-even-double`],
+    'create': [`practical-${prefix}-names`, `${prefix}-function`],
+    'read': [`practical-${prefix}-find`],
+    'update': [`practical-${prefix}-find`, `practical-${prefix}-double`],
+    'toggle': [`practical-${prefix}-update`],
+    'delete': [`practical-${prefix}-even`, `practical-${prefix}-find`],
+    'api-list': [`${prefix}-function`, `practical-${prefix}-read`],
+    'api-one': [`practical-${prefix}-api-list`, `practical-${prefix}-read`],
+    'api-create': [`practical-${prefix}-api-list`, `practical-${prefix}-create`],
+    'api-update': [`practical-${prefix}-api-create`, `practical-${prefix}-update`],
+    'api-delete': [`practical-${prefix}-api-update`, `practical-${prefix}-delete`],
+    'api-workflow': ['api-create', 'api-update', 'api-list'].map(name => `practical-${prefix}-${name}`),
+  };
+  const dom = {
+    'dom-heading': ['project-profile-structure'],
+    'dom-render': ['dom-heading', 'practical-js-names'],
+    'dom-add': ['dom-render', 'practical-js-create'],
+    'dom-toggle': ['dom-add', 'practical-js-all-done'],
+    'dom-remove': ['dom-add', 'practical-js-even'],
+    'dom-crud': ['dom-add', 'dom-toggle', 'dom-remove'],
+  };
+  const toolIds = id.startsWith(`practical-${prefix}-`) ? tools[id.slice(`practical-${prefix}-`.length)] : dom[id];
+  const sourceIds = [...(toolIds || []), current.exercise.continuesFrom, current.exercise.markupFrom,
+    ...(current.section.prerequisites || []).map(sectionId =>
+      sections.find(section => section.id === sectionId)?.exercises.at(-1)?.id),
+    lessons[index - 1]?.exercise.id].filter(Boolean);
+  const earlier = [...new Set(sourceIds)].map(sourceId => lessons.findIndex(item => item.exercise.id === sourceId))
+    .filter(position => position >= 0 && position < index).sort((a, b) => a - b);
+  return { number: index + 1, total: lessons.length,
+    reviews: earlier.map(position => ({ ...lessons[position], number: position + 1 })) };
+}
 export function previousMarkup(sections, state, id) {
   if (!id) return undefined;
   const exercise = sections.flatMap(s => s.exercises).find(e => e.id === id);
