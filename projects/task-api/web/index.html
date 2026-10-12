@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My task API</title>
+<style>*{box-sizing:border-box}body{font:16px/1.5 system-ui;margin:32px auto;padding:16px;max-width:640px}input,button{font:inherit;padding:8px}li{margin:12px 0}button{margin-left:8px}label{display:block}#status{min-height:24px}form{display:flex;gap:8px;flex-wrap:wrap}form label{width:100%}li input{margin-right:8px}</style></head>
+<body><main><h1>Tasks</h1><p>This page talks to the real server at the same address.</p><form id="create"><label for="title">Task title</label><input id="title" required><button>Add task</button></form><p id="status" role="status"></p><ul id="tasks"></ul></main>
+<script>
+const list = document.querySelector('#tasks');
+const status = document.querySelector('#status');
+async function request(method, path, body) {
+  const response = await fetch(path, {method, ...(body ? {headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)} : {})});
+  if (!response.ok) { const error = await response.json(); throw Error(error.error || 'Request failed'); }
+  return response.status === 204 ? null : response.json();
+}
+async function load() {
+  status.textContent = 'Loading…';
+  try {
+    const tasks = await request('GET', '/tasks'); list.replaceChildren();
+    for (const task of tasks) {
+      const li = document.createElement('li');
+      const check = document.createElement('input'); check.type = 'checkbox'; check.checked = task.done; check.setAttribute('aria-label', 'Finished ' + task.title);
+      check.addEventListener('change', () => change('PATCH', '/tasks/' + task.id, {done:check.checked}));
+      const span = document.createElement('span'); span.textContent = task.title;
+      const rename = document.createElement('button'); rename.textContent = 'Rename';
+      rename.addEventListener('click', () => { const title = prompt('New task title', task.title); if (title !== null) change('PATCH', '/tasks/' + task.id, {title}); });
+      const remove = document.createElement('button'); remove.textContent = 'Delete'; remove.addEventListener('click', () => change('DELETE', '/tasks/' + task.id));
+      li.append(check, span, rename, remove); list.append(li);
+    }
+    status.textContent = tasks.length ? tasks.length + ' tasks' : 'No tasks yet. Add one above.';
+  } catch (error) { status.textContent = error.message; }
+}
+async function change(method, path, body) {
+  try { await request(method, path, body); await load(); } catch (error) { status.textContent = error.message; }
+}
+document.querySelector('#create').addEventListener('submit', async event => {
+  event.preventDefault(); const input = document.querySelector('#title');
+  try { await request('POST','/tasks',{title:input.value}); input.value = ''; await load(); } catch (error) { status.textContent = error.message; }
+});
+load();
+</script></body></html>

@@ -1,0 +1,529 @@
+[
+  {
+    "args": [
+      "GET",
+      "/tasks",
+      null,
+      []
+    ],
+    "expected": {
+      "status": 200,
+      "data": [],
+      "tasks": []
+    }
+  },
+  {
+    "args": [
+      "GET",
+      "/tasks",
+      null,
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 200,
+      "data": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ],
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "GET",
+      "/unknown",
+      null,
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 404,
+      "data": {
+        "error": "Route not found"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "POST",
+      "/tasks",
+      {
+        "title": " Code "
+      },
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 201,
+      "data": {
+        "id": 4,
+        "title": "Code",
+        "done": false
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        },
+        {
+          "id": 4,
+          "title": "Code",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "POST",
+      "/tasks",
+      {
+        "title": " "
+      },
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 400,
+      "data": {
+        "error": "Title is required"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "POST",
+      "/tasks",
+      null,
+      []
+    ],
+    "expected": {
+      "status": 400,
+      "data": {
+        "error": "Title is required"
+      },
+      "tasks": []
+    }
+  },
+  {
+    "args": [
+      "POST",
+      "/tasks",
+      {
+        "title": 4
+      },
+      []
+    ],
+    "expected": {
+      "status": 400,
+      "data": {
+        "error": "Title is required"
+      },
+      "tasks": []
+    }
+  },
+  {
+    "args": [
+      "GET",
+      "/tasks/3",
+      null,
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 200,
+      "data": {
+        "id": 3,
+        "title": "Read",
+        "done": false
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "GET",
+      "/tasks/9",
+      null,
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 404,
+      "data": {
+        "error": "Task not found"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "PATCH",
+      "/tasks/3",
+      {
+        "done": true
+      },
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 200,
+      "data": {
+        "id": 3,
+        "title": "Read",
+        "done": true
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": true
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "PATCH",
+      "/tasks/3",
+      {
+        "title": " New "
+      },
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 200,
+      "data": {
+        "id": 3,
+        "title": "New",
+        "done": false
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "New",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "PATCH",
+      "/tasks/3",
+      {
+        "done": "yes"
+      },
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 400,
+      "data": {
+        "error": "Invalid update"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "PATCH",
+      "/tasks/3",
+      {},
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 400,
+      "data": {
+        "error": "Invalid update"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "PATCH",
+      "/tasks/3",
+      {
+        "title": " "
+      },
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 400,
+      "data": {
+        "error": "Invalid update"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "PATCH",
+      "/tasks/3",
+      {
+        "id": 9
+      },
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 400,
+      "data": {
+        "error": "Invalid update"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "DELETE",
+      "/tasks/3",
+      null,
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 204,
+      "data": null,
+      "tasks": []
+    }
+  },
+  {
+    "args": [
+      "DELETE",
+      "/tasks/9",
+      null,
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 404,
+      "data": {
+        "error": "Task not found"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "PUT",
+      "/tasks",
+      {},
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 405,
+      "data": {
+        "error": "Method not allowed"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "POST",
+      "/tasks/3",
+      {},
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 405,
+      "data": {
+        "error": "Method not allowed"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  },
+  {
+    "args": [
+      "GET",
+      "/tasks/abc",
+      null,
+      [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    ],
+    "expected": {
+      "status": 404,
+      "data": {
+        "error": "Route not found"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Read",
+          "done": false
+        }
+      ]
+    }
+  }
+]

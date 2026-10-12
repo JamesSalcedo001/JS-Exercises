@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Profile layout reference</title></head><body><style>* { box-sizing: border-box; } body { font-family: system-ui; margin: 0; padding: 24px; } main { max-width: 800px; margin: auto; } article { padding: 20px; border: 1px solid #ccc; border-radius: 12px; } a, button { display: inline-block; padding: 8px; } .profiles, .products { display: grid; gap: 16px; grid-template-columns: 1fr; } @media (min-width: 600px) { .profiles, .products { grid-template-columns: repeat(2, minmax(0, 1fr)); } }</style>
+<main>
+  <h1>Meet the learners</h1>
+  <div class="profiles">
+    <article class="profile"><h2>Sam Lee</h2><p>Learning JavaScript</p><a href="mailto:sam@example.com">Contact Sam</a></article>
+    <article class="profile"><h2>Ada Ray</h2><p>Learning Python</p><a href="mailto:ada@example.com">Contact Ada</a></article>
+  </div>
+</main></body></html>

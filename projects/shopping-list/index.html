@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Packing checklist reference</title><style>* { box-sizing: border-box; } body { font-family: system-ui; margin: 0; padding: 24px; } main { max-width: 800px; margin: auto; } article { padding: 20px; border: 1px solid #ccc; border-radius: 12px; } a, button { display: inline-block; padding: 8px; }</style></head><body><h2 id="heading">Shopping list</h2><form id="task-form"><label for="task-title">Item name</label><input id="task-title"><label for="quantity">Quantity</label><input id="quantity" type="number" min="1" value="1"><button>Add item</button></form><p id="message" role="status"></p><ul id="tasks"></ul><p id="count"></p><script>const practiceStorage = localStorage;
+function setupDOM() {
+  const list = document.querySelector("#tasks");
+  const input = document.querySelector("#task-title");
+  const message = document.querySelector("#message");
+  let items = JSON.parse(practiceStorage.getItem("shopping-items") || "[]");
+  function render() {
+    list.replaceChildren();
+    for (const item of items) {
+      const li = document.createElement("li");
+      const span = document.createElement("span"); span.textContent = item.title + " × " + item.quantity;
+      li.append(span);
+      const check = document.createElement("input");
+      check.type = "checkbox"; check.checked = item.done;
+      check.setAttribute("aria-label", "Packed " + item.title);
+      check.addEventListener("change", () => { item.done = check.checked; render(); });
+      li.append(check); li.classList.toggle("done", item.done);
+      const remove = document.createElement("button"); remove.textContent = "Delete";
+      remove.addEventListener("click", () => { items = items.filter(other => other !== item); render(); });
+      li.append(remove); list.append(li);
+    }
+    document.querySelector("#count").textContent = `Items: ${items.length}`;
+    practiceStorage.setItem("shopping-items", JSON.stringify(items));
+  }
+  document.querySelector("#task-form").addEventListener("submit", event => {
+    event.preventDefault();
+    const title = input.value.trim();
+    if (!title) { message.textContent = "Enter an item."; return; }
+    const quantity = Number(document.querySelector("#quantity").value);
+    if (!Number.isInteger(quantity) || quantity < 1) { message.textContent = "Use a positive whole quantity."; return; }
+    if (items.some(item => item.title.toLowerCase() === title.toLowerCase())) {
+      message.textContent = "Already on the list."; return;
+    }
+    items.push({title, done: false, quantity});
+    input.value = ""; message.textContent = ""; render();
+  });
+  render();
+}
+setupDOM();</script></body></html>

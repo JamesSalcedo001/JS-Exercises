@@ -12,7 +12,9 @@ import { problemSections } from "./data/problem-solving.js";
 import { practicalSections } from "./data/practical-skills.js";
 import { domSections } from "./data/dom-practice.js";
 
+import { projectSections } from "./data/projects.js";
+
 // Keep the original tiers in their existing order.
 export const sections = [tier1, tier2, tier3, tier4, tier5,
   ...flightSections.map((section, i) => ({ ...section, stage: i % 3 + 1, level: "Foundation" })),
-  ...problemSections, ...practicalSections, ...domSections];
+  ...problemSections, ...practicalSections, ...domSections, ...projectSections];

@@ -61,6 +61,48 @@ resume positions save in the same browser on the same device. Private browsing
 or clearing site data can discard them. A visible warning appears when storage
 is unavailable or full. Existing drafts and output-check progress are preserved.
 
+## Build projects
+
+The home **Build projects** drawer is separate from the small-exercise path. It
+contains 17 steps with 127 cases across three projects:
+
+- **Responsive profile page:** HTML structure, CSS layout, a phone-overflow bug,
+  and an independent product-page variation. Layout checks use 320px and 640px.
+- **Shopping list:** rendering, form events, validation, deletion, checked state,
+  JSON storage, a duplicate-comparison bug, and a packing checklist with quantities.
+- **Task API (JavaScript or Python):** write server-side route decisions, validate
+  input, fix shared-reference mutation, then implement full CRUD from requirements.
+
+Guided steps show three short instructions. Debugging steps provide broken code;
+independent challenges give requirements without a walkthrough. The existing plan,
+hints, examples, solutions, and reflection tools remain available. Guided builds
+count as assisted work. The collapsed review queue collects passed project steps
+that used guidance; retry from blank closes the guide and preserves a backup.
+Project positions and drafts use stable IDs and do not replace exercise-path resume.
+
+Profile projects use an HTML/CSS editor and isolated preview. Shopping-list preview
+storage is a per-test in-memory `practiceStorage` fixture; its reload action reruns
+setup with the saved fixture. It is not persistent site storage. **Editor tools →
+Save runnable page** exports your current project. The exported shopping page uses
+real `localStorage`; serve it with a static HTTP server for consistent storage
+behavior. Reference pages are under `projects/profile-page/` and
+`projects/shopping-list/`. HTML checks verify structure and layout, not all aspects
+of visual design or accessibility: also try keyboard navigation and read the page.
+
+Task route decisions run offline in the browser. Real Express and Flask backends,
+SQLite persistence, a shared client page, starter handlers, reference handlers,
+and a priority-field extension challenge live in [projects/task-api/README.md](projects/task-api/README.md).
+Choose one backend to learn first. The app can download a source-only ZIP even
+after offline preparation; rebuild it with `python3 scripts/build_project_bundle.py`
+when changing backend source files. First dependency installation needs internet;
+installed local servers can run offline. These dependencies are optional and do
+not change how the original static practice app runs. Real server processes do not
+run inside the browser or on the static hosted site.
+
+The project drawer also includes a short roadmap through beginner, intermediate,
+and later engineering skills. Next steps include Git and DevTools, tests, SQL,
+authentication, migrations, deployment, and reliability.
+
 ## Four-hour flight session
 
 The original flight session remains under its own home-page dropdown:
@@ -73,7 +115,7 @@ The original flight session remains under its own home-page dropdown:
 | Rewrite a helper without hints and review | 10 min |
 
 Times are guides. Repeat a level if needed instead of racing to finish. The full
-full learning path extends beyond this flight session.
+learning path extends beyond this flight session.
 
 ## Run locally
 
@@ -136,6 +178,8 @@ a persistent database are later steps.
 - `data/problem-solving.js`: 24 JS/Python challenges, cases, hints, and answers.
 - `data/practical-skills.js`: 60 word problems covering methods, combinations, records, CRUD, and APIs.
 - `data/dom-practice.js`: six browser activities with fixtures and event scenarios.
+- `data/projects.js`: guided project steps, broken starters, independent challenges, and cases.
+- `projects/`: exported-style reference pages and optional Express/Flask/SQLite backend projects.
 - `practice-api.js`: matching offline HTTP fixtures for JavaScript and Python.
 - `dom-runner.js`: isolated interactive page preview and DOM-case judging.
 - `sections.js`: aggregator; original tier order and existing activity IDs stay stable.
@@ -160,10 +204,13 @@ python3 tests/test_flight.py
 python3 tests/test_offline_setup.py
 python3 tests/test_learning_path.py
 python3 tests/test_practical_skills.py
+python3 tests/test_projects.py
 ```
 
-The tests run all 114 guided reference answers; exercise errors, hints, draft
+The browser tests run 114 exercise answers and 17 project answers; exercise errors, hints, draft
 restoration, loop limits, and original-library behavior; check all 144 DSA function
 cases and 204 new method/API/DOM cases; and verify a fresh offline tab after stopping the server. Setup checks cover
 old service-worker upgrades, incomplete downloads, disabled browser storage,
-per-language navigation, and small-screen overflow.
+per-language navigation, responsive layouts, project review/export, and small-screen overflow.
+The project tests check 127 cases and cold offline challenges. Backend commands and
+real HTTP/restart tests are documented in the task API guide above.
