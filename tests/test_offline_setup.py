@@ -104,7 +104,7 @@ def test_setup():
             page.evaluate('localStorage.setItem("daily-coding-practice-v1", JSON.stringify({drafts:{"js-budget":"console.log(18)"},completed:{"js-budget":true},positions:{},lastFlight:"js-budget"}))')
             SetupHandler.mode = 'new'
             page.reload()
-            page.wait_for_function('caches.keys().then(keys => keys.includes("js-daily-exercises-incremental-v7") && !keys.includes("js-daily-exercises-flight-v1"))')
+            page.wait_for_function('caches.keys().then(keys => keys.includes("js-daily-exercises-incremental-v8") && !keys.includes("js-daily-exercises-flight-v1"))')
             page.wait_for_function('window.controlChanged || document.querySelector("#offline-status")')
             page.reload()
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')

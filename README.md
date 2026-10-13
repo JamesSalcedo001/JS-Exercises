@@ -244,6 +244,7 @@ python3 tests/test_learning_path.py
 python3 tests/test_practical_skills.py
 python3 tests/test_projects.py
 python3 tests/test_phone_flow.py
+python3 tests/test_learning_tools.py
 ```
 
 The browser tests run 114 exercise answers and 30 project answers; exercise errors, hints, draft
@@ -263,3 +264,27 @@ such as filter → map and CRUD → API requests. Review links include the lesso
 and title; **Return to your current lesson** restores the current draft. The original
 library remains separate. Lesson numbers reflect the current curriculum order; saved
 work still uses the existing stable exercise IDs.
+
+### Practice that lasts beyond today
+
+**Remember what you learned** offers up to three due reviews for the selected
+language. Previously checked work without a schedule is ready immediately. Clicking
+Retry opens a blank attempt and keeps the previous code under Editor tools. The
+first successful check schedules a review in one day; successful recall without
+help moves it to 3, 7, 14, then 30 days. Using help keeps the next review one day
+away. These are optional practice reminders, not a measure of mastery. They use
+local timestamps and storage and work offline. Debug exercises are excluded from
+the blank-recall queue because their task depends on a supplied broken program.
+
+**Try your own test** is available for function exercises, including pure route
+handlers. Enter a JSON list of arguments and predict the JSON result. The local
+JavaScript/Python runtime checks it with the same input-preservation rules as the
+lesson. These experiments save per activity and do not change completion or review
+progress. DOM and simulated HTTP-client exercises still use their interactive
+fixtures and provided scenarios. **Work through one failure** gives a short
+trace-and-debug routine after a failed lesson check.
+
+The next-block button now follows the same interleaved lesson/project route as the
+home recommendation. Original exercises, stable activity IDs, existing drafts and
+completed work remain compatible. Restoring an old solution counts as help for the
+current attempt.

@@ -1,4 +1,5 @@
-import { recommend, previousMarkup, migrateProjectPositions, lessonTrail } from "./learning-flow.js";
+import { recommend, previousMarkup, migrateProjectPositions, lessonTrail, learningRoute } from "./learning-flow.js";
+import { recordPractice, reviewQueue } from "./review.js";
 import { serverBuildSteps } from "./data/server-build.js";
 import { sections } from "./sections.js";
 import { runDOM } from "./dom-runner.js";
@@ -14,12 +15,13 @@ const stepTitle = section => section.id
   : section.title;
 const storageKey = "daily-coding-practice-v1"; // Keep existing drafts and completion records.
 let reviewOrigin = null;
-let state = { drafts: {}, completed: {}, positions: {}, plans: {}, reflections: {}, independent: {}, helpUsage: {}, backups: {}, lastPractice: {}, lastProject: {}, lastLearning: {}, checkedDrafts: {}, checkedMarkup: {}, markupDrafts: {}, projectFlowVersion: 2, lastFlight: null, language: "javascript", useStarter: false };
+let recallAttempt = null;
+let state = { drafts: {}, completed: {}, positions: {}, plans: {}, reflections: {}, independent: {}, helpUsage: {}, backups: {}, lastPractice: {}, lastProject: {}, lastLearning: {}, checkedDrafts: {}, checkedMarkup: {}, markupDrafts: {}, reviews: {}, experiments: {}, projectFlowVersion: 2, lastFlight: null, language: "javascript", useStarter: false };
 let storageAvailable = true;
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey));
   if (saved && typeof saved === "object") {
-    for (const key of ["drafts", "completed", "positions", "plans", "reflections", "independent", "helpUsage", "backups", "lastPractice", "lastProject", "lastLearning", "checkedDrafts", "checkedMarkup", "markupDrafts"]) {
+    for (const key of ["drafts", "completed", "positions", "plans", "reflections", "independent", "helpUsage", "backups", "lastPractice", "lastProject", "lastLearning", "checkedDrafts", "checkedMarkup", "markupDrafts", "reviews", "experiments"]) {
       if (saved[key] && typeof saved[key] === "object" && !Array.isArray(saved[key])) state[key] = saved[key];
     }
     state.lastFlight = typeof saved.lastFlight === "string" ? saved.lastFlight : null;
@@ -63,6 +65,7 @@ function persist() {
   $("save-warning").textContent = warning;
 }
 function busy(value) {
+  $("experiment-run").disabled = value;
   $("run-btn").disabled = value; $("check-btn").disabled = value; $("stop-btn").hidden = !value;
 }
 function cancelRun() { if (activeRun) activeRun.finish(null); }
@@ -122,6 +125,20 @@ function renderRecommendation() {
   $("recommended-description").textContent = next ? `Lesson ${lesson.number} · ${next.section.title.replace(/^(JavaScript|Python) \d+ · /, "")}. Read the task, try one change, then check it.` : "Choose a project to rebuild from blank, or practice the other language.";
   $("recommended-start").hidden = !next;
   $("recommended-start").textContent = next?.resume ? "Continue learning →" : "Start this step →";
+  const queue = reviewQueue(learningRoute(sections, state.language), state);
+  $("review-count").textContent = queue.length ? `${queue.length} ready` : "None due";
+  $("recall-list").replaceChildren();
+  for (const item of queue.slice(0, 3)) {
+    const button = document.createElement("button");
+    const trail = lessonTrail(sections, state.language, item.exercise.id);
+    button.textContent = `Retry lesson ${trail.number}: ${item.exercise.title}`;
+    button.addEventListener("click", () => {
+      enterSection(sections.indexOf(item.section), item.section.kind === "project" ? "project" : "path", item.exercise.id);
+      $("retry-blank").click(); recallAttempt = item.exercise.id;
+    });
+    $("recall-list").append(button);
+  }
+  $("recall-empty").hidden = Boolean(queue.length);
 }
 function renderProjects() {
   $("project-list").replaceChildren();
@@ -147,6 +164,7 @@ function renderSectionCards() {
   renderPathPicker(); renderProjects(); renderRecommendation();
 }
 function enterSection(index, mode, activityId) {
+  recallAttempt = null;
   sectionIndex = index; navigationMode = mode;
   const section = currentSection();
   const position = state.positions[section.id || `legacy:${index}`];
@@ -155,7 +173,7 @@ function enterSection(index, mode, activityId) {
   openExercise();
 }
 function nextSection() {
-  const order = navigationMode === "project" ? sections.filter(s => s.kind === "project" && s.language === currentSection().language).sort((a, b) => a.projectOrder - b.projectOrder) : navigationMode === "flight" ? flightSections : navigationMode === "path" ? pathFor(currentSection().language) : [];
+  const order = navigationMode === "flight" ? flightSections : ["path", "project"].includes(navigationMode) ? learningRoute(sections, currentSection().language) : [];
   return order[order.indexOf(currentSection()) + 1];
 }
 function showExerciseUI(show) {
@@ -241,6 +259,14 @@ function renderExercise() {
   $("task-example").hidden = !exercise.tests;
   $("task-example").textContent = exercise.dom ? "Run opens your page. Check tests tries the actions in Examples." : exercise.tests ? `${exercise.functionName}(${exercise.tests[0].args.map((arg) => format(arg, section.language)).join(", ")}) → ${format(exercise.tests[0].expected, section.language)}` : "";
   $("results-panel").hidden = true;
+  $("experiment-details").hidden = !exercise.tests || exercise.dom || exercise.api;
+  $("experiment-details").open = false;
+  const experiment = state.experiments[exercise.id];
+  $("experiment-args").value = typeof experiment?.args === "string" ? experiment.args : "";
+  $("experiment-expected").value = typeof experiment?.expected === "string" ? experiment.expected : "";
+  $("experiment-result").textContent = "";
+  $("experiment-example").textContent = exercise.tests && !exercise.dom && !exercise.api ? `Example: arguments ${JSON.stringify(exercise.tests[0].args)} → expected ${JSON.stringify(exercise.tests[0].expected)}. Change the input and predict its result.` : "";
+  $("debug-coach").hidden = true;
   $("output").textContent = "Run your code to see output here."; $("dom-output").replaceChildren(); $("check-result").textContent = "";
   $("answer-box").hidden = true; $("answer-btn").textContent = "Reveal solution";
   $("case-results").hidden = true; $("case-list").replaceChildren();
@@ -276,7 +302,7 @@ function renderExercise() {
   $("next-btn").disabled = Boolean(section.id) && last;
   $("next-btn").hidden = Boolean(section.id) && last;
   $("next-block-btn").hidden = !last || !nextSection();
-  $("next-block-btn").textContent = navigationMode === "path" && nextSection() ? `Next: ${stepTitle(nextSection()).split(" · ")[1]} →` : "Next block →";
+  $("next-block-btn").textContent = nextSection() ? `Next: ${nextSection().title.replace(/^(JavaScript|Python) \d+ · /, "")} →` : "Next block →";
   $("block-note").textContent = !last ? "" : navigationMode === "flight" && section.id === "flight-js-project"
     ? "Take a 10-minute break before Python."
     : navigationMode === "flight" && section.id === "flight-py-project" ? "Use the last 10 minutes to rewrite a helper without hints."
@@ -327,6 +353,27 @@ function renderCaseResults(results) {
     row.style.whiteSpace = "pre-wrap"; $("case-list").appendChild(row);
   }
 }
+async function runExperiment() {
+  const exercise = currentExercise(), key = currentKey();
+  if (!exercise.tests || exercise.dom || exercise.api) return;
+  let args, expected;
+  try {
+    args = JSON.parse($("experiment-args").value);
+    expected = JSON.parse($("experiment-expected").value);
+    if (!Array.isArray(args)) throw Error("Arguments must be a JSON list.");
+  } catch (error) {
+    $("experiment-result").textContent = "Check the input format: use a JSON list for arguments and a JSON value for the expected answer. " + error.message;
+    return;
+  }
+  $("experiment-result").textContent = "Running your test…";
+  const result = await executeWorker(editor.getValue(), { ...exercise, tests: [{ args, expected }] }, true);
+  if (!result || !inExercise || currentKey() !== key) return;
+  const test = result.results?.[0];
+  $("experiment-result").textContent = result.error || test?.error
+    ? "Error: " + (result.error || test.error)
+    : test?.passed ? "Your prediction matches. Try an empty input, a boundary, or a repeated value next."
+      : `Prediction: ${format(expected, currentSection().language)}. Actual: ${format(test?.actual, currentSection().language)}. Trace one step to find the difference.`;
+}
 async function runCode(check = false) {
   const key = currentKey(), exercise = currentExercise(), code = editor.getValue();
   $("results-panel").hidden = false;
@@ -354,6 +401,9 @@ async function runCode(check = false) {
   state.completed[key] = Boolean(passed);
   if (passed) { state.checkedDrafts[key] = code; if (exercise.dom && !exercise.html) state.checkedMarkup[key] = state.markupDrafts[key] ?? exercise.fixture; }
   state.independent[key] = Boolean(passed && help().hints === 0 && !help().solution && !help().starter && !help().guide);
+  if (passed || recallAttempt === key) state.reviews[key] = recordPractice(state.reviews[key], { passed, independent: state.independent[key], recall: recallAttempt === key });
+  $("debug-coach").hidden = passed;
+  if (passed) recallAttempt = null;
   $("check-result").textContent = exercise.tests
     ? passed ? `${result.results.length}/${exercise.tests.length} tests passed. Explain it, then try from blank.` : `${result.results?.filter((r) => r.passed).length || 0}/${exercise.tests.length} tests passed. Inspect the failing cases.`
     : passed ? "Output matches ✓ Try another input, then explain your approach." : "Not a match yet. Compare the expected output or try one hint.";
@@ -365,6 +415,7 @@ function replaceCode(value, backup = true) {
   cancelRun();
   if (backup && editor.getValue()) state.backups[currentKey()] = editor.getValue();
   editor.setValue(value); state.drafts[currentKey()] = value;
+  $("experiment-result").textContent = ""; $("debug-coach").hidden = true;
   $("check-result").textContent = ""; updateStarterControl(); persist();
 }
 function nextExercise() {
@@ -433,6 +484,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!inExercise || changingExercise) return;
     cancelRun();
     state.drafts[currentKey()] = value;
+    $("experiment-result").textContent = ""; $("debug-coach").hidden = true;
     $("check-result").textContent = ""; $("case-results").hidden = true;
     $("results-panel").hidden = true; $("dom-output").replaceChildren();
     updateStarterControl(); persist();
@@ -441,6 +493,11 @@ document.addEventListener("DOMContentLoaded", () => {
   $("return-to-lesson").addEventListener("click", () => {
     const origin = reviewOrigin; reviewOrigin = null;
     if (origin) enterSection(origin.index, origin.mode, origin.id);
+  });
+  $("experiment-run").addEventListener("click", runExperiment);
+  for (const id of ["experiment-args", "experiment-expected"]) $(id).addEventListener("input", () => {
+    cancelRun(); $("experiment-result").textContent = "";
+    state.experiments[currentKey()] = { args: $("experiment-args").value, expected: $("experiment-expected").value }; persist();
   });
   $("previous-project-step").addEventListener("click", () => { const id = $("previous-project-step").dataset.exercise; if (id) enterSection(sectionIndex, "project", id); });
   $("practice-prerequisite").addEventListener("click", () => { const section = sections.find(s => s.id === $("practice-prerequisite").dataset.section); if (section) enterSection(sections.indexOf(section), "path", section.exercises.find(e => !state.completed[e.id])?.id); });
@@ -483,7 +540,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   $("stop-btn").addEventListener("click", () => { cancelRun(); $("output").textContent = "Stopped. Your draft is still here."; });
   $("next-btn").addEventListener("click", nextExercise);
-  $("next-block-btn").addEventListener("click", () => { const next = nextSection(); if (next) { sectionIndex = sections.indexOf(next); exerciseIndex = 0; openExercise(); } });
+  $("next-block-btn").addEventListener("click", () => {
+    const next = nextSection();
+    if (next) enterSection(sections.indexOf(next), navigationMode === "flight" ? "flight" : next.kind === "project" ? "project" : "path", next.exercises[0].id);
+  });
   $("previous-btn").addEventListener("click", () => { if (exerciseIndex > 0) { exerciseIndex--; openExercise(); } });
   $("answer-btn").addEventListener("click", () => {
     $("answer-box").textContent = currentExercise().answer;
@@ -528,7 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   $("cursor-left").addEventListener("click", () => editor.move(-1)); $("cursor-right").addEventListener("click", () => editor.move(1));
   $("clear-editor").addEventListener("click", () => replaceCode(""));
-  $("restore-draft").addEventListener("click", () => { const previous = state.backups[currentKey()]; if (typeof previous === "string") replaceCode(previous); });
+  $("restore-draft").addEventListener("click", () => { const previous = state.backups[currentKey()]; if (typeof previous === "string") { replaceCode(previous); help().starter = true; persist(); } });
   $("retry-blank").addEventListener("click", () => {
     replaceCode(""); $("project-guide").open = false; state.helpUsage[currentKey()] = { hints: 0, solution: false, starter: false };
     for (const detail of document.querySelectorAll("#support-panel details")) detail.open = false;
