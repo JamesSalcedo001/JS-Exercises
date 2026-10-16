@@ -5,6 +5,7 @@ export function learningRoute(sections, language) {
     ...[8, 9, 10].map(n => `practical-${prefix}-${n}`),
     ...(prefix === 'js' ? ['project-profile', 'practical-js-13', 'project-shopping'] : []),
     `practical-${prefix}-11`, `practical-${prefix}-12`, `project-api-${prefix}`,
+    `algorithm-${prefix}-basics`,
     ...[4, 5, 6, 7].map(n => `path-${prefix}-${n}`)];
   return ids.map(id => sections.find(section => section.id === id)).filter(Boolean);
 }
@@ -60,7 +61,13 @@ export function lessonTrail(sections, language, id) {
     'dom-crud': ['dom-add', 'dom-toggle', 'dom-remove'],
   };
   const toolIds = id.startsWith(`practical-${prefix}-`) ? tools[id.slice(`practical-${prefix}-`.length)] : dom[id];
-  const sourceIds = [...(toolIds || []), current.exercise.continuesFrom, current.exercise.markupFrom,
+  const dsaFoundations = {
+    maximum:['trace','visits'], reverse:['copy'], search:['search'], frequency:['copy'], duplicates:['copy'], anagram:['two-passes'],
+    palindrome:['visits'], brackets:['copy'], 'binary-search':['halving'], 'two-sum':['pairs','copy'], 'move-zeros':['two-passes','copy'], window:['trace','two-passes'],
+  };
+  const dsaSlug = id.startsWith(`path-${prefix}-`) ? id.slice(`path-${prefix}-`.length) : '';
+  const foundationIds = (dsaFoundations[dsaSlug] || []).map(slug => `algorithm-${prefix}-${slug}`);
+  const sourceIds = [...foundationIds, ...(toolIds || []), current.exercise.continuesFrom, current.exercise.markupFrom,
     ...(current.section.prerequisites || []).map(sectionId =>
       sections.find(section => section.id === sectionId)?.exercises.at(-1)?.id),
     lessons[index - 1]?.exercise.id].filter(Boolean);

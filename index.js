@@ -1,5 +1,6 @@
 import { recommend, previousMarkup, migrateProjectPositions, lessonTrail, learningRoute } from "./learning-flow.js";
 import { recordPractice, reviewQueue } from "./review.js";
+import { mountAlgorithmGuide } from "./algorithm-guide.js";
 import { serverBuildSteps } from "./data/server-build.js";
 import { sections } from "./sections.js";
 import { runDOM } from "./dom-runner.js";
@@ -7,7 +8,7 @@ import { createEditor } from "./editor.js";
 const $ = (id) => document.getElementById(id);
 const flightSections = sections.filter((section) => section.id?.startsWith("flight-"));
 // Stable content IDs and stage numbers; the learning route introduces tools before DSA.
-const learningOrder = [1, 2, 3, 8, 9, 10, 11, 12, 13, 4, 5, 6, 7];
+const learningOrder = [1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 4, 5, 6, 7];
 const pathFor = language => sections.filter(s => s.id && s.kind !== "project" && s.language === language)
   .sort((a, b) => learningOrder.indexOf(a.stage) - learningOrder.indexOf(b.stage));
 const stepTitle = section => section.id
@@ -215,6 +216,11 @@ function renderExercise() {
   $("exercise-progress").textContent = `${exerciseIndex + 1} / ${section.exercises.length}${exercise.minutes ? ` · ~${exercise.minutes} min` : ""}${state.completed[currentKey()] ? state.independent[currentKey()] ? " · Solved without help" : " · Checked" : ""}`;
   $("question-text").textContent = exercise.prompt;
   $("step-why").hidden = !exercise.why; $("step-why").textContent = exercise.why ? "Why this step: " + exercise.why : "";
+  const algorithmTopic = section.stage === 14 || (section.stage >= 4 && section.stage <= 7);
+  $("algorithm-guide").hidden = !algorithmTopic; $("algorithm-guide").open = false;
+  if (algorithmTopic) mountAlgorithmGuide($("algorithm-guide-body"), section.language);
+  $("answer-analysis").hidden = true;
+  $("answer-analysis").textContent = exercise.analysis ? "Cost of the reference approach: " + exercise.analysis : "";
   const ownMarkup = previousMarkup(sections, state, exercise.markupFrom);
   if (exercise.dom && !exercise.html) {
     if (typeof state.markupDrafts[exercise.id] !== "string") state.markupDrafts[exercise.id] = ownMarkup ?? exercise.fixture;
@@ -292,7 +298,7 @@ function renderExercise() {
   $("check-explanation").textContent = exercise.html ? "Checks inspect your HTML and layout at the listed screen widths. Keyboard use and visual quality still need your own review." : exercise.dom ? "Each test starts with a fresh fixture, calls setupDOM, tries the listed actions, and checks the page." : exercise.api ? "Each test starts with fresh tasks. Checks compare your return value, requests, and saved records. This API runs locally." : exercise.tests ? "Checks call your function on each input and compare the returned value. They do not measure algorithmic complexity." : "Checks compare printed output. Try another input to test your reasoning.";
   $("stretch").textContent = exercise.stretch || "Explain your approach, then try a different input.";
   $("plan-input").value = typeof state.plans[currentKey()] === "string" ? state.plans[currentKey()] : "";
-  document.querySelector("label[for=reflection-input]").textContent = section.stage >= 4 && section.stage <= 7 ? "Walk through one input. Then explain the time and space cost." : "Walk through one input. What changes at each step?";
+  document.querySelector("label[for=reflection-input]").textContent = algorithmTopic ? "Name n. Trace a tiny input. Count visits as n grows. What extra data do you store?" : "Walk through one input. What changes at each step?";
   $("reflection-input").value = typeof state.reflections[currentKey()] === "string" ? state.reflections[currentKey()] : "";
   $("hints").replaceChildren(); hintIndex = 0; $("hint-btn").disabled = false; $("hint-btn").textContent = "Show a hint";
   $("starter-details").hidden = !exercise.snippet;
@@ -490,6 +496,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateStarterControl(); persist();
   });
   $("recommended-start").addEventListener("click", () => { const next = recommend(sections, state); if (next) enterSection(sections.indexOf(next.section), next.section.kind === "project" ? "project" : "path", next.exercise.id); });
+  $("start-algorithms").addEventListener("click", () => {
+    const index = sections.findIndex(s => s.id === `algorithm-${state.language === "python" ? "py" : "js"}-basics`);
+    enterSection(index, "path", sections[index].exercises[0].id);
+  });
   $("return-to-lesson").addEventListener("click", () => {
     const origin = reviewOrigin; reviewOrigin = null;
     if (origin) enterSection(origin.index, origin.mode, origin.id);
@@ -548,11 +558,13 @@ document.addEventListener("DOMContentLoaded", () => {
   $("answer-btn").addEventListener("click", () => {
     $("answer-box").textContent = currentExercise().answer;
     $("answer-box").hidden = !$("answer-box").hidden;
+    $("answer-analysis").hidden = $("answer-box").hidden || !currentExercise().analysis;
     $("answer-btn").textContent = $("answer-box").hidden ? "Reveal solution" : "Hide solution";
     if (!$("answer-box").hidden) help().solution = true;
     persist();
   });
   $("project-guide").addEventListener("toggle", () => { if (inExercise && $("project-guide").open) { help().guide = true; persist(); } });
+  $("algorithm-guide").addEventListener("toggle", () => { if (inExercise && $("algorithm-guide").open) { help().guide = true; persist(); } });
   $("hint-btn").addEventListener("click", () => {
     const hints = currentExercise().hints || []; if (hintIndex >= hints.length) return;
     const item = document.createElement("li"); item.textContent = hints[hintIndex++]; $("hints").appendChild(item);
@@ -595,6 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $("hints").replaceChildren(); hintIndex = 0;
     $("hint-btn").disabled = false; $("hint-btn").textContent = "Show a hint";
     $("answer-box").hidden = true; $("answer-btn").textContent = "Reveal solution";
+    $("answer-analysis").hidden = true;
     $("check-result").textContent = "Fresh attempt. Your previous draft is under Editor tools."; persist(); editor.focus();
   });
   $("load-snippet-btn").addEventListener("click", () => { if (!editor.getValue().trim()) { replaceCode(currentExercise().snippet || ""); help().starter = true; persist(); } });

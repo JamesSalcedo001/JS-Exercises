@@ -25,15 +25,17 @@ Start at the beginning to reinforce your fundamentals, or choose a later step.
 | 7 | CRUD helpers | Create, read, rename, toggle, delete, search |
 | 8 | API requests | GET, POST, PATCH, DELETE, errors, request workflow |
 | JS 9 | DOM | Render, forms, clicks, a small task app |
-| JS 10 / Python 9 | Arrays & strings | Maximum, reverse, linear search |
-| JS 11 / Python 10 | Maps & sets | Frequencies, duplicates, anagrams |
-| JS 12 / Python 11 | Problem-solving patterns | Two pointers, stacks, binary search |
-| JS 13 / Python 12 | Interview practice | Two sum, stable partitioning, sliding windows |
+| JS 10 / Python 9 | Trace steps & understand Big O | Running totals, visits, nested loops, halving, memory, best/worst cases |
+| JS 11 / Python 10 | Arrays & strings | Maximum, reverse, linear search |
+| JS 12 / Python 11 | Maps & sets | Frequencies, duplicates, anagrams |
+| JS 13 / Python 12 | Problem-solving patterns | Two pointers, stacks, binary search |
+| JS 14 / Python 13 | Interview practice | Two sum, stable partitioning, sliding windows |
 
-The picker and Next action follow this order. The original content IDs, internal
+The topic picker follows this order; Next also weaves in the relevant projects.
+The original content IDs, internal
 stage numbers, and saved work remain stable; visible step labels reflect the route.
 
-All new activities use small word problems and three gradually more specific hints.
+New activities use small word problems and short hints.
 Tools are suggestions: correct loops are welcome in the data exercises.
 
 This is a bridge into DSA and interview practice, not a complete algorithms course.
@@ -212,6 +214,8 @@ a persistent database are later steps.
 - `data/tier1-foundations.js` through `tier5-problem-solving.js`: original library.
 - `data/flight-practice.js`: the 24 foundation/flight activities.
 - `data/problem-solving.js`: 24 JS/Python challenges, cases, hints, and answers.
+- `data/algorithm-basics.js`: 16 tracing/complexity exercises, 68 cases, and reference cost explanations.
+- `algorithm-guide.js`: interactive running-total trace, growth counts, and Big O/space tutorial.
 - `data/practical-skills.js`: 60 word problems covering methods, combinations, records, CRUD, and APIs.
 - `data/dom-practice.js`: six browser activities with fixtures and event scenarios.
 - `data/projects.js`: incremental steps, checked-code/markup dependencies, project prerequisites, and cases.
@@ -245,9 +249,10 @@ python3 tests/test_practical_skills.py
 python3 tests/test_projects.py
 python3 tests/test_phone_flow.py
 python3 tests/test_learning_tools.py
+python3 tests/test_algorithm_basics.py
 ```
 
-The browser tests run 114 exercise answers and 30 project answers; exercise errors, hints, draft
+The browser tests run 130 exercise answers and 30 project answers; exercise errors, hints, draft
 restoration, loop limits, and original-library behavior; check all 144 DSA function
 cases and 204 new method/API/DOM cases; and verify a fresh offline tab after stopping the server. Setup checks cover
 old service-worker upgrades, incomplete downloads, disabled browser storage,
@@ -288,3 +293,27 @@ The next-block button now follows the same interleaved lesson/project route as t
 home recommendation. Original exercises, stable activity IDs, existing drafts and
 completed work remain compatible. Restoring an old solution counts as help for the
 current attempt.
+
+### Start tracing and complexity from scratch
+
+Open **Practice tips & useful tools → Start tracing & Big O** for the selected
+language. The eight lessons per language begin with recording changing variables,
+then cover constant work, one scan, two separate scans, full nested scans, halving,
+output memory, and best/worst-case search. This section also sits immediately before
+the DSA topics in the recommended route. New activities use stable IDs; earlier
+saved drafts and completion records remain intact.
+
+Under **Need help? → Trace steps & understand Big O**, reveal one example step at a
+time and change the input size to compare concrete operation counts. This is a
+teaching example, not an execution tracer for the editor. The tutorial distinguishes
+input, output, and auxiliary memory, explains hidden work in methods and lookup
+assumptions, and provides a short prediction question with corrective feedback.
+Opening it counts as help for the attempt. Reflection asks you to name the input
+size, trace a tiny example, count work, and identify stored data.
+
+Revealing a solution also reveals a cost walkthrough for each new algorithm lesson
+and all 24 existing DSA challenges. Those analyses describe the reference code, not
+an automatic assessment of your own code. Result checks cannot verify Big O or the
+requested implementation technique. The new browser suite checks all 68 new cases,
+trace/reset controls, growth comparisons, feedback, foundation links, phone layout,
+and fresh offline use.

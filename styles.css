@@ -194,3 +194,8 @@ pre, #function-signature, .example-line { max-width: 100%; overflow-x: auto; }
 #recall-list button { text-align: left; }
 #experiment-args, #experiment-expected { width: 100%; font: 16px/1.6 ui-monospace, monospace; resize: vertical; }
 #experiment-result { margin-top: .7rem; overflow-wrap: anywhere; }
+
+.trace-scroll { max-width: 100%; overflow-x: auto; }
+#algorithm-guide .tool-table { min-width: 290px; }
+#algorithm-guide-body > details { background: transparent; }
+#growth-counts { margin-top: .8rem; }

@@ -37,9 +37,9 @@ def test_path():
             total_cases = 0
             for language in ['javascript', 'python']:
                 page.locator('#track-select').select_option(language)
-                assert page.locator('#level-select option').count() == (13 if language == "javascript" else 12)
+                assert page.locator('#level-select option').count() == (14 if language == "javascript" else 13)
                 prefix = "js" if language == "javascript" else "py"
-                expected_route = [f"flight-{prefix}-basics", f"flight-{prefix}-loops", f"flight-{prefix}-project"] + [f"practical-{prefix}-{n}" for n in range(8, 13)] + (["practical-js-13"] if prefix == "js" else []) + [f"path-{prefix}-{n}" for n in range(4, 8)]
+                expected_route = [f"flight-{prefix}-basics", f"flight-{prefix}-loops", f"flight-{prefix}-project"] + [f"practical-{prefix}-{n}" for n in range(8, 13)] + (["practical-js-13"] if prefix == "js" else []) + [f"algorithm-{prefix}-basics"] + [f"path-{prefix}-{n}" for n in range(4, 8)]
                 assert page.locator('#level-select option').evaluate_all('options => options.map(o => o.value)') == expected_route
                 for block in [b for b in blocks if b['language'] == language]:
                     select_level(page,block['id'])

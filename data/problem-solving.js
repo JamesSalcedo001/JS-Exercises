@@ -135,6 +135,20 @@ const problems = [
   },
 ];
 
+const analysis = {
+  maximum: 'Let n be the list length. best starts at the first value. On [3, 1, 5], it stays 3 for 3 and 1, then becomes 5. One full scan gives O(n) time. Only best and the current number are kept: O(1) extra space.',
+  reverse: 'Let n be the text length. For code, indices 3, 2, 1, 0 collect e, d, o, c. The scan and final join each do linear work: O(n) time in total. The collected characters need O(n) auxiliary space, and the returned string needs O(n) output space. Joining once avoids repeatedly rebuilding a growing string.',
+  search: 'Let n be the list length. For [4, 2, 4] and target 2, index 0 misses and index 1 matches. A first-item match takes O(1) best-case time. A last or missing match takes O(n) worst-case time. Only an index and current values are needed: O(1) extra space.',
+  frequency: 'Let n be the text length. For aba, the counts become {a:1}, then {a:1,b:1}, then {a:2,b:1}. One scan gives O(n) time under the usual constant-time lookup assumption. Here the alphabet is fixed at 26 letters, so at most 26 counts are stored: O(1) space relative to n. With an unbounded alphabet, storage would grow with the number of distinct characters.',
+  duplicates: 'Let n be the list length. For [2, 5, 2], store 2, store 5, then find 2 already present and stop. Expected worst-input scan cost is O(n), assuming expected O(1) set operations. The set may hold n distinct values: O(n) extra space. The early match improves some inputs, not the worst-case scan length.',
+  anagram: 'Let n and m be the two text lengths. Count the first string, then consume those counts using the second: separate scans add to O(n + m) time under the usual lookup model. For ab and ba, counts a:1,b:1 fall to zero after b then a. Only 26 lowercase-letter counts can exist here, so extra space is O(1) relative to text length.',
+  palindrome: 'Let n be the text length. For abba, compare indices (0,3), then (1,2), then stop. At most about n/2 comparisons still means O(n) worst-case time. Two indices need O(1) extra space. This version does not create a reversed string.',
+  brackets: 'Let n be the text length. For ([]), push (, push [, pop [ on ], and pop ( on ). Each character is visited once, with amortized constant-time stack operations: O(n) time. A run of n opening brackets can keep n entries: O(n) extra space.',
+  'binary-search': 'Let n be the sorted list length. For [1,3,5,7] and target 7: mid index 1 holds 3, so left becomes 2; mid 2 holds 5, so left becomes 3; mid 3 matches 7. Each miss discards roughly half of what remains: O(log n) worst-case time. Only left, right, and mid are kept: O(1) extra space. Sorting an unsorted input first has its own cost.',
+  'two-sum': 'Let n be the list length. For [2,7,11] and target 9, first store 2 at index 0. At index 1, the needed partner is 2, already stored: return [0,1]. A full scan is O(n) expected time with expected O(1) dictionary/map operations; up to n earlier entries need O(n) auxiliary space. The returned pair has O(1) output size. A full pair-by-pair search instead takes O(n²) worst-case time but avoids the growing map.',
+  'move-zeros': 'Let n be the list length. For [0,1,0,3], collect [1,3], count two zeros, then append them. The first scan has n turns; appending zeros adds at most n more. O(n + n) simplifies to O(n) time. The new returned list has O(n) output space; the counter and loop variables use O(1) auxiliary space excluding that output.',
+  window: 'Let n be the list length and k the window width. For [2,1,5,1] and k=3, the first total is 8. Slide once: add the incoming 1 and subtract the outgoing 2, giving 7; best stays 8. Initialization visits k items; the slide visits n-k, so total time is O(n). Only totals and indices are stored: O(1) extra space. Recomputing every valid window costs O((n-k+1) × k), bounded by O(nk).',
+};
 const levels = {
   4: ["Arrays & strings", "Easy", "Scan, index, and handle empty inputs."],
   5: ["Maps & sets", "Building confidence", "Count values and remember what you have seen."],
@@ -159,7 +173,7 @@ export const problemSections = ["javascript", "python"].flatMap((language) => Ob
           .replace(/false\/False/g, python ? "False" : "false").replace(/object \(JavaScript\) or dictionary \(Python\)/g, python ? "dictionary" : "object")
           .replace(/object\/dictionary/g, python ? "dictionary" : "object"),
         signature, functionName, tests, preserveInput: true,
-        lesson: problem.lesson, hints: problem.hints, constraints: problem.constraints,
+        lesson: problem.lesson, hints: problem.hints, constraints: problem.constraints, analysis: analysis[problem.slug],
         snippet: python ? `${signature}\n    # Write your approach here.\n    pass\n` : `${signature} {\n  // Write your approach here.\n}\n`,
         answer: python ? problem.py : problem.js, stretch: problem.stretch,
       };
