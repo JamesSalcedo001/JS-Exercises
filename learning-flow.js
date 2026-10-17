@@ -1,4 +1,29 @@
 // Keep the recommendation separate from free navigation: learners may still skip ahead.
+export function topicName(section) {
+  return section.title.replace(/^(JavaScript|Python)(?: \d+)? · /, '').replace(/^\d+ · /, '');
+}
+export function topicBridge(section) {
+  const stage = section.stage;
+  if (section.id === 'project-profile') return 'You can work with records. Now build the page that will display them, starting with an empty HTML document.';
+  if (section.id === 'project-shopping') return 'You practiced individual DOM changes. Now combine a page, events, and a list of records into one app.';
+  if (section.backend) return 'You used API requests as a client. Now write the server decisions that answer those requests, one route at a time.';
+  return ({
+    1:'Start with named values. Calculate an answer, print it, then choose what happens with a condition.',
+    2:'You can make one decision. Now repeat small steps over a list and keep track of a result.',
+    3:'You can write a loop. Put a useful task inside a function so different inputs can reuse it.',
+    8:'You can write functions and loops. Learn common tools that perform those same small jobs.',
+    9:'You practiced tools separately. Now connect them, checking the result of each step before the next.',
+    10:'You can transform lists. Now use lists of records, where each item has named fields.',
+    11:'You can find and read records. Now practice adding, changing, and removing them.',
+    12:'You can change records locally. Now ask an API to do those jobs and handle its response.',
+    13:'You built a page. Now use JavaScript to change it, then respond to a form or click.',
+    14:'You can build working functions. Slow down and trace their steps, then count how work and memory grow.',
+    4:'You practiced tracing and counting work. Apply that process to a scan, a reversal, and a search.',
+    5:'You can scan a sequence. Remember earlier values with a dictionary or set instead of searching repeatedly.',
+    6:'You can scan and store values. Now practice shrinking a search, moving pointers, and using a stack.',
+    7:'You have practiced the main patterns. Combine them, test edge cases, and explain your choices.',
+  })[stage] || '';
+}
 export function learningRoute(sections, language) {
   const prefix = language === 'python' ? 'py' : 'js';
   const ids = [`flight-${prefix}-basics`, `flight-${prefix}-loops`, `flight-${prefix}-project`,

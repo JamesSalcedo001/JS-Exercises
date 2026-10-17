@@ -14,7 +14,7 @@ and 54 Python activities**: the existing 24 per language, 30 new everyday-skills
 problems per language, and six JavaScript DOM activities.
 Start at the beginning to reinforce your fundamentals, or choose a later step.
 
-| Step | Focus | Practice |
+| Topic | Focus | Practice |
 | --- | --- | --- |
 | 1 | Gentle start | Values, text, decisions, boundary bugs |
 | 2 | Lists & loops | Totals, counting, filtering, repeated work |
@@ -22,16 +22,19 @@ Start at the beginning to reinforce your fundamentals, or choose a later step.
 | 4 | Useful methods | Keep, double, add, clean, membership, pop |
 | 5 | Combine steps | Filter then map, split/count, join, sort/slice, unique tags |
 | 6 | Records | Find records, names, any/all, lookups |
-| 7 | CRUD helpers | Create, read, rename, toggle, delete, search |
-| 8 | API requests | GET, POST, PATCH, DELETE, errors, request workflow |
-| JS 9 | DOM | Render, forms, clicks, a small task app |
-| JS 10 / Python 9 | Trace steps & understand Big O | Running totals, visits, nested loops, halving, memory, best/worst cases |
-| JS 11 / Python 10 | Arrays & strings | Maximum, reverse, linear search |
-| JS 12 / Python 11 | Maps & sets | Frequencies, duplicates, anagrams |
-| JS 13 / Python 12 | Problem-solving patterns | Two pointers, stacks, binary search |
-| JS 14 / Python 13 | Interview practice | Two sum, stable partitioning, sliding windows |
+| JS 7 | Profile page project | Write a document, style it, and fit a phone |
+| JS 8 | DOM | Render, forms, clicks, a small task app |
+| JS 9 | Shopping list project | Build and connect your own page, state, and storage |
+| JS 10 / Python 7 | CRUD helpers | Create, read, rename, toggle, delete, search |
+| JS 11 / Python 8 | API requests | GET, POST, PATCH, DELETE, errors, request workflow |
+| JS 12 / Python 9 | Task API project | Build server responses, then complete CRUD routes |
+| JS 13 / Python 10 | Trace steps & understand Big O | Running totals, visits, nested loops, halving, memory, best/worst cases |
+| JS 14 / Python 11 | Arrays & strings | Maximum, reverse, linear search |
+| JS 15 / Python 12 | Maps & sets | Frequencies, duplicates, anagrams |
+| JS 16 / Python 13 | Problem-solving patterns | Two pointers, stacks, binary search |
+| JS 17 / Python 14 | Interview practice | Two sum, stable partitioning, sliding windows |
 
-The topic picker follows this order; Next also weaves in the relevant projects.
+The topic picker, browse cards, home recommendation, and Next follow this same order.
 The original content IDs, internal
 stage numbers, and saved work remain stable; visible step labels reflect the route.
 
@@ -250,6 +253,7 @@ python3 tests/test_projects.py
 python3 tests/test_phone_flow.py
 python3 tests/test_learning_tools.py
 python3 tests/test_algorithm_basics.py
+python3 tests/test_curriculum_flow.py
 ```
 
 The browser tests run 130 exercise answers and 30 project answers; exercise errors, hints, draft
@@ -317,3 +321,16 @@ an automatic assessment of your own code. Result checks cannot verify Big O or t
 requested implementation technique. The new browser suite checks all 68 new cases,
 trace/reset controls, growth comparisons, feedback, foundation links, phone layout,
 and fresh offline use.
+
+### Consistent learning flow
+
+Topics now include projects in their proper place (17 JavaScript topics and 14
+Python topics). Topic numbers identify groups; lesson numbers identify individual
+activities. A short introduction at the first activity of each topic explains what
+you are reusing and what comes next. The last activity previews the next topic.
+
+**Learn the idea** appears before the task and opens on a new, blank non-project
+activity. It stays collapsed for saved drafts and completed work; project walkthroughs
+remain the main instructions for guided builds. Rules and examples remain available
+under Need help. The topic picker and saved-exercise resume control can now resume
+project work as well. IDs, draft contents, and saved positions are unchanged.

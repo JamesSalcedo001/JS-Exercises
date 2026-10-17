@@ -1,4 +1,4 @@
-import { recommend, previousMarkup, migrateProjectPositions, lessonTrail, learningRoute } from "./learning-flow.js";
+import { recommend, previousMarkup, migrateProjectPositions, lessonTrail, learningRoute, topicName, topicBridge } from "./learning-flow.js";
 import { recordPractice, reviewQueue } from "./review.js";
 import { mountAlgorithmGuide } from "./algorithm-guide.js";
 import { serverBuildSteps } from "./data/server-build.js";
@@ -8,11 +8,9 @@ import { createEditor } from "./editor.js";
 const $ = (id) => document.getElementById(id);
 const flightSections = sections.filter((section) => section.id?.startsWith("flight-"));
 // Stable content IDs and stage numbers; the learning route introduces tools before DSA.
-const learningOrder = [1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 4, 5, 6, 7];
-const pathFor = language => sections.filter(s => s.id && s.kind !== "project" && s.language === language)
-  .sort((a, b) => learningOrder.indexOf(a.stage) - learningOrder.indexOf(b.stage));
+const pathFor = language => learningRoute(sections, language);
 const stepTitle = section => section.id
-  ? `Step ${pathFor(section.language).indexOf(section) + 1} · ${section.title.replace(/^(JavaScript|Python) \d+ · /, "")}`
+  ? `Topic ${pathFor(section.language).indexOf(section) + 1} · ${topicName(section)}`
   : section.title;
 const storageKey = "daily-coding-practice-v1"; // Keep existing drafts and completion records.
 let reviewOrigin = null;
@@ -81,10 +79,10 @@ function updateProgress() {
 function selectLevel() {
   const section = sections.find((s) => s.id === $("level-select").value);
   if (!section) return;
-  $("level-label").textContent = section.level;
+  $("level-label").textContent = section.level || "Build a project";
   $("level-description").textContent = section.description;
   $("start-practice").textContent = Number.isInteger(state.positions[section.id]) ? "Continue this step →" : "Start this step →";
-  const lastId = state.lastPractice[state.language];
+  const lastId = state.lastLearning[state.language] || state.lastPractice[state.language];
   $("resume-practice").hidden = !lastId || section.exercises.some(e => e.id === lastId);
   updateProgress();
 }
@@ -95,7 +93,7 @@ function makeCard(section, index, mode) {
   const detail = document.createElement("span");
   detail.textContent = section.id ? `${section.exercises.filter((e) => state.completed[e.id]).length}/${section.exercises.length} checked` : `${section.exercises.length} exercises`;
   card.append(title, detail);
-  card.addEventListener("click", () => enterSection(index, mode));
+  card.addEventListener("click", () => enterSection(index, section.kind === "project" ? "project" : mode));
   return card;
 }
 function renderPathPicker() {
@@ -111,7 +109,7 @@ function renderPathPicker() {
     $("level-select").appendChild(option);
     $("path-section-list").appendChild(makeCard(section, sections.indexOf(section), "path"));
   }
-  const lastId = state.lastPractice[state.language];
+  const lastId = state.lastLearning[state.language] || state.lastPractice[state.language];
   const resumeSection = track.find((s) => s.exercises.some((e) => e.id === lastId));
   if (resumeSection) $("level-select").value = resumeSection.id;
   else if (track.some((s) => s.id === previous)) $("level-select").value = previous;
@@ -123,7 +121,7 @@ function renderRecommendation() {
   const next = recommend(sections, state);
   const lesson = next && lessonTrail(sections, state.language, next.exercise.id);
   $("recommended-title").textContent = next ? `${next.resume ? "Continue" : "Next"}: ${next.exercise.title}` : "You have practiced the full path";
-  $("recommended-description").textContent = next ? `Lesson ${lesson.number} · ${next.section.title.replace(/^(JavaScript|Python) \d+ · /, "")}. Read the task, try one change, then check it.` : "Choose a project to rebuild from blank, or practice the other language.";
+  $("recommended-description").textContent = next ? `Lesson ${lesson.number} · ${topicName(next.section)}. Learn the idea, try one change, then check it.` : "Choose a project to rebuild from blank, or practice the other language.";
   $("recommended-start").hidden = !next;
   $("recommended-start").textContent = next?.resume ? "Continue learning →" : "Start this step →";
   const queue = reviewQueue(learningRoute(sections, state.language), state);
@@ -211,10 +209,14 @@ function renderExercise() {
     $("lesson-review-list").append(button);
   }
   if (section.language) state.language = section.language;
-  $("section-title").textContent = navigationMode === "path" ? `${section.language === "python" ? "Python" : "JavaScript"} · ${stepTitle(section)}` : section.title;
+  $("section-title").textContent = ["path", "project"].includes(navigationMode) ? `${section.language === "python" ? "Python" : "JavaScript"} · ${stepTitle(section)}` : section.title;
   $("activity-title").textContent = exercise.title || `Exercise ${exerciseIndex + 1}`;
   $("exercise-progress").textContent = `${exerciseIndex + 1} / ${section.exercises.length}${exercise.minutes ? ` · ~${exercise.minutes} min` : ""}${state.completed[currentKey()] ? state.independent[currentKey()] ? " · Solved without help" : " · Checked" : ""}`;
   $("question-text").textContent = exercise.prompt;
+  $("topic-bridge").hidden = !section.id || exerciseIndex !== 0;
+  $("topic-bridge").textContent = topicBridge(section);
+  $("learn-step").hidden = !exercise.lesson;
+  $("learn-step").open = Boolean(exercise.lesson && section.kind !== "project" && !state.completed[exercise.id] && !(typeof state.drafts[exercise.id] === "string" && state.drafts[exercise.id].trim()));
   $("step-why").hidden = !exercise.why; $("step-why").textContent = exercise.why ? "Why this step: " + exercise.why : "";
   const algorithmTopic = section.stage === 14 || (section.stage >= 4 && section.stage <= 7);
   $("algorithm-guide").hidden = !algorithmTopic; $("algorithm-guide").open = false;
@@ -282,6 +284,7 @@ function renderExercise() {
   $("learning-panel").hidden = !isGuided();
   $("lesson").textContent = exercise.lesson || "";
   $("constraints").replaceChildren();
+  $("concept-details").hidden = !exercise.constraints?.length;
   for (const text of exercise.constraints || []) { const item = document.createElement("li"); item.textContent = text; $("constraints").appendChild(item); }
   $("expected-output").hidden = Boolean(exercise.tests);
   $("expected-output").textContent = exercise.expected || "";
@@ -308,11 +311,11 @@ function renderExercise() {
   $("next-btn").disabled = Boolean(section.id) && last;
   $("next-btn").hidden = Boolean(section.id) && last;
   $("next-block-btn").hidden = !last || !nextSection();
-  $("next-block-btn").textContent = nextSection() ? `Next: ${nextSection().title.replace(/^(JavaScript|Python) \d+ · /, "")} →` : "Next block →";
+  $("next-block-btn").textContent = nextSection() ? `Next: ${topicName(nextSection())} →` : "Next block →";
   $("block-note").textContent = !last ? "" : navigationMode === "flight" && section.id === "flight-js-project"
     ? "Take a 10-minute break before Python."
     : navigationMode === "flight" && section.id === "flight-py-project" ? "Use the last 10 minutes to rewrite a helper without hints."
-      : "Finish by explaining your approach or retrying from blank. Move on when you feel ready.";
+      : nextSection() ? `Next topic: ${topicBridge(nextSection())} Before moving on, explain one example in your own words.` : "You reached the end of this path. Rebuild an earlier solution from blank or try the other language.";
   $("exercise-select").replaceChildren();
   section.exercises.forEach((entry, i) => { const option = document.createElement("option"); option.value = i; option.textContent = `${i + 1}. ${entry.title || entry.prompt.slice(0, 65)}`; $("exercise-select").appendChild(option); });
   $("exercise-select").value = exerciseIndex;
@@ -518,11 +521,11 @@ document.addEventListener("DOMContentLoaded", () => {
   $("track-select").addEventListener("change", () => { state.language = $("track-select").value; renderPathPicker(); renderProjects(); renderRecommendation(); persist(); });
   $("level-select").addEventListener("change", selectLevel);
   $("use-starter").addEventListener("change", () => { state.useStarter = $("use-starter").checked; persist(); });
-  $("start-practice").addEventListener("click", () => enterSection(sections.findIndex((s) => s.id === $("level-select").value), "path"));
+  $("start-practice").addEventListener("click", () => { const index = sections.findIndex(s => s.id === $("level-select").value); enterSection(index, sections[index].kind === "project" ? "project" : "path"); });
   $("resume-practice").addEventListener("click", () => {
-    const id = state.lastPractice[state.language];
+    const id = state.lastLearning[state.language] || state.lastPractice[state.language];
     const index = sections.findIndex((s) => s.exercises.some((e) => e.id === id));
-    if (index >= 0) enterSection(index, "path", id);
+    if (index >= 0) enterSection(index, sections[index].kind === "project" ? "project" : "path", id);
   });
   $("exercise-select").addEventListener("change", () => { exerciseIndex = Number($("exercise-select").value); openExercise(); });
   $("plan-input").addEventListener("input", () => { state.plans[currentKey()] = $("plan-input").value; persist(); });
