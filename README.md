@@ -220,6 +220,7 @@ a persistent database are later steps.
 - `data/algorithm-basics.js`: 16 tracing/complexity exercises, 68 cases, and reference cost explanations.
 - `algorithm-guide.js`: interactive running-total trace, growth counts, and Big O/space tutorial.
 - `data/practical-skills.js`: 60 word problems covering methods, combinations, records, CRUD, and APIs.
+- `data/concept-lessons.js`: specific explanations, use cases, mistakes and planning prompts for those 60 activities; also the bilingual data-structure guide.
 - `data/dom-practice.js`: six browser activities with fixtures and event scenarios.
 - `data/projects.js`: incremental steps, checked-code/markup dependencies, project prerequisites, and cases.
 - `learning-flow.js`: recommended route, saved-position migration, and verified markup lookup.
@@ -254,6 +255,7 @@ python3 tests/test_phone_flow.py
 python3 tests/test_learning_tools.py
 python3 tests/test_algorithm_basics.py
 python3 tests/test_curriculum_flow.py
+python3 tests/test_concept_coaching.py
 ```
 
 The browser tests run 130 exercise answers and 30 project answers; exercise errors, hints, draft
@@ -334,3 +336,27 @@ activity. It stays collapsed for saved drafts and completed work; project walkth
 remain the main instructions for guided builds. Rules and examples remain available
 under Need help. The topic picker and saved-exercise resume control can now resume
 project work as well. IDs, draft contents, and saved positions are unchanged.
+
+### Choose tools by the job they do
+
+The 60 everyday practice activities now show explanations from
+`data/concept-lessons.js` in **Learn the idea**, instead of repeating a generic
+method-name prompt. **When would I use this?** adds a real use case and a common
+mistake without expanding the task by default. The planning field asks a question
+specific to that concept; existing plans are preserved. Source exercise prompts,
+answers, test cases, IDs, and completion records are unchanged.
+
+Under **Practice tips & useful tools → Which data structure fits this job?**, choose
+an ordered list, one record, a lookup, a set, or a stack. Examples match the selected
+language, and **Practice this idea** opens an existing lesson. Python list/dictionary
+foundation review links now resolve to their actual exercise IDs.
+
+After a passing check, focus on explaining one example before continuing. Optional
+stretch prompts are inside **Try a small variation**; they explicitly distinguish
+the original graded task from your own experiments. The new coaching browser suite
+checks the 60 explanations, all structure practice links, language-specific content,
+planning prompts, optional variations, 320px layout, and cold offline use.
+Failed checks now show the first failing case immediately and keep the remaining
+cases in a closed disclosure. All cases remain available, with their original
+numbers and full inputs/expected/actual values, so you can debug one example at a
+time without losing coverage.

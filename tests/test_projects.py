@@ -54,7 +54,7 @@ def test_projects():
                 exercise_index=next(i for i,e in enumerate(block['exercises']) if e['mode']=='debug')
                 page.locator('#track-select').select_option(block['language']);open_dropdown(page,'build-projects');page.locator('#project-list button').filter(has_text=block['title']).click();page.locator('#exercise-select').select_option(str(exercise_index))
                 page.locator('#offline-editor').fill(block['exercises'][exercise_index]['snippet']);page.locator('#check-btn').click();wait_for_check(page)
-                assert 'Inspect the failing cases' in page.locator('#check-result').inner_text()
+                assert 'Start with the first failing case' in page.locator('#check-result').inner_text()
                 page.locator('#back-to-home').click()
             # Review assisted work, retry from blank, and restore the prior draft.
             open_dropdown(page,'project-review');assert page.locator('#review-list button').count()>0

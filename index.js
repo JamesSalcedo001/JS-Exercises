@@ -1,6 +1,7 @@
 import { recommend, previousMarkup, migrateProjectPositions, lessonTrail, learningRoute, topicName, topicBridge } from "./learning-flow.js";
 import { recordPractice, reviewQueue } from "./review.js";
 import { mountAlgorithmGuide } from "./algorithm-guide.js";
+import { conceptFor, dataShapes } from "./data/concept-lessons.js";
 import { serverBuildSteps } from "./data/server-build.js";
 import { sections } from "./sections.js";
 import { runDOM } from "./dom-runner.js";
@@ -97,6 +98,7 @@ function makeCard(section, index, mode) {
   return card;
 }
 function renderPathPicker() {
+  renderDataShape();
   $("track-select").value = state.language;
   $("use-starter").checked = state.useStarter;
   const previous = $("level-select").value;
@@ -116,6 +118,16 @@ function renderPathPicker() {
   $("resume-practice").hidden = !resumeSection;
   $("resume-practice").textContent = resumeSection ? `Resume saved exercise` : "Resume my practice";
   selectLevel(); updateProgress();
+}
+function renderDataShape() {
+  const select = $("data-shape");
+  if (!select.options.length) for (const [key, item] of Object.entries(dataShapes)) {
+    const option = document.createElement("option"); option.value = key; option.textContent = item.title; select.append(option);
+  }
+  const item = dataShapes[select.value];
+  $("shape-why").textContent = item.why;
+  $("shape-example").textContent = state.language === "python" ? item.py : item.js;
+  $("shape-practice").dataset.exercise = state.language === "python" ? item.pyId : item.jsId;
 }
 function renderRecommendation() {
   const next = recommend(sections, state);
@@ -282,7 +294,13 @@ function renderExercise() {
   $("check-btn").hidden = !isGuided();
   $("check-btn").textContent = exercise.tests ? "Check tests" : "Check output";
   $("learning-panel").hidden = !isGuided();
-  $("lesson").textContent = exercise.lesson || "";
+  const concept = conceptFor(exercise, section.language);
+  $("lesson").textContent = concept?.lesson || exercise.lesson || "";
+  $("concept-use-case").hidden = !concept;
+  $("concept-use-case").open = false;
+  $("concept-use").textContent = concept ? "Use case: " + concept.use : "";
+  $("concept-mistake").textContent = concept ? "Watch for: " + concept.mistake : "";
+  $("plan-input").placeholder = concept?.plan || "What comes in? What should come out? What are the smallest steps?";
   $("constraints").replaceChildren();
   $("concept-details").hidden = !exercise.constraints?.length;
   for (const text of exercise.constraints || []) { const item = document.createElement("li"); item.textContent = text; $("constraints").appendChild(item); }
@@ -303,6 +321,7 @@ function renderExercise() {
   $("plan-input").value = typeof state.plans[currentKey()] === "string" ? state.plans[currentKey()] : "";
   document.querySelector("label[for=reflection-input]").textContent = algorithmTopic ? "Name n. Trace a tiny input. Count visits as n grows. What extra data do you store?" : "Walk through one input. What changes at each step?";
   $("reflection-input").value = typeof state.reflections[currentKey()] === "string" ? state.reflections[currentKey()] : "";
+  $("transfer-challenge").open = false;
   $("hints").replaceChildren(); hintIndex = 0; $("hint-btn").disabled = false; $("hint-btn").textContent = "Show a hint";
   $("starter-details").hidden = !exercise.snippet;
   $("starter-code").textContent = exercise.snippet || "";
@@ -355,12 +374,20 @@ function executeWorker(code, exercise, check) {
 }
 function renderCaseResults(results) {
   $("case-list").replaceChildren(); $("case-results").hidden = false;
-  $("case-results").open = results.some((result) => !result.passed);
+  const firstFailure = results.findIndex(result => !result.passed);
+  $("case-results").open = firstFailure >= 0;
+  const remaining = document.createElement("details"), summary = document.createElement("summary");
+  remaining.id = "remaining-cases";
+  summary.textContent = `See the other ${results.length - 1} test cases`;
+  remaining.append(summary);
   for (const [i, result] of results.entries()) {
     const row = document.createElement("div"); row.className = `case-row ${result.passed ? "case-pass" : "case-fail"}`;
     row.textContent = `${result.passed ? "PASS" : "FAIL"} ${i + 1} · Input: ${result.args.map((arg) => format(arg, currentSection().language)).join(", ")}\nExpected: ${format(result.expected, currentSection().language)} · ${currentExercise().dom ? "Page" : "Returned"}: ${format(result.actual, currentSection().language)}${result.error ? "\n" + result.error : ""}`;
-    row.style.whiteSpace = "pre-wrap"; $("case-list").appendChild(row);
+    row.style.whiteSpace = "pre-wrap";
+    if (firstFailure >= 0 && i !== firstFailure) remaining.append(row);
+    else $("case-list").append(row);
   }
+  if (firstFailure >= 0 && results.length > 1) $("case-list").append(remaining);
 }
 async function runExperiment() {
   const exercise = currentExercise(), key = currentKey();
@@ -414,7 +441,7 @@ async function runCode(check = false) {
   $("debug-coach").hidden = passed;
   if (passed) recallAttempt = null;
   $("check-result").textContent = exercise.tests
-    ? passed ? `${result.results.length}/${exercise.tests.length} tests passed. Explain it, then try from blank.` : `${result.results?.filter((r) => r.passed).length || 0}/${exercise.tests.length} tests passed. Inspect the failing cases.`
+    ? passed ? `${result.results.length}/${exercise.tests.length} tests passed. Explain one example, then continue when ready.` : `${result.results?.filter((r) => r.passed).length || 0}/${exercise.tests.length} tests passed. Start with the first failing case.`
     : passed ? "Output matches ✓ Try another input, then explain your approach." : "Not a match yet. Compare the expected output or try one hint.";
   if (exercise.tests && passed && !result.output) $("output").textContent = exercise.dom ? "The page passed every tested action." : "All tested inputs returned the expected values.";
   $("exercise-progress").textContent = `${exerciseIndex + 1} / ${currentSection().exercises.length}${passed ? state.independent[key] ? " · Solved without help" : " · Checked with help" : ""}`;
@@ -502,6 +529,12 @@ document.addEventListener("DOMContentLoaded", () => {
   $("start-algorithms").addEventListener("click", () => {
     const index = sections.findIndex(s => s.id === `algorithm-${state.language === "python" ? "py" : "js"}-basics`);
     enterSection(index, "path", sections[index].exercises[0].id);
+  });
+  $("data-shape").addEventListener("change", renderDataShape);
+  $("shape-practice").addEventListener("click", () => {
+    const id = $("shape-practice").dataset.exercise;
+    const index = sections.findIndex(s => s.exercises.some(e => e.id === id));
+    if (index >= 0) enterSection(index, "path", id);
   });
   $("return-to-lesson").addEventListener("click", () => {
     const origin = reviewOrigin; reviewOrigin = null;

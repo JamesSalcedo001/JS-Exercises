@@ -96,7 +96,8 @@ export function lessonTrail(sections, language, id) {
     ...(current.section.prerequisites || []).map(sectionId =>
       sections.find(section => section.id === sectionId)?.exercises.at(-1)?.id),
     lessons[index - 1]?.exercise.id].filter(Boolean);
-  const earlier = [...new Set(sourceIds)].map(sourceId => lessons.findIndex(item => item.exercise.id === sourceId))
+  const aliases = prefix === 'py' ? { 'py-pack':'py-list', 'py-object':'py-dictionary', 'py-sum-function':'py-total' } : {};
+  const earlier = [...new Set(sourceIds.map(sourceId => aliases[sourceId] || sourceId))].map(sourceId => lessons.findIndex(item => item.exercise.id === sourceId))
     .filter(position => position >= 0 && position < index).sort((a, b) => a - b);
   return { number: index + 1, total: lessons.length,
     reviews: earlier.map(position => ({ ...lessons[position], number: position + 1 })) };

@@ -199,3 +199,17 @@ pre, #function-signature, .example-line { max-width: 100%; overflow-x: auto; }
 #algorithm-guide .tool-table { min-width: 290px; }
 #algorithm-guide-body > details { background: transparent; }
 #growth-counts { margin-top: .8rem; }
+
+/* Keep the task and editor prominent; optional review controls stay quieter. */
+.task-card { border-top: 2px solid #527d75; }
+#learn-step { background: var(--bg); }
+#learn-step > p, #shape-why { line-height: 1.7; }
+#concept-use-case, #transfer-challenge { background: transparent; }
+#concept-use-case summary, #transfer-challenge summary { font-size: .85rem; color: var(--muted); }
+#shape-why { margin-top: .8rem; }
+#lesson { max-width: 68ch; }
+#plan-input, #reflection-input { line-height: 1.65; }
+@media (max-width: 640px) {
+  .task-card, .editor-card, .output-card { padding: .85rem; }
+  .example-line, #function-signature { font-size: .9rem; }
+}
