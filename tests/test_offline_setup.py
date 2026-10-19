@@ -67,7 +67,7 @@ def test_setup():
         with sync_playwright() as p:
             browser = p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH', '/usr/bin/chromium'), args=['--no-sandbox'])
             context = browser.new_context()
-            context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
+            context.add_init_script("try { if (window === window.top) localStorage.setItem('daily-practice-editor','plain'); } catch {}");context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
             page = context.new_page()
             page.goto(url + 'install-old.html')
             page.wait_for_function('navigator.serviceWorker.controller !== null')
@@ -97,14 +97,14 @@ def test_setup():
             # then serves the new layout on the next reload without losing storage.
             SetupHandler.mode = 'old-cached'
             context = browser.new_context()
-            context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
+            context.add_init_script("try { if (window === window.top) localStorage.setItem('daily-practice-editor','plain'); } catch {}");context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
             page = context.new_page()
             page.goto(url)
             page.wait_for_function('navigator.serviceWorker.controller !== null')
             page.evaluate('localStorage.setItem("daily-coding-practice-v1", JSON.stringify({drafts:{"js-budget":"console.log(18)"},completed:{"js-budget":true},positions:{},lastFlight:"js-budget"}))')
             SetupHandler.mode = 'new'
             page.reload()
-            page.wait_for_function('caches.keys().then(keys => keys.includes("js-daily-exercises-incremental-v12") && !keys.includes("js-daily-exercises-flight-v1"))')
+            page.wait_for_function('caches.keys().then(keys => keys.includes("js-daily-exercises-incremental-v13") && !keys.includes("js-daily-exercises-flight-v1"))')
             page.wait_for_function('window.controlChanged || document.querySelector("#offline-status")')
             page.reload()
             page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
@@ -118,7 +118,7 @@ def test_setup():
 
             SetupHandler.mode = 'broken'
             context = browser.new_context()
-            context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
+            context.add_init_script("try { if (window === window.top) localStorage.setItem('daily-practice-editor','plain'); } catch {}");context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
             page = context.new_page()
             page.goto(url)
             open_flight(page)
@@ -133,7 +133,7 @@ def test_setup():
 
             SetupHandler.mode = 'new'
             context = browser.new_context(viewport={'width':320,'height':640})
-            context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
+            context.add_init_script("try { if (window === window.top) localStorage.setItem('daily-practice-editor','plain'); } catch {}");context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
             context.add_init_script('Storage.prototype.setItem = function() { throw new Error("Storage disabled"); };')
             page = context.new_page()
             page.goto(url)

@@ -67,6 +67,7 @@ function persist() {
   $("save-warning").textContent = warning;
 }
 function busy(value) {
+  editor?.setBusy?.(value);
   $("experiment-run").disabled = value;
   $("run-btn").disabled = value; $("check-btn").disabled = value; $("stop-btn").hidden = !value;
 }
@@ -580,7 +581,6 @@ document.addEventListener("DOMContentLoaded", () => {
   $("track-select").addEventListener("change", () => { state.language = $("track-select").value; renderPathPicker(); renderProjects(); renderRecommendation(); persist(); });
   $("study-path").addEventListener('change', () => { state.paths[state.language] = $("study-path").value; renderPathPicker(); renderRecommendation(); persist(); });
   $("task-use-start").addEventListener('click', () => { if (!editor.getValue().trim()) { replaceCode(currentExercise().snippet || ''); updateTaskStart(); } });
-  $("enable-monaco").addEventListener('click', () => editor.enableMonaco());
   $("format-code").addEventListener('click', async () => {
     const key=currentKey(), before=editor.getValue();
     $("format-message").textContent='Formatting…';
@@ -600,7 +600,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("exercise-select").addEventListener("change", () => { exerciseIndex = Number($("exercise-select").value); openExercise(); });
   $("plan-input").addEventListener("input", () => { state.plans[currentKey()] = $("plan-input").value; persist(); });
   $("reflection-input").addEventListener("input", () => { state.reflections[currentKey()] = $("reflection-input").value; persist(); });
-  $("run-btn").addEventListener("click", () => { if (matchMedia("(pointer: coarse)").matches) editor.blur(); runCode(); }); $("check-btn").addEventListener("click", () => { if (matchMedia("(pointer: coarse)").matches) editor.blur(); runCode(true); });
+  $("run-btn").addEventListener("click", () => { if (matchMedia("(pointer: coarse)").matches) editor.blur(); editor.cancelAutoFormat(); runCode(); }); $("check-btn").addEventListener("click", () => { if (matchMedia("(pointer: coarse)").matches) editor.blur(); editor.cancelAutoFormat(); runCode(true); });
   for (const button of document.querySelectorAll("#phone-code-tools button")) {
     button.addEventListener("pointerdown", event => event.preventDefault());
     button.addEventListener("click", () => {
@@ -609,19 +609,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if (button.dataset.codeAction === "undo") { const saved = markupHistory.pop(); if (!saved) return; field.value = saved.value; field.setSelectionRange(saved.start, saved.end); }
         else {
           markupHistory.push({value:field.value,start,end}); if (markupHistory.length > 50) markupHistory.shift();
-          const pair = button.dataset.codePair;
-          const text = pair ? pair[0] + field.value.slice(start,end) + pair[1] : button.dataset.codeAction === "indent" ? "    " + field.value.slice(start,end).replace(/\n/g, "\n    ") : button.dataset.codeAction === "newline" ? "\n" : button.dataset.codeInsert;
-          field.setRangeText(text,start,end,"end"); if (pair) field.setSelectionRange(start+1,end+1);
+          const text = button.dataset.codeAction === "indent" ? "    " + field.value.slice(start,end).replace(/\n/g, "\n    ") : button.dataset.codeInsert;
+          field.setRangeText(text,start,end,"end");
         }
         field.focus({preventScroll:true}); field.dispatchEvent(new Event("input", {bubbles:true})); return;
       }
-      if (button.dataset.codePair) editor.insertPair(button.dataset.codePair);
-      else if (button.dataset.codeAction === "undo") editor.undo();
+      if (button.dataset.codeAction === "undo") editor.undo();
       else if (button.dataset.codeAction === "indent") editor.indent();
-      else editor.insert(button.dataset.codeAction === "indent" ? "    " : button.dataset.codeAction === "newline" ? "\n" : button.dataset.codeInsert);
+      else editor.insert(button.dataset.codeInsert);
     });
   }
-  $("stop-btn").addEventListener("click", () => { cancelRun(); $("output").textContent = "Stopped. Your draft is still here."; });
+  $("stop-btn").addEventListener("click", () => { editor.cancelAutoFormat(); cancelRun(); $("output").textContent = "Stopped. Your draft is still here."; });
   $("next-btn").addEventListener("click", nextExercise);
   $("next-block-btn").addEventListener("click", () => {
     const next = nextSection();

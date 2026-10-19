@@ -1,6 +1,6 @@
 import { formatCode } from "./format-code.js";
 // The built-in editor is always available, including on a cold offline reload.
-// Monaco can be enabled from Editor tools and is cached for offline use.
+// Monaco starts automatically on desktop. Touch devices use the lighter editor.
 export function createEditor(container, onChange) {
   const textarea = document.createElement("textarea");
   textarea.id = "offline-editor";
@@ -19,6 +19,27 @@ export function createEditor(container, onChange) {
   const status = document.getElementById("editor-status");
   status.textContent = "Built-in editor · works offline · Tab indents your code";
   textarea.addEventListener("input", () => onChange(textarea.value));
+  textarea.addEventListener('beforeinput', event => {
+    if (event.isComposing) return;
+    const start=textarea.selectionStart, end=textarea.selectionEnd, char=event.data;
+    const pairs={'(':')','[':']','{':'}','"':'"',"'":"'"};
+    if (event.inputType==='deleteContentBackward' && start===end && start>0 && pairs[textarea.value[start-1]]===textarea.value[start]) {
+      event.preventDefault();textarea.setSelectionRange(start-1,start+1);editor.insert('');return;
+    }
+    if (event.inputType==='insertText' && char?.length===1) {
+      if (start===end && ')]}\"\''.includes(char) && textarea.value[start]===char) {
+        event.preventDefault();textarea.setSelectionRange(start+1,start+1);return;
+      }
+      if (pairs[char] && (!'\"\''.includes(char) || !/[\w]/.test(textarea.value[start-1]||''))) {
+        event.preventDefault();editor.insertPair(char+pairs[char]);return;
+      }
+    }
+    if (['insertLineBreak','insertParagraph'].includes(event.inputType)) {
+      event.preventDefault();const line=textarea.value.slice(0,start).split('\n').at(-1);
+      const indent=line.match(/^\s*/)[0]+(/[\[{(]\s*$/.test(line)||(language==='python'&&/:\s*$/.test(line))?'    ':'');
+      editor.insert('\n'+indent);
+    }
+  });
   textarea.addEventListener("keydown", (event) => {
     if (event.key !== "Tab") return;
     event.preventDefault();
@@ -72,7 +93,7 @@ export function createEditor(container, onChange) {
     },
   };
   const touchEditor = matchMedia("(pointer: coarse)").matches || matchMedia("(max-width: 640px)").matches;
-  if (touchEditor) status.textContent = "Touch editor · use Indent and Symbols above your code";
+  if (touchEditor) status.textContent = "Touch editor · automatic pairs and indentation · extra helpers are optional";
   let loadingMonaco = false;
   editor.enableMonaco = () => {
     if (monacoEditor || loadingMonaco) return;
@@ -91,13 +112,13 @@ export function createEditor(container, onChange) {
           monacoEditor = window.monaco.editor.create(surface, {
             value, language, theme: "vs-dark", automaticLayout: true,
             formatOnType: true, formatOnPaste: true, minimap: { enabled: false },
+            autoClosingBrackets:'always',autoClosingQuotes:'languageDefined',autoIndent:'full',
             wordWrap: "on", lineNumbersMinChars: 2, padding: { top: 10, bottom: 10 },
             renderLineHighlight: "none", fontSize: 14,
           });
           textarea.hidden = true;
           monacoEditor.onDidChangeModelContent(() => onChange(monacoEditor.getValue()));
           status.textContent = "Monaco editor · available offline · Shift+Alt+F formats code";
-          try { localStorage.setItem('daily-practice-monaco','1'); } catch {}
           for (const id of ['javascript','html','python']) window.monaco.languages.registerDocumentFormattingEditProvider(id, {
             async provideDocumentFormattingEdits(model) { return [{ range:model.getFullModelRange(), text:await formatCode(model.getValue(),id) }]; }
           });
@@ -112,6 +133,26 @@ export function createEditor(container, onChange) {
     loader.onerror = () => { loadingMonaco = false; status.textContent = "Monaco could not load. The built-in editor and Format code still work."; };
     document.head.appendChild(loader);
   };
-  try { if (!touchEditor && localStorage.getItem('daily-practice-monaco') === '1') editor.enableMonaco(); } catch {}
+  let revision=0, running=false;
+  editor.cancelAutoFormat=()=>{ revision++; };
+  editor.setBusy=value=>{ running=value; };
+  const originalSet=editor.setValue;
+  editor.setValue=value=>{ revision++; originalSet(value); };
+  const autoFormat=()=>{
+    const before=editor.getValue(), currentLanguage=language, currentRevision=revision;
+    setTimeout(async()=>{
+    if(running || revision!==currentRevision)return;
+    if (document.activeElement?.closest('button') || container.contains(document.activeElement)) return;
+    if(!before.trim() || /^(?:\/\/[^\n]*|#[^\n]*)$/.test(before.trim()))return;
+    try { const formatted=await formatCode(before,currentLanguage);
+      if(running || revision!==currentRevision || language!==currentLanguage || editor.getValue()!==before || container.contains(document.activeElement) || formatted===before)return;
+      if(monacoEditor) { monacoEditor.pushUndoStop();monacoEditor.executeEdits('format',[{range:monacoEditor.getModel().getFullModelRange(),text:formatted}]);monacoEditor.pushUndoStop(); }
+      else { remember();textarea.value=formatted;onChange(formatted); }
+    } catch { /* Incomplete code is normal while practicing; leave it alone. */ }
+  },0); };
+  container.addEventListener('focusout',autoFormat);
+  let plain=false;
+  try { plain=localStorage.getItem('daily-practice-editor')==='plain'; } catch {}
+  if(!touchEditor && !plain) editor.enableMonaco();
   return editor;
 }

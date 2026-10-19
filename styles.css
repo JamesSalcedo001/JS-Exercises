@@ -220,3 +220,34 @@ pre, #function-signature, .example-line { max-width: 100%; overflow-x: auto; }
 #planning-example, #reflection-example { white-space: pre-line; }
 #study-path-description { margin: .6rem 0 1rem; }
 #format-message:empty { display: none; }
+
+/* A quiet paper-colored review panel separates learning from the dark editor. */
+#learn-step {
+  --bg: #e8eeeb; --surface: #f5f7f2; --surface-2: #e0e9e4;
+  --text: #1d302a; --muted: #43594f; --border: #b8c9bf;
+  --accent: #176349; --focus: #234c80;
+  color: var(--text); background: var(--surface); color-scheme: light;
+}
+#learn-step pre { color: #20382d; }
+#learn-step summary { color: var(--text); }
+#learn-step #concept-use-case summary { color: var(--muted); }
+/* Native controls must shrink within padded disclosures, including long options. */
+input, select, textarea { min-width: 0; max-width: 100%; }
+select { text-overflow: ellipsis; }
+label, p, li, .muted, .eyebrow, .field-label, #task-contract { overflow-wrap: anywhere; }
+.editor-heading > *, .run-actions > *, .exercise-navigation > * { min-width: 0; }
+details > :is(#experiment-args, #experiment-expected, #markup-editor) {
+  width: calc(100% - 2rem); max-width: calc(100% - 2rem);
+}
+.phone-code-tools .touch-tools-content { display: flex; flex-wrap: wrap; gap: .35rem; }
+.phone-code-tools > summary { font-size: .8rem; color: var(--muted); }
+@media (pointer: coarse), (max-width: 640px) {
+  .phone-code-tools { display: block; }
+  .phone-code-tools details { flex: 1 1 100%; }
+  #code-editor { min-width: 0; width: 100%; }
+  .editor-heading { align-items: flex-start; flex-wrap: wrap; }
+  #editor-tools { margin-left: auto; }
+  .exercise-picker { min-width: 0; }
+  .exercise-navigation > button { flex: 1 1 130px; }
+  #study-path, #track-select, #level-select { width: 100%; }
+}

@@ -20,7 +20,7 @@ def test_projects():
     try:
         with sync_playwright() as p:
             browser=p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH','/usr/bin/chromium'),args=['--no-sandbox'])
-            context=browser.new_context();context.route('https://cdn.jsdelivr.net/**',lambda route:route.abort())
+            context=browser.new_context();context.add_init_script("try { if (window === window.top) localStorage.setItem('daily-practice-editor','plain'); } catch {}");context.route('https://cdn.jsdelivr.net/**',lambda route:route.abort())
             page=context.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
             page.goto(url);page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")')
             assert page.locator('#build-projects').get_attribute('open') is None

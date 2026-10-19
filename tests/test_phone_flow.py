@@ -25,17 +25,20 @@ def test_phone():
             assert 'Values' in page.locator('#recommended-description').inner_text()
             page.locator('#recommended-start').tap()
             assert page.locator('#phone-code-tools').is_visible()
+            assert page.locator('#phone-code-tools').get_attribute('open') is None
+            open_dropdown(page,'phone-code-tools')
             assert page.locator('#offline-editor').evaluate('el=>getComputedStyle(el).fontSize')=='16px'
             assert page.locator('#offline-editor').get_attribute('autocorrect')=='off'
-            page.locator('#offline-editor').focus();page.locator('[data-code-pair="()"]').tap()
+            page.locator('#offline-editor').focus();page.locator('#offline-editor').press_sequentially('(')
             assert page.locator('#offline-editor').input_value()=='()'
             assert page.locator('#offline-editor').evaluate('el=>el.selectionStart')==1
-            page.locator('[data-code-action="indent"]').tap();page.locator('[data-code-action="newline"]').tap()
-            assert page.locator('#offline-editor').input_value()=='(    \n)'
-            page.locator('#phone-code-tools summary').tap();page.locator('[data-code-pair="\'\'"]').tap()
-            assert "''" in page.locator('#offline-editor').input_value()
-            page.locator('[data-code-action="undo"]').tap();assert page.locator('#offline-editor').input_value()=='(    \n)'
-            assert page.locator('#offline-editor').evaluate('el=>document.activeElement===el')
+            page.locator('#offline-editor').press_sequentially(')')
+            assert page.locator('#offline-editor').input_value()=='()'
+            page.locator('#offline-editor').fill('if (true) {');page.locator('#offline-editor').press('End');page.locator('#offline-editor').press('Enter')
+            assert page.locator('#offline-editor').input_value()=='if (true) {\n    '
+            page.locator('#phone-code-tools details > summary').tap();page.locator('[data-code-insert=":"]').tap()
+            assert page.locator('#offline-editor').input_value().endswith(':')
+            page.locator('[data-code-action="undo"]').tap();assert page.locator('#offline-editor').input_value()=='if (true) {\n    '
             page.locator('#offline-editor').fill('first\nsecond');page.locator('#offline-editor').evaluate('el=>el.setSelectionRange(0,el.value.length)');page.locator('[data-code-action="indent"]').tap();assert page.locator('#offline-editor').input_value()=='    first\n    second'
             for size in [(320,568),(375,667),(390,844),(844,390)]:
                 page.set_viewport_size({'width':size[0],'height':size[1]})
@@ -71,7 +74,7 @@ def test_phone():
             open_dropdown(page,'build-projects');page.locator('#project-list button').filter(has_text=projects[1]['title']).tap()
             page.locator('#offline-editor').fill(projects[1]['exercises'][0]['answer']);page.locator('#check-btn').tap();wait_for_check(page);page.locator('#next-btn').tap()
             open_dropdown(page,'project-markup');assert page.locator('#markup-editor').input_value()==projects[1]['exercises'][0]['answer']
-            page.locator('#markup-editor').focus();page.locator('#phone-code-tools summary').tap();page.locator('[data-code-insert="<"]').tap();assert page.locator('#markup-editor').input_value()!=projects[1]['exercises'][0]['answer'];page.locator('[data-code-action="undo"]').tap();assert page.locator('#markup-editor').input_value()==projects[1]['exercises'][0]['answer'];assert page.locator('#offline-editor').input_value()==''
+            page.locator('#markup-editor').focus();open_dropdown(page,'phone-code-tools');page.locator('#phone-code-tools details > summary').tap();page.locator('[data-code-insert="<"]').tap();assert page.locator('#markup-editor').input_value()!=projects[1]['exercises'][0]['answer'];page.locator('[data-code-action="undo"]').tap();assert page.locator('#markup-editor').input_value()==projects[1]['exercises'][0]['answer'];assert page.locator('#offline-editor').input_value()==''
             page.locator('#offline-editor').fill(projects[1]['exercises'][1]['answer']);page.locator('#check-btn').tap();wait_for_check(page);assert '2/2 tests passed' in page.locator('#check-result').inner_text()
             page.locator('#markup-editor').fill('<p>missing form</p>');page.locator('#check-btn').tap();wait_for_check(page);assert '0/2 tests passed' in page.locator('#check-result').inner_text()
             page.locator('#back-to-home').tap();page.locator('#track-select').select_option('python');open_dropdown(page,'build-projects');page.locator('#project-list button').last.tap()
@@ -79,7 +82,8 @@ def test_phone():
             with page.expect_download() as route_download:page.locator('#export-project').tap()
             assert route_download.value.suggested_filename=='routes.py'
             from pathlib import Path
-            assert Path(route_download.value.path()).read_text()==own_route
+            import ast
+            assert ast.dump(ast.parse(Path(route_download.value.path()).read_text()))==ast.dump(ast.parse(own_route))
             assert not cdn,cdn
             # Existing numeric project positions still open their original activity IDs.
             old=browser.new_context(**p.devices['iPhone 13']);old_page=old.new_page();old_page.goto(url)

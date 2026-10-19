@@ -24,7 +24,7 @@ def test_path():
         with sync_playwright() as p:
             browser = p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH', '/usr/bin/chromium'), args=['--no-sandbox'])
             context = browser.new_context()
-            context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
+            context.add_init_script("try { if (window === window.top) localStorage.setItem('daily-practice-editor','plain'); } catch {}");context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
             page = context.new_page()
             errors = []
             page.on('pageerror', lambda e: errors.append(str(e)))

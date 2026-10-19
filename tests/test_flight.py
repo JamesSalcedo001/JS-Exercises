@@ -58,7 +58,7 @@ def test_app():
             browser = p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH', '/usr/bin/chromium'), args=['--no-sandbox'])
             context = browser.new_context()
             # Core practice must work even if the optional online editor is unavailable.
-            context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
+            context.add_init_script("try { if (window === window.top) localStorage.setItem('daily-practice-editor','plain'); } catch {}");context.route('https://cdn.jsdelivr.net/**', lambda route: route.abort())
             page = context.new_page()
             errors = []
             page.on('pageerror', lambda error: errors.append(str(error)))

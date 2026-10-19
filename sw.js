@@ -1,5 +1,5 @@
 importScripts('./vendor/editor-assets.js');
-const CACHE_NAME = "js-daily-exercises-incremental-v12";
+const CACHE_NAME = "js-daily-exercises-incremental-v13";
 const FILES_TO_CACHE = [
   './vendor/editor-assets.js', './format-code.js', './lesson-guide.js', ...self.EDITOR_ASSETS,
   "./", "./index.html", "./styles.css", "./index.js", "./editor.js", "./sections.js",

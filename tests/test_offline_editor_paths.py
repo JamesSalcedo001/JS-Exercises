@@ -13,7 +13,7 @@ def test_editor_paths():
     try:
         with sync_playwright() as p:
             browser=p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH','/usr/bin/chromium'),args=['--no-sandbox'])
-            context=browser.new_context();page=context.new_page();errors=[];remote=[]
+            context=browser.new_context();context.add_init_script("if(!localStorage.getItem('test-desktop-auto')) localStorage.setItem('daily-practice-editor','plain')");page=context.new_page();errors=[];remote=[]
             page.on('pageerror',lambda error:errors.append(str(error)))
             page.on('request',lambda req:remote.append(req.url) if req.url.startswith(('http:','https:')) and not req.url.startswith(url) else None)
             page.goto(url);page.wait_for_function('document.querySelector("#offline-status").textContent.startsWith("Offline ready")',timeout=60000)
@@ -34,15 +34,16 @@ def test_editor_paths():
             open_dropdown(page,'planning-details');assert 'practice_even' in page.locator('#planning-example').inner_text()
             open_dropdown(page,'reflection-details');assert 'practice_even' in page.locator('#reflection-example').inner_text()
             page.locator('#offline-editor').fill('function practice_even(numbers){return numbers.filter(n=>n%2===0)}')
-            page.locator('#format-code').click();page.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Formatted")')
+            open_dropdown(page,'editor-tools');page.locator('#format-code').click();page.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Formatted")')
             assert '\n' in page.locator('#offline-editor').input_value()
             # All remaining checks happen with the browser disconnected.
             context.set_offline(True)
-            open_dropdown(page,'editor-tools');page.locator('#enable-monaco').click()
+            page.evaluate("localStorage.removeItem('daily-practice-editor')");page.evaluate("localStorage.setItem('test-desktop-auto','1')");page.reload()
             page.wait_for_function('document.querySelector("#offline-editor").hidden',timeout=30000)
             assert 'Monaco editor' in page.locator('#editor-status').text_content()
+            page.locator('#recommended-start').click()
             page.evaluate('monaco.editor.getModels()[0].setValue("const x={a:1};")')
-            page.locator('#format-code').click();page.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Formatted")')
+            open_dropdown(page,'editor-tools');page.locator('#format-code').click();page.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Formatted")')
             assert 'a: 1' in page.evaluate('monaco.editor.getModels()[0].getValue()')
             page.evaluate('monaco.editor.getModels()[0].setValue("const values=[1,2];")')
             page.evaluate('monaco.editor.getEditors()[0].getAction("editor.action.formatDocument").run()')
@@ -52,15 +53,15 @@ def test_editor_paths():
             assert cold.locator('#study-path').input_value()=='tools'
             cold.locator('#track-select').select_option('python');cold.locator('#study-path').select_option('tools');cold.locator('#recommended-start').click()
             cold.evaluate('monaco.editor.getModels()[0].setValue("x={\'a\':1}")')
-            cold.locator('#format-code').click();cold.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Formatted")')
+            open_dropdown(cold,'editor-tools');cold.locator('#format-code').click();cold.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Formatted")')
             assert 'x = {"a": 1}' in cold.evaluate('monaco.editor.getModels()[0].getValue()')
             cold.evaluate('monaco.editor.getModels()[0].setValue("def broken(:")')
-            cold.locator('#format-code').click();cold.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Could not format")')
+            open_dropdown(cold,'editor-tools');cold.locator('#format-code').click();cold.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Could not format")')
             assert cold.evaluate('monaco.editor.getModels()[0].getValue()')=='def broken(:'
             cold.locator('#back-to-home').click();cold.locator('#track-select').select_option('javascript');cold.locator('#study-path').select_option('pages')
             select_level(cold,'project-profile');start_practice(cold)
             cold.evaluate('monaco.editor.getModels()[0].setValue("<style>p{color:red}</style><main><p>Hello</p><p>World</p></main>")')
-            cold.locator('#format-code').click();cold.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Formatted")')
+            open_dropdown(cold,'editor-tools');cold.locator('#format-code').click();cold.wait_for_function('document.querySelector("#format-message").textContent.startsWith("Formatted")')
             assert 'color: red' in cold.evaluate('monaco.editor.getModels()[0].getValue()')
             assert not errors,errors
             assert not remote,remote

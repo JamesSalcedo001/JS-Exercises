@@ -127,8 +127,9 @@ authentication, migrations, deployment, and reliability.
 
 Touch devices use the built-in editor instead of loading Monaco. Autocorrect and
 auto-capitalization are off; code and inputs use 16px text to avoid small-field
-zoom. The touch toolbar provides indentation, newline, paired brackets, quotes,
-and Undo. It works in both the code editor and the editable project HTML field;
+zoom. Typing opens matching brackets/quotes automatically and Enter keeps indentation.
+Optional **Touch typing helpers** stay closed until needed and provide indentation,
+extra symbols, and Undo. They work in both the code editor and editable project HTML field;
 selected lines are indented without deleting the selection. Controls have at
 least 44px tap targets, and the layout accounts for screen safe areas.
 
@@ -183,9 +184,11 @@ in a browser. ES modules and service workers require HTTP serving; opening
 Codex Cloud requires connectivity; prepare the actual app on your flight device.
 All practice, including the new DSA challenges, runs locally after preparation.
 
-The built-in editor works offline and supports Tab indentation. Monaco 0.52.2 is
-available through **Editor tools → Use Monaco editor**, with its assets saved
-locally for offline use. **Format code** works in both editors for JavaScript,
+The built-in editor works offline and supports Tab indentation. Monaco 0.52.2
+starts automatically on desktop, with its assets saved locally for offline use.
+Monaco pairs brackets and supports formatting on type/paste. Valid code is also
+formatted when leaving the editor, without changing incomplete code or interrupting
+checks/navigation. **Editor tools → Format now** is an optional fallback for JavaScript,
 HTML/CSS (Prettier 3.6.2), and Python (Ruff WASM 0.15.20). Invalid code is left
 unchanged and a formatting error is shown. Python runs
 through the checked-in Skulpt 1.2.0 runtime in Python 3 mode. It supports the syntax
@@ -260,6 +263,7 @@ python3 tests/test_algorithm_basics.py
 python3 tests/test_curriculum_flow.py
 python3 tests/test_concept_coaching.py
 python3 tests/test_offline_editor_paths.py
+python3 tests/test_responsive_editor.py
 ```
 
 The browser tests run 130 exercise answers and 30 project answers; exercise errors, hints, draft
@@ -383,7 +387,25 @@ include small bilingual usage examples before the exercise.
 
 Offline editor files are vendored and precached; see `vendor/EDITOR-SOURCES.md`
 for pinned versions. The first preparation is larger than before: wait for **Offline
-ready**, then test a disconnected reload. A selected Monaco editor restores on desktop;
+ready**, then test a disconnected reload. Monaco starts automatically on desktop;
 touch devices start in the built-in editor. Formatting keeps the previous version
 recoverable in Editor tools and does not change a draft if parsing fails or the
 learner edited it while formatting was running.
+
+### Automatic editing and responsive review panels
+
+The main action row now contains Run and Check, with Stop while running. The Monaco
+start button and redundant pair/newline buttons are removed. Touch helpers are a
+closed optional disclosure; hardware-keyboard users do not need to open it. The
+phone editor automatically pairs brackets and quotes, skips an already paired
+closing character, removes an empty pair with Backspace, and indents new lines.
+Automatic formatting verifies the draft and activity have not changed while it
+was running and pauses during execution. Manual formatting stays in Editor tools.
+
+The beginning review uses a paper-colored panel with dark text and muted green
+examples. Padded disclosure inputs use the available inner width, labels and long
+text wrap, and flex children can shrink on narrow screens. The responsive-editor
+suite covers automatic desktop Monaco, keyboard pairs, automatic formatting, light
+review colors, long values and expanded inputs at 320–844px. Existing browser suites
+also explicitly exercise the built-in fallback, including sandboxed DOM activities.
+Phone checks are browser emulation, not physical iPhone/Safari keyboard verification.
