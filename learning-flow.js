@@ -1,4 +1,8 @@
 // Keep the recommendation separate from free navigation: learners may still skip ahead.
+import { studyPaths } from './lesson-guide.js';
+export function studyRoute(sections, language, path = 'all') {
+  return learningRoute(sections, language).filter((studyPaths[path] || studyPaths.all).match);
+}
 export function topicName(section) {
   return section.title.replace(/^(JavaScript|Python)(?: \d+)? · /, '').replace(/^\d+ · /, '');
 }
@@ -35,7 +39,7 @@ export function learningRoute(sections, language) {
   return ids.map(id => sections.find(section => section.id === id)).filter(Boolean);
 }
 export function recommend(sections, state) {
-  const route = learningRoute(sections, state.language);
+  const route = studyRoute(sections, state.language, state.paths?.[state.language]);
   const last = state.lastLearning?.[state.language];
   const resumed = route.find(section => section.exercises.some(e => e.id === last));
   if (resumed && !state.completed[last] && typeof state.drafts[last] === "string" && state.drafts[last].trim()) {

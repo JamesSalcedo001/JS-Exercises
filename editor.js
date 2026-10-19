@@ -1,5 +1,6 @@
+import { formatCode } from "./format-code.js";
 // The built-in editor is always available, including on a cold offline reload.
-// Monaco is an optional online enhancement, never a prerequisite for practice.
+// Monaco can be enabled from Editor tools and is cached for offline use.
 export function createEditor(container, onChange) {
   const textarea = document.createElement("textarea");
   textarea.id = "offline-editor";
@@ -72,12 +73,15 @@ export function createEditor(container, onChange) {
   };
   const touchEditor = matchMedia("(pointer: coarse)").matches || matchMedia("(max-width: 640px)").matches;
   if (touchEditor) status.textContent = "Touch editor · use Indent and Symbols above your code";
-  if (navigator.onLine && !touchEditor) {
+  let loadingMonaco = false;
+  editor.enableMonaco = () => {
+    if (monacoEditor || loadingMonaco) return;
+    loadingMonaco = true;
     const loader = document.createElement("script");
-    loader.src = "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js";
+    loader.src = "./vendor/monaco/vs/loader.js";
     loader.onload = () => {
       if (!window.require) return;
-      window.require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs" } });
+      window.require.config({ paths: { vs: new URL('./vendor/monaco/vs', import.meta.url).href } });
       window.require(["vs/editor/editor.main"], () => {
         const value = textarea.value;
         const surface = document.createElement("div");
@@ -92,14 +96,22 @@ export function createEditor(container, onChange) {
           });
           textarea.hidden = true;
           monacoEditor.onDidChangeModelContent(() => onChange(monacoEditor.getValue()));
-          status.textContent = "Monaco editor · offline reloads use the built-in editor";
-        } catch {
+          status.textContent = "Monaco editor · available offline · Shift+Alt+F formats code";
+          try { localStorage.setItem('daily-practice-monaco','1'); } catch {}
+          for (const id of ['javascript','html','python']) window.monaco.languages.registerDocumentFormattingEditProvider(id, {
+            async provideDocumentFormattingEdits(model) { return [{ range:model.getFullModelRange(), text:await formatCode(model.getValue(),id) }]; }
+          });
+        } catch (error) {
+          monacoEditor?.dispose(); monacoEditor = undefined; textarea.hidden = false; loadingMonaco = false;
+          status.textContent = 'Could not enable Monaco. The built-in editor remains available. ' + error.message;
           surface.remove();
           // Keep the usable built-in editor if optional Monaco initialization fails.
         }
       }, () => {});
     };
+    loader.onerror = () => { loadingMonaco = false; status.textContent = "Monaco could not load. The built-in editor and Format code still work."; };
     document.head.appendChild(loader);
-  }
+  };
+  try { if (!touchEditor && localStorage.getItem('daily-practice-monaco') === '1') editor.enableMonaco(); } catch {}
   return editor;
 }

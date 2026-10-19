@@ -184,7 +184,10 @@ Codex Cloud requires connectivity; prepare the actual app on your flight device.
 All practice, including the new DSA challenges, runs locally after preparation.
 
 The built-in editor works offline and supports Tab indentation. Monaco 0.52.2 is
-an optional online enhancement; a failed CDN cannot block practice. Python runs
+available through **Editor tools → Use Monaco editor**, with its assets saved
+locally for offline use. **Format code** works in both editors for JavaScript,
+HTML/CSS (Prettier 3.6.2), and Python (Ruff WASM 0.15.20). Invalid code is left
+unchanged and a formatting error is shown. Python runs
 through the checked-in Skulpt 1.2.0 runtime in Python 3 mode. It supports the syntax
 used here, not a full CPython environment with pip, native extensions, or filesystem
 access. You do not need to install Python to use the browser activities.
@@ -256,6 +259,7 @@ python3 tests/test_learning_tools.py
 python3 tests/test_algorithm_basics.py
 python3 tests/test_curriculum_flow.py
 python3 tests/test_concept_coaching.py
+python3 tests/test_offline_editor_paths.py
 ```
 
 The browser tests run 130 exercise answers and 30 project answers; exercise errors, hints, draft
@@ -360,3 +364,26 @@ Failed checks now show the first failing case immediately and keep the remaining
 cases in a closed disclosure. All cases remain available, with their original
 numbers and full inputs/expected/actual values, so you can debug one example at a
 time without losing coverage.
+
+### Focused paths and self-contained tasks
+
+The language selector now has a separate **Learning path** selector: Core Coding,
+Everyday Data, Browser Apps (JavaScript), CRUD/API Routes, and Algorithms. **Full
+guided path** retains the complete sequence. A focused path filters recommendations,
+topic browsing, and Next-topic navigation; global lesson numbers and stable IDs
+still let you review earlier prerequisites. Path choices save per language.
+
+Tasks now state whether to write a complete printed-output program, return a value
+from a named function, or change a supplied page. Starting values/code and a sample
+call/result are visible in the task. The direct starting-code button only works in
+an empty editor, so saved work is never replaced. DOM tasks show their supplied page;
+API examples include the offline service's initial records. Planning/reflection
+prompts use the actual activity and first input/output example. Review sections
+include small bilingual usage examples before the exercise.
+
+Offline editor files are vendored and precached; see `vendor/EDITOR-SOURCES.md`
+for pinned versions. The first preparation is larger than before: wait for **Offline
+ready**, then test a disconnected reload. A selected Monaco editor restores on desktop;
+touch devices start in the built-in editor. Formatting keeps the previous version
+recoverable in Editor tools and does not change a draft if parsing fails or the
+learner edited it while formatting was running.

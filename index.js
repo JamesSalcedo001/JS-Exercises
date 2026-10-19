@@ -1,4 +1,6 @@
-import { recommend, previousMarkup, migrateProjectPositions, lessonTrail, learningRoute, topicName, topicBridge } from "./learning-flow.js";
+import { recommend, previousMarkup, migrateProjectPositions, lessonTrail, learningRoute, topicName, topicBridge, studyRoute } from "./learning-flow.js";
+import { taskGuide, studyPaths, reviewExample } from './lesson-guide.js';
+import { formatCode } from './format-code.js';
 import { recordPractice, reviewQueue } from "./review.js";
 import { mountAlgorithmGuide } from "./algorithm-guide.js";
 import { conceptFor, dataShapes } from "./data/concept-lessons.js";
@@ -21,7 +23,7 @@ let storageAvailable = true;
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey));
   if (saved && typeof saved === "object") {
-    for (const key of ["drafts", "completed", "positions", "plans", "reflections", "independent", "helpUsage", "backups", "lastPractice", "lastProject", "lastLearning", "checkedDrafts", "checkedMarkup", "markupDrafts", "reviews", "experiments"]) {
+    for (const key of ["drafts", "completed", "positions", "plans", "reflections", "independent", "helpUsage", "backups", "lastPractice", "lastProject", "lastLearning", "checkedDrafts", "checkedMarkup", "markupDrafts", "reviews", "experiments", "paths"]) {
       if (saved[key] && typeof saved[key] === "object" && !Array.isArray(saved[key])) state[key] = saved[key];
     }
     state.lastFlight = typeof saved.lastFlight === "string" ? saved.lastFlight : null;
@@ -98,11 +100,18 @@ function makeCard(section, index, mode) {
   return card;
 }
 function renderPathPicker() {
+  state.paths ||= {};
+  if (!$("study-path").options.length) for (const [key, path] of Object.entries(studyPaths)) {
+    const option = document.createElement('option'); option.value = key; option.textContent = path.title; $("study-path").append(option);
+  }
+  $("study-path").value = state.paths[state.language] || 'all';
+  $("study-path").querySelector('option[value=pages]').disabled = state.language === 'python';
+  $("study-path-description").textContent = studyPaths[$("study-path").value].description;
   renderDataShape();
   $("track-select").value = state.language;
   $("use-starter").checked = state.useStarter;
   const previous = $("level-select").value;
-  const track = pathFor(state.language);
+  const track = studyRoute(sections, state.language, state.paths[state.language]);
   $("level-select").replaceChildren();
   $("path-section-list").replaceChildren();
   for (const section of track) {
@@ -132,8 +141,8 @@ function renderDataShape() {
 function renderRecommendation() {
   const next = recommend(sections, state);
   const lesson = next && lessonTrail(sections, state.language, next.exercise.id);
-  $("recommended-title").textContent = next ? `${next.resume ? "Continue" : "Next"}: ${next.exercise.title}` : "You have practiced the full path";
-  $("recommended-description").textContent = next ? `Lesson ${lesson.number} · ${topicName(next.section)}. Learn the idea, try one change, then check it.` : "Choose a project to rebuild from blank, or practice the other language.";
+  $("recommended-title").textContent = next ? `${next.resume ? "Continue" : "Next"}: ${next.exercise.title}` : "You have practiced this path";
+  $("recommended-description").textContent = next ? `Lesson ${lesson.number} · ${topicName(next.section)}. Learn the idea, try one change, then check it.` : "Choose another learning path, review an earlier lesson, or practice the other language.";
   $("recommended-start").hidden = !next;
   $("recommended-start").textContent = next?.resume ? "Continue learning →" : "Start this step →";
   const queue = reviewQueue(learningRoute(sections, state.language), state);
@@ -184,7 +193,8 @@ function enterSection(index, mode, activityId) {
   openExercise();
 }
 function nextSection() {
-  const order = navigationMode === "flight" ? flightSections : ["path", "project"].includes(navigationMode) ? learningRoute(sections, currentSection().language) : [];
+  const selected = studyRoute(sections, currentSection().language, state.paths?.[currentSection().language]);
+  const order = navigationMode === "flight" ? flightSections : ["path", "project"].includes(navigationMode) ? selected.includes(currentSection()) ? selected : learningRoute(sections,currentSection().language) : [];
   return order[order.indexOf(currentSection()) + 1];
 }
 function showExerciseUI(show) {
@@ -196,9 +206,13 @@ function openExercise() {
   window.scrollTo({ top: 0, behavior: "auto" });
 }
 function updateStarterControl() {
+  updateTaskStart();
   $("load-snippet-btn").disabled = Boolean(editor.getValue().trim());
   $("starter-note").textContent = editor.getValue().trim() ? "Your draft stays intact. Clear the editor before loading a starter." : "A starter gives you structure, not the solution.";
   $("restore-draft").hidden = typeof state.backups[currentKey()] !== "string";
+}
+function updateTaskStart() {
+  $("task-use-start").disabled = Boolean(editor.getValue().trim());
 }
 function renderExercise() {
   changingExercise = true; touchTarget = "code"; markupHistory.length = 0;
@@ -225,6 +239,17 @@ function renderExercise() {
   $("activity-title").textContent = exercise.title || `Exercise ${exerciseIndex + 1}`;
   $("exercise-progress").textContent = `${exerciseIndex + 1} / ${section.exercises.length}${exercise.minutes ? ` · ~${exercise.minutes} min` : ""}${state.completed[currentKey()] ? state.independent[currentKey()] ? " · Solved without help" : " · Checked" : ""}`;
   $("question-text").textContent = exercise.prompt;
+  const guide = taskGuide(exercise, section.language);
+  $("task-contract").textContent = guide.contract;
+  $("task-setup").textContent = guide.setup;
+  $("task-start").hidden = !guide.setup;
+  $("task-call").textContent = guide.example; $("task-call").hidden = !guide.example;
+  $("task-fixture").hidden = !exercise.dom || exercise.html || section.kind === 'project';
+  $("task-fixture-code").textContent = exercise.fixture || '';
+  $("planning-example").textContent = guide.focus + (guide.worked ? '\n' + guide.worked + '\nMy plan: first I ___, then I ___. I will check the empty or missing-input case by ___.' : '\nMy plan: name the starting values, calculate or compare ___, then print ___.');
+  $("reflection-example").textContent = guide.reflection;
+  $("review-example").textContent = reviewExample(exercise, section.language, section);
+  $("review-example-box").hidden = !$("review-example").textContent;
   $("topic-bridge").hidden = !section.id || exerciseIndex !== 0;
   $("topic-bridge").textContent = topicBridge(section);
   $("learn-step").hidden = !exercise.lesson;
@@ -276,9 +301,10 @@ function renderExercise() {
   $("function-signature").textContent = exercise.signature || "";
   $("return-note").hidden = !exercise.tests;
   $("return-note").textContent = exercise.html ? "Write HTML and CSS. Run previews your page; checks inspect the layout." : exercise.dom ? "Change the fixture page. Check tests tries real clicks and forms; no return value is needed." : "Return the result. Keep the inputs unchanged.";
-  $("task-example").hidden = !exercise.tests;
+  $("task-example").hidden = true;
   $("task-example").textContent = exercise.dom ? "Run opens your page. Check tests tries the actions in Examples." : exercise.tests ? `${exercise.functionName}(${exercise.tests[0].args.map((arg) => format(arg, section.language)).join(", ")}) → ${format(exercise.tests[0].expected, section.language)}` : "";
   $("results-panel").hidden = true;
+  $("format-message").textContent = '';
   $("experiment-details").hidden = !exercise.tests || exercise.dom || exercise.api;
   $("experiment-details").open = false;
   const experiment = state.experiments[exercise.id];
@@ -300,7 +326,7 @@ function renderExercise() {
   $("concept-use-case").open = false;
   $("concept-use").textContent = concept ? "Use case: " + concept.use : "";
   $("concept-mistake").textContent = concept ? "Watch for: " + concept.mistake : "";
-  $("plan-input").placeholder = concept?.plan || "What comes in? What should come out? What are the smallest steps?";
+  $("plan-input").placeholder = concept?.plan || guide.focus;
   $("constraints").replaceChildren();
   $("concept-details").hidden = !exercise.constraints?.length;
   for (const text of exercise.constraints || []) { const item = document.createElement("li"); item.textContent = text; $("constraints").appendChild(item); }
@@ -552,6 +578,17 @@ document.addEventListener("DOMContentLoaded", () => {
   $("markup-editor").addEventListener("beforeinput", () => { const field = $("markup-editor"); markupHistory.push({value:field.value,start:field.selectionStart,end:field.selectionEnd}); if (markupHistory.length > 50) markupHistory.shift(); });
   $("markup-editor").addEventListener("input", () => { cancelRun(); state.markupDrafts[currentKey()] = $("markup-editor").value; $("dom-output").replaceChildren(); $("case-results").hidden = true; $("results-panel").hidden = true; $("check-result").textContent = ""; persist(); });
   $("track-select").addEventListener("change", () => { state.language = $("track-select").value; renderPathPicker(); renderProjects(); renderRecommendation(); persist(); });
+  $("study-path").addEventListener('change', () => { state.paths[state.language] = $("study-path").value; renderPathPicker(); renderRecommendation(); persist(); });
+  $("task-use-start").addEventListener('click', () => { if (!editor.getValue().trim()) { replaceCode(currentExercise().snippet || ''); updateTaskStart(); } });
+  $("enable-monaco").addEventListener('click', () => editor.enableMonaco());
+  $("format-code").addEventListener('click', async () => {
+    const key=currentKey(), before=editor.getValue();
+    $("format-message").textContent='Formatting…';
+    try { const formatted=await formatCode(before,currentExercise().html?'html':currentSection().language||'javascript');
+      if(currentKey()!==key || editor.getValue()!==before) return;
+      replaceCode(formatted); $("format-message").textContent='Formatted. Your previous code is under Editor tools.';
+    } catch(error) { $("format-message").textContent='Could not format this code. Your draft is unchanged. '+error.message; }
+  });
   $("level-select").addEventListener("change", selectLevel);
   $("use-starter").addEventListener("change", () => { state.useStarter = $("use-starter").checked; persist(); });
   $("start-practice").addEventListener("click", () => { const index = sections.findIndex(s => s.id === $("level-select").value); enterSection(index, sections[index].kind === "project" ? "project" : "path"); });

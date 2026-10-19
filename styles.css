@@ -213,3 +213,10 @@ pre, #function-signature, .example-line { max-width: 100%; overflow-x: auto; }
   .task-card, .editor-card, .output-card { padding: .85rem; }
   .example-line, #function-signature { font-size: .9rem; }
 }
+
+#task-setup { max-height: 220px; overflow: auto; }
+#task-start { margin: .8rem 0; }
+#task-use-start { width: 100%; }
+#planning-example, #reflection-example { white-space: pre-line; }
+#study-path-description { margin: .6rem 0 1rem; }
+#format-message:empty { display: none; }
